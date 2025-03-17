@@ -11,14 +11,12 @@ interface CheatSheetSectionProps {
   title: string;
   codeExamples: CodeExample[];
   className?: string;
-  id: string;
 }
 
 const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({ 
   title, 
   codeExamples, 
-  className = "",
-  id
+  className = ""
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -52,7 +50,6 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
   return (
     <section 
       ref={sectionRef}
-      id={id}
       className={`mb-16 ${className} ${isVisible ? 'animate-fade-up' : 'opacity-0'}`} 
       style={{ animationDelay: '0.2s' }}
     >
