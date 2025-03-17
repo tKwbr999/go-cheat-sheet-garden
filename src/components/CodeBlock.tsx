@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface CodeBlockProps {
   title: string;
@@ -18,6 +19,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   className = "" 
 }) => {
   const [hasCopied, setHasCopied] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
 
   // Simple syntax highlighting patterns for Go
@@ -70,19 +72,46 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
   return (
     <Card className={`code-block ${className}`}>
-      {title && <CardHeader className="code-title pb-2">{title}</CardHeader>}
-      <CardContent className="code-content relative pt-0">
-        <button
-          onClick={handleCopy}
-          className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700 transition-colors"
-          aria-label="Copy code"
-        >
-          {hasCopied ? <Check size={16} /> : <Copy size={16} />}
-        </button>
-        <pre className="pr-8">
-          {highlightCode(code)}
-        </pre>
-      </CardContent>
+      {title && (
+        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+          <div className="flex items-center justify-between">
+            <CardHeader className="code-title pb-2 mb-0 flex-1">{title}</CardHeader>
+            <CollapsibleTrigger asChild>
+              <button className="p-2 hover:bg-muted rounded-full transition-colors mr-2">
+                {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent>
+            <CardContent className="code-content relative pt-0">
+              <button
+                onClick={handleCopy}
+                className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label="Copy code"
+              >
+                {hasCopied ? <Check size={16} /> : <Copy size={16} />}
+              </button>
+              <pre className="pr-8">
+                {highlightCode(code)}
+              </pre>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+      {!title && (
+        <CardContent className="code-content relative pt-0">
+          <button
+            onClick={handleCopy}
+            className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="Copy code"
+          >
+            {hasCopied ? <Check size={16} /> : <Copy size={16} />}
+          </button>
+          <pre className="pr-8">
+            {highlightCode(code)}
+          </pre>
+        </CardContent>
+      )}
     </Card>
   );
 };
