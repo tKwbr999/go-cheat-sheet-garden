@@ -7,11 +7,19 @@
     },
     {
       "title": "Variables",
-      "code": "// Variable declaration\nvar name string = \"Go\"\n\n// Short variable declaration\nage := 10\n\n// Multiple variables\nvar (\n  a, b int\n  c    string\n)"
+      "code": "// Variable declaration\nvar name string = \"Go\"\n\n// Short variable declaration\nage := 10\n\n// Multiple variables\nvar (\n  a, b int\n  c    string\n)\n\n// Variable initialization\nvar (\n  home = os.Getenv(\"HOME\")\n  user = os.Getenv(\"USER\")\n)\n\n// Unused variables will cause errors\n// Use _ (blank identifier) to ignore values\n_, err := fmt.Println(\"Hello\")"
     },
     {
       "title": "Constants",
-      "code": "// Constant declaration\nconst Pi = 3.14\n\n// Multiple constants\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota\nconst (\n  Monday = iota + 1 // 1\n  Tuesday           // 2\n  Wednesday         // 3\n)"
+      "code": "// Constant declaration\nconst Pi = 3.14\n\n// Multiple constants\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota - enumeration generator\nconst (\n  Monday = iota + 1 // 1\n  Tuesday           // 2\n  Wednesday         // 3\n)\n\n// iota resets in new const block\nconst (\n  Readable = 1 << iota  // 1 (1 << 0)\n  Writable              // 2 (1 << 1)\n  Executable            // 4 (1 << 2)\n  \n  // Permissions combinations\n  ReadWrite = Readable | Writable  // 3\n)"
+    },
+    {
+      "title": "Naming Conventions",
+      "code": "// Packages are lowercase, single word names\npackage http\n\n// CamelCase for exported identifiers (visible outside package)\ntype Customer struct{}\nfunc WriteFile() {}\nvar MaxLength int\n\n// camelCase for unexported identifiers (private to package)\ntype httpClient struct{}\nfunc writeLog() {}\nvar maxRetries int\n\n// Acronyms are all uppercase in identifiers\n// e.g., HTTP, URL, ID\nvar userID string\nfunc parseHTTPResponse() {}\n\n// One-method interfaces end in -er\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}"
+    },
+    {
+      "title": "Code Organization",
+      "code": "// Go code is organized into packages\n// Each directory is a package\n// Main package is the entry point of an executable\npackage main\n\n// Imports are grouped and can be factored\nimport (\n  \"fmt\"\n  \"io\"\n  \n  \"golang.org/x/net/html\"  // Third-party package\n  \"myproject/mypackage\"   // Local package\n)\n\n// A typical Go file structure:\n// 1. Package declaration\n// 2. Imports\n// 3. Constants\n// 4. Variables\n// 5. Types\n// 6. Functions"
     }
   ]
 }

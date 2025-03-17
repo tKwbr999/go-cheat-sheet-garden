@@ -3,15 +3,23 @@
   "codeExamples": [
     {
       "title": "Basic Function",
-      "code": "// Function declaration\nfunc add(a int, b int) int {\n  return a + b\n}\n\n// Multiple return values\nfunc divAndRemainder(a, b int) (int, int) {\n  return a / b, a % b\n}\n\n// Named return values\nfunc split(sum int) (x, y int) {\n  x = sum * 4 / 9\n  y = sum - x\n  return // naked return\n}"
+      "code": "// Function declaration\nfunc add(a int, b int) int {\n  return a + b\n}\n\n// Parameters of the same type can be grouped\nfunc add(a, b int) int {\n  return a + b\n}\n\n// Multiple return values\nfunc divAndRemainder(a, b int) (int, int) {\n  return a / b, a % b\n}\n\n// Named return values\nfunc split(sum int) (x, y int) {\n  x = sum * 4 / 9\n  y = sum - x\n  return // naked return uses named values\n}\n\n// Returning errors (common pattern)\nfunc readConfig(path string) ([]byte, error) {\n  file, err := os.Open(path)\n  if err != nil {\n    return nil, err  // Return zero value and error\n  }\n  defer file.Close()\n  \n  return io.ReadAll(file)  // Return data and nil error\n}"
     },
     {
       "title": "Variadic Functions",
-      "code": "// Variadic function\nfunc sum(nums ...int) int {\n  total := 0\n  for _, num := range nums {\n    total += num\n  }\n  return total\n}\n\n// Calling a variadic function\ntotal := sum(1, 2, 3, 4) // 10\n\n// Spreading a slice\nnumbers := []int{1, 2, 3, 4}\ntotal = sum(numbers...) // 10"
+      "code": "// Variadic function (accepts variable number of arguments)\nfunc sum(nums ...int) int {\n  total := 0\n  for _, num := range nums {\n    total += num\n  }\n  return total\n}\n\n// Calling a variadic function\ntotal := sum(1, 2, 3, 4) // 10\n\n// Spreading a slice\nnumbers := []int{1, 2, 3, 4}\ntotal = sum(numbers...) // 10\n\n// Variadic with other parameters\nfunc appendValues(slice []int, values ...int) []int {\n  return append(slice, values...)\n}\n\nslice := []int{1, 2}\nslice = appendValues(slice, 3, 4, 5) // [1 2 3 4 5]\n\n// Useful standard library examples:\n// fmt.Printf(format string, a ...interface{})\n// log.Printf(format string, a ...interface{})\n// errors.Join(errs ...error) error"
     },
     {
       "title": "Closures",
-      "code": "// Function that returns a function\nfunc adder() func(int) int {\n  sum := 0\n  return func(x int) int {\n    sum += x\n    return sum\n  }\n}\n\n// Using a closure\npos := adder()\nresult := pos(10) // 10\nresult = pos(20)  // 30\nresult = pos(30)  // 60"
+      "code": "// Function that returns a function (closure)\nfunc adder() func(int) int {\n  sum := 0  // This variable is \"closed over\"\n  return func(x int) int {\n    sum += x  // Modifies the closed-over variable\n    return sum\n  }\n}\n\n// Using a closure\npos := adder()\nresult := pos(10) // 10\nresult = pos(20)  // 30\nresult = pos(30)  // 60\n\n// Different instantiations have different state\npos1 := adder()\npos2 := adder()\nfmt.Println(pos1(10))  // 10\nfmt.Println(pos2(20))  // 20\nfmt.Println(pos1(40))  // 50\n\n// Using closures with for loops (common gotcha)\nfuncs := make([]func(), 3)\nfor i := 0; i < 3; i++ {\n  funcs[i] = func() { fmt.Println(i) }  // Wrong: all will print final i value (3)\n}\n\n// Correct approach: create new variable in each iteration\nfuncs := make([]func(), 3)\nfor i := 0; i < 3; i++ {\n  i := i  // Create new i in this scope\n  funcs[i] = func() { fmt.Println(i) }  // Correct: each prints its own i\n}"
+    },
+    {
+      "title": "Function Types",
+      "code": "// Functions are first-class values\n// They can be assigned to variables, passed as arguments, returned from functions\n\n// Function type declaration\ntype Handler func(string) error\n\n// Function as variable\nvar compute func(int, int) int\ncompute = func(a, b int) int {\n  return a + b\n}\nresult := compute(5, 3)  // 8\n\n// Function as argument\nfunc process(apply func(int, int) int, a, b int) int {\n  return apply(a, b)\n}\nresult := process(func(x, y int) int { return x * y }, 5, 3)  // 15\n\n// Function as return value\nfunc multiplier(factor int) func(int) int {\n  return func(n int) int {\n    return n * factor\n  }\n}\ndouble := multiplier(2)\ntriple := multiplier(3)\nfmt.Println(double(5))  // 10\nfmt.Println(triple(5))  // 15"
+    },
+    {
+      "title": "Method vs Function",
+      "code": "// Functions are independent\nfunc distance(p1, p2 Point) float64 {\n  return math.Sqrt(square(p2.X-p1.X) + square(p2.Y-p1.Y))\n}\n\n// Methods are attached to a type\ntype Point struct { X, Y float64 }\n\nfunc (p Point) Distance(q Point) float64 {\n  return math.Sqrt(square(q.X-p.X) + square(q.Y-p.Y))\n}\n\n// Usage\np1 := Point{1, 2}\np2 := Point{4, 6}\n\n// Function call\ndist1 := distance(p1, p2)\n\n// Method call\ndist2 := p1.Distance(p2)"
     }
   ]
 }

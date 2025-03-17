@@ -3,15 +3,27 @@
   "codeExamples": [
     {
       "title": "Package",
-      "code": "// File: math.go\npackage math\n\n// Exported function (capitalized)\nfunc Add(a, b int) int {\n  return a + b\n}\n\n// Unexported function (lowercase)\nfunc multiply(a, b int) int {\n  return a * b\n}"
+      "code": "// File: math.go\npackage math\n\n// Exported function (capitalized)\nfunc Add(a, b int) int {\n  return a + b\n}\n\n// Unexported function (lowercase)\nfunc multiply(a, b int) int {\n  return a * b\n}\n\n// Package documentation\n// This comment before package declaration becomes\n// package documentation in godoc\n\n// Package math provides basic mathematical operations.\npackage math"
     },
     {
       "title": "Import",
-      "code": "// Single import\nimport \"fmt\"\n\n// Multiple imports\nimport (\n  \"fmt\"\n  \"math\"\n  \"strings\"\n)\n\n// Import with alias\nimport (\n  f \"fmt\"\n  m \"math\"\n)\n\n// Using the imports\nf.Println(m.Pi)"
+      "code": "// Single import\nimport \"fmt\"\n\n// Multiple imports\nimport (\n  \"fmt\"\n  \"math\"\n  \"strings\"\n)\n\n// Import with alias\nimport (\n  f \"fmt\"       // f.Println()\n  m \"math\"      // m.Pi\n  . \"math\"      // Pi (direct access, avoid in production code)\n  _ \"image/png\" // Register PNG decoder, but don't use directly\n)\n\n// Dot import (not recommended)\nimport . \"math\"\nfmt.Println(Pi) // Direct access without package name\n\n// Blank import (used for side-effects only)\nimport _ \"net/http/pprof\" // Register profiling handlers\n\n// Relative imports (in go modules)\nimport (\n  \"example.com/project/pkg/util\"  // Standard import\n  \"./mylocal\"                     // INVALID in modules\n)"
     },
     {
       "title": "Package initialization",
-      "code": "package mypackage\n\n// Package variables\nvar PackageVar int\n\n// init function runs when package is imported\nfunc init() {\n  PackageVar = 42\n  // initialization code\n}\n\nfunc DoSomething() {\n  // function code\n}"
+      "code": "package mypackage\n\n// Package variables\nvar PackageVar int\n\n// init function runs when package is imported\n// before main() starts\nfunc init() {\n  PackageVar = 42\n  // initialization code\n}\n\n// Multiple init functions run in declaration order\nfunc init() {\n  // first init\n}\n\nfunc init() {\n  // second init\n}\n\nfunc DoSomething() {\n  // function code\n}\n\n// Package initialization order:\n// 1. Package-level variable initialization\n// 2. init() functions in order of declaration\n\n// Across packages:\n// 1. Imported packages are initialized first\n// 2. Then the importing package is initialized"
+    },
+    {
+      "title": "Go Modules",
+      "code": "// Module initialization\n// Create a new module\ngo mod init example.com/mymodule\n\n// Module file (go.mod)\nmodule example.com/mymodule\n\ngo 1.19  // Minimum Go version\n\nrequire (\n  github.com/pkg/errors v0.9.1\n  golang.org/x/text v0.9.0\n)\n\nexclude github.com/unwanted/package v1.0.0\n\nreplace github.com/original/package => github.com/fork/package v1.2.0\n\n// Managing dependencies\ngo get github.com/pkg/errors        // Add dependency\ngo get github.com/pkg/errors@v0.9.1 // Specific version\ngo get -u                          // Update all dependencies\ngo mod tidy                        // Clean up unused dependencies\ngo mod vendor                      // Create vendor directory\ngo mod why github.com/pkg/errors   // Explain dependency\ngo list -m all                     // List all dependencies"
+    },
+    {
+      "title": "Standard Library Packages",
+      "code": "// Essential standard library packages\n\n// Formatting\nimport \"fmt\"\nfmt.Println(\"Hello, world\")\nfmt.Printf(\"%d %s\\n\", 42, \"text\")\n\n// Input/Output\nimport \"io\"\nimport \"os\"\nfile, err := os.Open(\"file.txt\")\ndata, err := io.ReadAll(file)\n\n// Strings\nimport \"strings\"\ns := strings.ToUpper(\"hello\")\ncontains := strings.Contains(s, \"EL\")\nparts := strings.Split(\"a,b,c\", \",\")\n\n// Time\nimport \"time\"\nnow := time.Now()\ntime.Sleep(time.Second * 2)\nduration := time.Since(now)\n\n// JSON\nimport \"encoding/json\"\ntype Person struct {\n  Name string `json:\"name\"`\n  Age  int    `json:\"age\"`\n}\ndata, err := json.Marshal(person)\nperson := Person{}\nerr := json.Unmarshal(data, &person)\n\n// HTTP\nimport \"net/http\"\nhttp.HandleFunc(\"/hello\", func(w http.ResponseWriter, r *http.Request) {\n  fmt.Fprintf(w, \"Hello\")\n})\nhttp.ListenAndServe(\":8080\", nil)"
+    },
+    {
+      "title": "Internal Packages",
+      "code": "// Internal packages are only importable by their parent package\n// or sibling packages\n\n// Directory structure:\n// myproject/\n//   cmd/\n//     app/\n//       main.go  // Can import \"myproject/internal/auth\"\n//   internal/\n//     auth/\n//       auth.go\n//   pkg/\n//     public/\n//       public.go  // Can import \"myproject/internal/auth\"\n\n// In auth.go\npackage auth\n\nfunc Authenticate(user, pass string) bool {\n  // implementation\n}\n\n// In main.go\npackage main\n\nimport \"myproject/internal/auth\"\n\nfunc main() {\n  if auth.Authenticate(\"user\", \"pass\") {\n    // ...\n  }\n}\n\n// External packages CANNOT import \"myproject/internal/...\"\n// This is enforced by the Go compiler"
     }
   ]
 }
