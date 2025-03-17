@@ -1,5 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 interface CodeBlockProps {
   title: string;
@@ -14,6 +17,9 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   language = "go", 
   className = "" 
 }) => {
+  const [hasCopied, setHasCopied] = useState(false);
+  const { toast } = useToast();
+
   // Simple syntax highlighting patterns for Go
   const highlightCode = (code: string): React.ReactNode => {
     if (!code) return null;
@@ -51,13 +57,33 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
     });
   };
 
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
+    setHasCopied(true);
+    toast({
+      title: "Copied to clipboard",
+      description: "The code has been copied to your clipboard.",
+      duration: 2000,
+    });
+    setTimeout(() => setHasCopied(false), 2000);
+  };
+
   return (
-    <div className={`code-block ${className}`}>
-      {title && <div className="code-title">{title}</div>}
-      <pre className="code-content">
-        {highlightCode(code)}
-      </pre>
-    </div>
+    <Card className={`code-block ${className}`}>
+      {title && <CardHeader className="code-title pb-2">{title}</CardHeader>}
+      <CardContent className="code-content relative pt-0">
+        <button
+          onClick={handleCopy}
+          className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700 transition-colors"
+          aria-label="Copy code"
+        >
+          {hasCopied ? <Check size={16} /> : <Copy size={16} />}
+        </button>
+        <pre className="pr-8">
+          {highlightCode(code)}
+        </pre>
+      </CardContent>
+    </Card>
   );
 };
 
