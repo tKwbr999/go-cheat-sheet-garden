@@ -6,6 +6,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // GitHub Pages用のベースパスを設定
+  // HashRouterを使用する場合、ベースURLは単純な相対パスでよい
   const base = process.env.GITHUB_PAGES ? "/go-cheat-sheet-garden/" : "./";
   
   return {
