@@ -40,17 +40,16 @@ const Header = () => {
             rel="noopener noreferrer"
             className="flex items-center text-sm text-gray-600 hover:text-go-blue transition-colors duration-200"
           >
-            <span className="mr-1">Documentation</span>
-            <ExternalLink size={14} />
+            <ExternalLink size={18} className="mr-1" />
+            <span>公式サイト</span>
           </a>
-          
           <a 
             href="https://github.com/golang/go" 
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center text-sm text-gray-600 hover:text-go-blue transition-colors duration-200"
           >
-            <Github size={18} className="mr-1" />
+            <ExternalLink size={18} className="mr-1" />
             <span>GitHub</span>
           </a>
         </div>
