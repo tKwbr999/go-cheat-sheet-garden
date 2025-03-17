@@ -1,8 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import CodeBlock from './CodeBlock';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface CodeExample {
   title: string;
@@ -21,7 +19,6 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
   className = ""
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,27 +53,18 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
       className={`mb-16 ${className} ${isVisible ? 'animate-fade-up' : 'opacity-0'}`} 
       style={{ animationDelay: '0.2s' }}
     >
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-        <div className="flex items-center justify-between">
-          <h2 className="section-title mb-0">{title}</h2>
-          <CollapsibleTrigger asChild>
-            <button className="p-2 hover:bg-muted rounded-full transition-colors">
-              {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-            </button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="mt-4">
-          <div className="code-grid stagger-fade-in">
-            {codeExamples.map((example, index) => (
-              <CodeBlock
-                key={index}
-                title={example.title}
-                code={example.code}
-              />
-            ))}
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      <div className="flex items-center justify-between">
+        <h2 className="section-title mb-4">{title}</h2>
+      </div>
+      <div className="code-grid stagger-fade-in">
+        {codeExamples.map((example, index) => (
+          <CodeBlock
+            key={index}
+            title={example.title}
+            code={example.code}
+          />
+        ))}
+      </div>
     </section>
   );
 };
