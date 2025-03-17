@@ -1,6 +1,5 @@
-
-import React, { useEffect, useRef, useState } from 'react';
-import CodeBlock from './CodeBlock';
+import React, { useEffect, useRef, useState } from "react";
+import CodeBlock from "./CodeBlock";
 
 interface CodeExample {
   title: string;
@@ -13,10 +12,10 @@ interface CheatSheetSectionProps {
   className?: string;
 }
 
-const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({ 
-  title, 
-  codeExamples, 
-  className = ""
+const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
+  title,
+  codeExamples,
+  className = "",
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -31,7 +30,7 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
       },
       {
         root: null,
-        rootMargin: '0px',
+        rootMargin: "0px",
         threshold: 0.1,
       }
     );
@@ -48,21 +47,19 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
   }, []);
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      className={`mb-16 ${className} ${isVisible ? 'animate-fade-up' : 'opacity-0'}`} 
-      style={{ animationDelay: '0.2s' }}
+      className={`mb-2 ${className} ${
+        isVisible ? "animate-fade-up" : "opacity-0"
+      }`}
+      style={{ animationDelay: "0.2s" }}
     >
       <div className="flex items-center justify-between">
-        <h2 className="section-title mb-4">{title}</h2>
+        <h2 className="section-title mb-2">{title}</h2>
       </div>
       <div className="code-grid stagger-fade-in">
         {codeExamples.map((example, index) => (
-          <CodeBlock
-            key={index}
-            title={example.title}
-            code={example.code}
-          />
+          <CodeBlock key={index} title={example.title} code={example.code} />
         ))}
       </div>
     </section>
