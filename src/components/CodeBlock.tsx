@@ -123,7 +123,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
             <CardContent className="code-content relative pt-0 font-mono rounded-lg shadow-inner">
               <button
                 onClick={handleCopy}
-                className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-200 transition-colors bg-zinc-800/50 rounded-md z-10"
+                className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-900 transition-colors rounded-md z-10"
                 aria-label="Copy code"
               >
                 {hasCopied ? <Check size={14} /> : <Copy size={14} />}
@@ -135,7 +135,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                       <span className="select-none w-[3rem] inline-block text-right pr-4 text-zinc-600 text-sm">
                         {i + 1}
                       </span>
-                      <span className="flex-1 pr-8 group-hover:bg-zinc-700/50">
+                      <span className="flex-1 pr-8">
                         {highlightCode(line)}
                       </span>
                     </div>
