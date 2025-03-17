@@ -1,0 +1,13 @@
+{
+  "title": "Interfaces",
+  "codeExamples": [
+    {
+      "title": "Defining Interfaces",
+      "code": "// Interface definition\ntype Shape interface {\n  Area() float64\n  Perimeter() float64\n}\n\n// Types that implement the interface\ntype Rectangle struct {\n  Width, Height float64\n}\n\nfunc (r Rectangle) Area() float64 {\n  return r.Width * r.Height\n}\n\nfunc (r Rectangle) Perimeter() float64 {\n  return 2 * (r.Width + r.Height)\n}\n\n// Using interfaces\nfunc printShapeInfo(s Shape) {\n  fmt.Printf(\"Area: %f, Perimeter: %f\\n\", \n    s.Area(), s.Perimeter())\n}\n\nrect := Rectangle{5, 10}\nprintShapeInfo(rect)"
+    },
+    {
+      "title": "Empty Interface",
+      "code": "// Empty interface can hold any value\nvar i interface{}\ni = 42            // int\ni = \"hello\"       // string\ni = struct{}{} // struct\n\n// Type assertions\nstr, ok := i.(string)\nif ok {\n  fmt.Println(str) // \"hello\"\n}\n\n// Type switch\nswitch v := i.(type) {\ncase int:\n  fmt.Println(\"int:\", v)\ncase string:\n  fmt.Println(\"string:\", v)\ndefault:\n  fmt.Println(\"unknown type\")\n}"
+    }
+  ]
+}

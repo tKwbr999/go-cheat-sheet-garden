@@ -1,0 +1,13 @@
+{
+  "title": "References",
+  "codeExamples": [
+    {
+      "title": "Go Documentation",
+      "code": "// Official Go Documentation\n// https://golang.org/doc/\n\n// Go Standard Library\n// https://golang.org/pkg/\n\n// Go Tour\n// https://tour.golang.org/\n\n// Effective Go\n// https://golang.org/doc/effective_go.html"
+    },
+    {
+      "title": "Tools",
+      "code": "// Go command\ngo build    // Compile packages\ngo run      // Compile and run\ngo test     // Test packages\ngo get      // Download and install packages\ngo fmt      // Format source code\ngo vet      // Report likely mistakes\ngo mod      // Module maintenance"
+    }
+  ]
+}

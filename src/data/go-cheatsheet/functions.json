@@ -1,0 +1,17 @@
+{
+  "title": "Functions",
+  "codeExamples": [
+    {
+      "title": "Basic Function",
+      "code": "// Function declaration\nfunc add(a int, b int) int {\n  return a + b\n}\n\n// Multiple return values\nfunc divAndRemainder(a, b int) (int, int) {\n  return a / b, a % b\n}\n\n// Named return values\nfunc split(sum int) (x, y int) {\n  x = sum * 4 / 9\n  y = sum - x\n  return // naked return\n}"
+    },
+    {
+      "title": "Variadic Functions",
+      "code": "// Variadic function\nfunc sum(nums ...int) int {\n  total := 0\n  for _, num := range nums {\n    total += num\n  }\n  return total\n}\n\n// Calling a variadic function\ntotal := sum(1, 2, 3, 4) // 10\n\n// Spreading a slice\nnumbers := []int{1, 2, 3, 4}\ntotal = sum(numbers...) // 10"
+    },
+    {
+      "title": "Closures",
+      "code": "// Function that returns a function\nfunc adder() func(int) int {\n  sum := 0\n  return func(x int) int {\n    sum += x\n    return sum\n  }\n}\n\n// Using a closure\npos := adder()\nresult := pos(10) // 10\nresult = pos(20)  // 30\nresult = pos(30)  // 60"
+    }
+  ]
+}

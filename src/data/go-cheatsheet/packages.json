@@ -1,0 +1,17 @@
+{
+  "title": "Packages",
+  "codeExamples": [
+    {
+      "title": "Package",
+      "code": "// File: math.go\npackage math\n\n// Exported function (capitalized)\nfunc Add(a, b int) int {\n  return a + b\n}\n\n// Unexported function (lowercase)\nfunc multiply(a, b int) int {\n  return a * b\n}"
+    },
+    {
+      "title": "Import",
+      "code": "// Single import\nimport \"fmt\"\n\n// Multiple imports\nimport (\n  \"fmt\"\n  \"math\"\n  \"strings\"\n)\n\n// Import with alias\nimport (\n  f \"fmt\"\n  m \"math\"\n)\n\n// Using the imports\nf.Println(m.Pi)"
+    },
+    {
+      "title": "Package initialization",
+      "code": "package mypackage\n\n// Package variables\nvar PackageVar int\n\n// init function runs when package is imported\nfunc init() {\n  PackageVar = 42\n  // initialization code\n}\n\nfunc DoSomething() {\n  // function code\n}"
+    }
+  ]
+}

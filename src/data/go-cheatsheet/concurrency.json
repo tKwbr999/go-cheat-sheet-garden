@@ -1,0 +1,17 @@
+{
+  "title": "Concurrency",
+  "codeExamples": [
+    {
+      "title": "Goroutines",
+      "code": "// Start a goroutine\ngo func() {\n  // code runs concurrently\n  fmt.Println(\"Running in goroutine\")\n}()\n\n// Run a function in a goroutine\ngo myFunction(arg1, arg2)\n\n// Main continues execution\nfmt.Println(\"Main function continues\")"
+    },
+    {
+      "title": "Channels",
+      "code": "// Create a channel\nch := make(chan int)      // unbuffered\nch := make(chan int, 10)  // buffered\n\n// Send to channel\nch <- 42  // blocks if channel is full\n\n// Receive from channel\nvalue := <-ch  // blocks if channel is empty\n\n// Close a channel\nclose(ch)\n\n// Range over channel\nfor value := range ch {\n  // process value\n}"
+    },
+    {
+      "title": "Select",
+      "code": "// Select statement\nselect {\ncase value := <-ch1:\n  // handle value from ch1\ncase ch2 <- value:\n  // sent value to ch2\ncase <-time.After(1 * time.Second):\n  // timeout after 1 second\ndefault:\n  // run if no channel is ready\n}"
+    }
+  ]
+}

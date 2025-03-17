@@ -1,0 +1,17 @@
+{
+  "title": "Flow control",
+  "codeExamples": [
+    {
+      "title": "If-else",
+      "code": "// Basic if-else\nif x > 10 {\n  // do something\n} else if x > 5 {\n  // do something else\n} else {\n  // do another thing\n}\n\n// If with short statement\nif value := getValue(); value > 10 {\n  // use value\n}"
+    },
+    {
+      "title": "For loops",
+      "code": "// Standard for loop\nfor i := 0; i < 10; i++ {\n  // loop body\n}\n\n// For as while\nfor condition {\n  // loop body\n}\n\n// Infinite loop\nfor {\n  // loop body\n  if shouldBreak {\n    break\n  }\n}\n\n// For-range loop\nfor index, value := range collection {\n  // use index and value\n}"
+    },
+    {
+      "title": "Switch",
+      "code": "// Basic switch\nswitch value {\ncase 1:\n  // code for 1\ncase 2, 3:\n  // code for 2 or 3\ndefault:\n  // default code\n}\n\n// Switch with no expression\nswitch {\ncase x > 100:\n  // code for x > 100\ncase x > 10:\n  // code for x > 10\ndefault:\n  // default code\n}"
+    }
+  ]
+}

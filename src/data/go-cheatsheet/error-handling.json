@@ -1,0 +1,13 @@
+{
+  "title": "Error handling",
+  "codeExamples": [
+    {
+      "title": "Errors",
+      "code": "// Function returning an error\nfunc divide(a, b int) (int, error) {\n  if b == 0 {\n    return 0, errors.New(\"division by zero\")\n  }\n  return a / b, nil\n}\n\n// Error handling\nresult, err := divide(10, 2)\nif err != nil {\n  fmt.Println(\"Error:\", err)\n  return\n}\nfmt.Println(\"Result:\", result)"
+    },
+    {
+      "title": "Custom errors",
+      "code": "// Define a custom error type\ntype MyError struct {\n  Code    int\n  Message string\n}\n\n// Implement the Error interface\nfunc (e *MyError) Error() string {\n  return fmt.Sprintf(\"error %d: %s\", e.Code, e.Message)\n}\n\n// Return a custom error\nfunc doSomething() error {\n  return &MyError{\n    Code:    500,\n    Message: \"something went wrong\",\n  }\n}"
+    }
+  ]
+}

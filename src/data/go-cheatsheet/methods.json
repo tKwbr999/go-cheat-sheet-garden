@@ -1,0 +1,13 @@
+{
+  "title": "Methods",
+  "codeExamples": [
+    {
+      "title": "Methods",
+      "code": "// Define a type\ntype Rectangle struct {\n  Width, Height float64\n}\n\n// Method with a receiver\nfunc (r Rectangle) Area() float64 {\n  return r.Width * r.Height\n}\n\n// Pointer receiver for modification\nfunc (r *Rectangle) Scale(factor float64) {\n  r.Width *= factor\n  r.Height *= factor\n}\n\n// Using methods\nrect := Rectangle{10, 5}\narea := rect.Area()       // 50\nrect.Scale(2)             // Width=20, Height=10"
+    },
+    {
+      "title": "Value vs Pointer Receivers",
+      "code": "// Value receiver (copy)\nfunc (r Rectangle) Double() Rectangle {\n  return Rectangle{\n    Width:  r.Width * 2,\n    Height: r.Height * 2,\n  }\n}\n\n// Pointer receiver (modify original)\nfunc (r *Rectangle) Resize(w, h float64) {\n  r.Width = w\n  r.Height = h\n}\n\n// Usage\nrect := Rectangle{5, 10}\nrect2 := rect.Double()    // New rectangle\nrect.Resize(20, 30)       // Modified original"
+    }
+  ]
+}

@@ -3,11 +3,11 @@ import Header from "@/components/Header";
 import CheatSheetSection from "@/components/CheatSheetSection";
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
-import { cheatSheetData } from "@/data/cheatsheet";
-
+import { getCheatSheetData } from "@/data/cheatsheet-loader";
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const cheatSheetData = getCheatSheetData();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,12 +39,6 @@ const Index = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-6">
         <div className="container mx-auto max-w-5xl">
-          {/* <div className="flex flex-col items-center text-center mb-12 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Go Cheatsheet
-            </h1>
-          </div> */}
-
           {/* Main Content */}
           <div className="mt-16">
             {cheatSheetData.map((section, index) => (

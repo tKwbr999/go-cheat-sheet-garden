@@ -1,0 +1,17 @@
+{
+  "title": "Basics",
+  "codeExamples": [
+    {
+      "title": "Hello World",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  fmt.Println(\"Hello, World!\")\n}"
+    },
+    {
+      "title": "Variables",
+      "code": "// Variable declaration\nvar name string = \"Go\"\n\n// Short variable declaration\nage := 10\n\n// Multiple variables\nvar (\n  a, b int\n  c    string\n)"
+    },
+    {
+      "title": "Constants",
+      "code": "// Constant declaration\nconst Pi = 3.14\n\n// Multiple constants\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota\nconst (\n  Monday = iota + 1 // 1\n  Tuesday           // 2\n  Wednesday         // 3\n)"
+    }
+  ]
+}
