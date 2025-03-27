@@ -69,8 +69,9 @@
   }
 
   .code-grid {
-    @apply grid gap-8 mb-12;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    @apply grid gap-8 mb-12; /* Restore grid */
+    /* Adjust columns for tile layout with max width ~60 chars (approx 30rem) */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
   }
   .code-block:hover {
     @apply shadow-lg dark:shadow-md dark:shadow-primary/10;

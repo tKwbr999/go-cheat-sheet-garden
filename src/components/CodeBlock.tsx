@@ -22,7 +22,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   className = "",
 }) => {
   const [hasCopied, setHasCopied] = useState(false);
-  const [isOpen, setIsOpen] = useState(true); // Default to open
+  const [isOpen, setIsOpen] = useState(false); // Default to closed
   const { toast } = useToast();
 
   // Simple syntax highlighting - relies on CSS classes defined in index.css
