@@ -38,7 +38,7 @@ const Index = () => {
 
       {/* Hero Section - Consider adding content or styling later */}
       <section className="pt-32 pb-16 px-6">
-        <div className="container mx-auto max-w-5xl">
+        <div className="container mx-auto"> {/* Removed max-w-5xl */}
           {/* Main Content */}
           <div className="mt-16">
             {cheatSheetData.map((section, index) => (
