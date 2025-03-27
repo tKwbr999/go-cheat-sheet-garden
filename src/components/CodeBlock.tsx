@@ -89,65 +89,57 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
     }
   };
 
+  const renderCodeContent = () => (
+    <CardContent className="code-content relative pt-2 pb-4 px-4 font-mono rounded-b-lg"> {/* Consistent styling, relative is already here */}
+      {/* Unified Copy Button - Moved inside CardContent */}
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md z-10" /* Style from no-title case */
+        aria-label="Copy code"
+      >
+        {hasCopied ? <Check size={14} /> : <Copy size={14} />}
+      </button>
+      <div className="relative overflow-x-auto overflow-y-auto">
+        <pre className="relative min-w-full text-sm">
+          {code.split('\n').map((line, i) => (
+            <div key={i} className="code-line group flex">
+              <span className="flex-1 pr-8">
+                {highlightCode(line)}
+              </span>
+            </div>
+          ))}
+        </pre>
+      </div>
+    </CardContent>
+  );
+
   return (
-    <Card className={`code-block overflow-hidden ${className}`}> {/* Remove h-full */}
-      {title && (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full"> {/* Remove h-full flex flex-col */}
-          <div className="flex items-center justify-between bg-gradient-primary text-primary-foreground"> {/* Apply gradient to the whole trigger area */}
+    <Card className={`relative code-block overflow-hidden ${className}`}> {/* relative was already added */}
+      {/* Copy Button removed from here */}
+
+      {title ? (
+        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+          {/* Header */}
+          <div className="flex items-center justify-between bg-gradient-primary text-primary-foreground">
             <CollapsibleTrigger asChild>
                 <div className="flex items-center flex-1 cursor-pointer">
-                    <CardHeader className="code-title py-2 px-4 flex-1 bg-transparent"> {/* Remove bg, adjust padding */}
+                    <CardHeader className="code-title py-2 px-4 flex-1 bg-transparent">
                         {title}
                     </CardHeader>
-                    <button className="p-2 hover:bg-transparent bg-transparent rounded-full transition-colors mr-2 text-primary-foreground/80 hover:text-primary-foreground"> {/* Adjust button colors */}
+                    <button className="p-2 hover:bg-transparent bg-transparent rounded-full transition-colors mr-2 text-primary-foreground/80 hover:text-primary-foreground">
                         {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </button>
                 </div>
             </CollapsibleTrigger>
-             <button
-                onClick={handleCopy}
-                className="p-1.5 mr-2 text-primary-foreground/70 hover:text-primary-foreground transition-colors rounded-md z-10" /* Adjust copy button colors */
-                aria-label="Copy code"
-              >
-                {hasCopied ? <Check size={14} /> : <Copy size={14} />}
-              </button>
           </div>
-          <CollapsibleContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"> {/* Add animation classes */}
-            <CardContent className="code-content relative pt-2 pb-4 px-4 font-mono rounded-b-lg"> {/* Remove h-full flex flex-col */}
-              <div className="relative overflow-x-auto overflow-y-auto"> {/* Remove flex-1, keep scroll */}
-                <pre className="relative min-w-full text-sm"> {/* Ensure text size consistency */}
-                  {code.split('\n').map((line, i) => (
-                    <div key={i} className="code-line group flex">
-                      <span className="flex-1 pr-8">
-                        {highlightCode(line)}
-                      </span>
-                    </div>
-                  ))}
-                </pre>
-              </div>
-            </CardContent>
+          {/* Content (inside Collapsible) */}
+          <CollapsibleContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+            {renderCodeContent()}
           </CollapsibleContent>
         </Collapsible>
-      )}
-      {!title && ( // Simplified version for code without a title
-        <CardContent className="code-content relative font-mono rounded-lg p-4">
-          <button
-            onClick={handleCopy}
-            className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md z-10" /* Adjust copy button colors */
-            aria-label="Copy code"
-          >
-            {hasCopied ? <Check size={14} /> : <Copy size={14} />}
-          </button>
-          <pre className="pr-8 text-sm text-foreground"> {/* Adjust text color and size */}
-             {code.split('\n').map((line, i) => (
-                <div key={i} className="code-line group flex">
-                  <span className="flex-1 pr-8">
-                    {highlightCode(line)}
-                  </span>
-                </div>
-              ))}
-          </pre>
-        </CardContent>
+      ) : (
+        // Render code content directly if no title
+        renderCodeContent()
       )}
     </Card>
   );
