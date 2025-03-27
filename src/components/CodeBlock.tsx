@@ -90,9 +90,9 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   };
 
   return (
-    <Card className={`code-block overflow-hidden ${className}`}>
+    <Card className={`code-block overflow-hidden ${className}`}> {/* Remove h-full */}
       {title && (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full"> {/* Remove h-full flex flex-col */}
           <div className="flex items-center justify-between bg-gradient-primary text-primary-foreground"> {/* Apply gradient to the whole trigger area */}
             <CollapsibleTrigger asChild>
                 <div className="flex items-center flex-1 cursor-pointer">
@@ -112,9 +112,9 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                 {hasCopied ? <Check size={14} /> : <Copy size={14} />}
               </button>
           </div>
-          <CollapsibleContent>
-            <CardContent className="code-content relative pt-2 pb-4 px-4 font-mono rounded-b-lg"> {/* Adjust padding */}
-              <div className="relative overflow-x-auto">
+          <CollapsibleContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"> {/* Add animation classes */}
+            <CardContent className="code-content relative pt-2 pb-4 px-4 font-mono rounded-b-lg"> {/* Remove h-full flex flex-col */}
+              <div className="relative overflow-x-auto overflow-y-auto"> {/* Remove flex-1, keep scroll */}
                 <pre className="relative min-w-full text-sm"> {/* Ensure text size consistency */}
                   {code.split('\n').map((line, i) => (
                     <div key={i} className="code-line group flex">

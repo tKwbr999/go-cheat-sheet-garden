@@ -100,10 +100,10 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
       <div className="flex items-center justify-between">
         <h2 className="section-title mb-2">{title}</h2>
       </div>
-      <div className="code-grid">
+      <div className="code-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {codeExamples.map((example, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             ref={(el) => (cardRefs.current[index] = el)}
             className={visibleCards[index] ? "animate-fade-up" : "opacity-0"}
             style={{ animationDelay: `${0.1 * (index + 1)}s` }}
