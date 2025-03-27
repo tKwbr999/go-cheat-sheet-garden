@@ -34,20 +34,35 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       return <span className="comment">{codeLine}</span>;
     }
 
-    // Basic replacements using dangerouslySetInnerHTML (consider a library for robust highlighting)
     let highlighted = codeLine;
+    const stringLiterals: string[] = [];
+
+    // 1. Replace string literals with placeholders
+    highlighted = highlighted.replace(/"([^"]*)"/g, (match) => {
+      const placeholder = `__STRING_LITERAL_${stringLiterals.length}__`;
+      stringLiterals.push(match); // Store the original string literal including quotes
+      return placeholder;
+    });
+
+    // 2. Apply other highlights (keywords, types, functions, numbers) to the code *without* string literals
     const keywords = ["func", "package", "import", "type", "struct", "interface", "map", "chan", "const", "var", "return", "if", "else", "for", "range", "switch", "case", "default", "go", "defer", "select"];
     keywords.forEach(kw => {
       highlighted = highlighted.replace(new RegExp(`\\b${kw}\\b`, 'g'), `<span class="keyword">${kw}</span>`);
     });
-    highlighted = highlighted.replace(/"([^"]*)"/g, '<span class="string">"$1"</span>'); // Strings
-    highlighted = highlighted.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\(/g, '<span class="function">$1</span>('); // Function calls (simple)
+    highlighted = highlighted.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\(/g, '<span class="function">$1</span>('); // Function calls
     highlighted = highlighted.replace(/\b([0-9]+)\b/g, '<span class="number">$1</span>'); // Numbers
-    // Basic type highlighting (common Go types)
     const types = ["string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "float32", "float64", "complex64", "complex128", "bool", "byte", "rune", "error"];
-     types.forEach(t => {
-       highlighted = highlighted.replace(new RegExp(`\\b${t}\\b`, 'g'), `<span class="type">${t}</span>`);
-     });
+    types.forEach(t => {
+      highlighted = highlighted.replace(new RegExp(`\\b${t}\\b`, 'g'), `<span class="type">${t}</span>`);
+    });
+
+    // 3. Restore string literals with highlighting span
+    stringLiterals.forEach((literal, index) => {
+      const placeholder = `__STRING_LITERAL_${index}__`;
+      // Extract content inside quotes for the span
+      const content = literal.substring(1, literal.length - 1);
+      highlighted = highlighted.replace(placeholder, `<span class="string">"${content}"</span>`);
+    });
 
     return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
   };
