@@ -120,13 +120,13 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       {title ? (
         <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
           {/* Header */}
-          <div className="flex items-center justify-between bg-gradient-primary text-primary-foreground">
+          <div className="flex items-center justify-between bg-gradient-primary text-primary-foreground h-8">
             <CollapsibleTrigger asChild>
                 <div className="flex items-center flex-1 cursor-pointer">
                     <CardHeader className="code-title py-2 px-4 flex-1 bg-transparent">
                         {title}
                     </CardHeader>
-                    <button className="p-2 hover:bg-transparent bg-transparent rounded-full transition-colors mr-2 text-primary-foreground/80 hover:text-primary-foreground">
+                    <button className="p-2 hover:bg-transparent bg-transparent rounded-full transition-colors text-primary-foreground/80 hover:text-primary-foreground">
                         {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </button>
                 </div>
