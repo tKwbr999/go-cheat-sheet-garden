@@ -1,3 +1,4 @@
+import tailwindcssAnimate from "tailwindcss-animate";
 
 import type { Config } from "tailwindcss";
 
@@ -80,6 +81,9 @@ export default {
           ring: 'hsl(var(--sidebar-ring))'
         }
       },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)))',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -120,5 +124,5 @@ export default {
       }
     }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

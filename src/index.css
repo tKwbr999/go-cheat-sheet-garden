@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
@@ -7,26 +6,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 0 0% 100%; /* White */
+    --foreground: 222 8% 25%; /* Dark Gray */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222 8% 25%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 195 100% 40%; /* Go blue */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 5% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 222 8% 25%;
+    --primary: 195 100% 42%; /* Go Blue */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 210 40% 96.1%; /* Light Gray-Blue */
+    --secondary-foreground: 210 40% 9.8%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 170 78% 41%; /* Teal Green */
+    --accent-foreground: 0 0% 100%; /* White */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 195 100% 40%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 170 78% 41%; /* Teal Green */
     --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222 47% 11.2%; /* Dark Gray */
+    --foreground: 210 40% 98%; /* Light Gray */
+    --card: 222 47% 11.2%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 195 70% 60%; /* Lighter Go Blue */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 170 70% 50%; /* Lighter Teal Green */
+    --accent-foreground: 0 0% 100%; /* White */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 170 70% 50%; /* Lighter Teal Green */
   }
 
   * {
@@ -44,59 +65,63 @@
 
 @layer components {
   .section-title {
-    @apply text-xl font-semibold mb-4 text-gray-800;
+    @apply text-xl font-semibold mb-4 text-foreground/90; /* Adjusted for dark mode */
   }
-  
+
   .code-grid {
     @apply grid gap-8 mb-12;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
-  
+  .code-block:hover {
+    @apply shadow-lg dark:shadow-md dark:shadow-primary/10;
+  }
+
   .code-block {
-    @apply rounded-lg overflow-hidden shadow-sm border border-gray-200 transition-shadow duration-300 hover:shadow-md;
+    @apply rounded-lg overflow-hidden shadow-sm border bg-card transition-shadow duration-300 hover:shadow-md; /* Use card background */
   }
-  
+
   .code-title {
-    @apply text-sm font-medium px-4 py-2 bg-gray-50 border-b border-gray-200;
+    @apply text-sm font-medium px-4 py-2 bg-secondary border-b; /* Use secondary background */
   }
-  
+
   .code-content {
-    @apply p-4 font-mono text-sm overflow-x-auto bg-white;
+    @apply p-4 font-mono text-sm overflow-x-auto bg-card; /* Use card background */
   }
-  
+
+  /* Syntax Highlighting - Adjusted for better contrast in both modes */
   .keyword {
-    @apply text-go-code-keyword font-medium;
+    @apply text-primary font-medium;
   }
-  
+
   .string {
-    @apply text-go-code-string;
+    @apply text-accent;
   }
-  
+
   .comment {
-    @apply text-go-code-comment;
+    @apply text-muted-foreground italic;
   }
-  
+
   .function {
-    @apply text-go-code-function;
+    @apply text-pink-500 dark:text-pink-400; /* Example: Using a distinct color */
   }
-  
+
   .number {
-    @apply text-go-code-number;
+    @apply text-blue-600 dark:text-blue-400; /* Example: Using a distinct color */
   }
-  
+
   .type {
-    @apply text-go-code-type;
+    @apply text-teal-600 dark:text-teal-400; /* Example: Using a distinct color */
   }
-  
+
   .variable {
-    @apply text-go-code-variable;
+    @apply text-foreground/80;
   }
-  
+
   .stagger-fade-in > * {
     opacity: 0;
     animation: fade-up 0.5s ease-out forwards;
   }
-  
+
   .stagger-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
   .stagger-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
   .stagger-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
