@@ -132,9 +132,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                 <pre className="relative min-w-full">
                   {code.split('\n').map((line, i) => (
                     <div key={i} className="code-line group flex">
-                      <span className="select-none w-[3rem] inline-block text-right pr-4 text-zinc-600 text-sm">
-                        {i + 1}
-                      </span>
                       <span className="flex-1 pr-8">
                         {highlightCode(line)}
                       </span>
