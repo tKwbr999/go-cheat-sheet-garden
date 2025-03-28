@@ -1,6 +1,8 @@
 export interface CodeExample {
   title: string;
   code: string;
+  description?: string;
+  isCommentOnly?: boolean;
 }
 
 export interface CheatSheetSection {

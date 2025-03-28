@@ -33,22 +33,73 @@ export const cheatSheetSectionOrder = [
 ];
 
 // セクション名とデータのマッピング
-const sectionDataMap: Record<string, CheatSheetSection> = {
-  'basics': basicsData as CheatSheetSection,
-  'basic-types': basicTypesData as CheatSheetSection,
-  'flow-control': flowControlData as CheatSheetSection,
-  'functions': functionsData as CheatSheetSection,
-  'data-structures': dataStructuresData as CheatSheetSection,
-  'packages': packagesData as CheatSheetSection,
-  'concurrency': concurrencyData as CheatSheetSection,
-  'context': contextData as CheatSheetSection,
-  'error-handling': errorHandlingData as CheatSheetSection,
-  'methods': methodsData as CheatSheetSection,
-  'interfaces': interfacesData as CheatSheetSection,
-  'io-operations': ioOperationsData as CheatSheetSection,
-  'generics': genericsData as CheatSheetSection,
-  'references': referencesData as CheatSheetSection
+// コードがコメントのみか判定するヘルパー関数
+function isCommentBlock(code: string): boolean {
+  const trimmedCode = code.trim();
+  if (trimmedCode === '') {
+    return true; // 空文字列はコメントのみとみなす
+  }
+  return trimmedCode.split('\n').every(line => {
+    const trimmedLine = line.trim();
+    // コメント行または空行かチェック
+    return trimmedLine.startsWith('//') || trimmedLine === '';
+  });
+}
+
+// コメント内容を整形するヘルパー関数
+function formatCommentBlock(commentCode: string): string {
+  return commentCode
+    .split('\n')
+    .map(line => line.trim().replace(/^\/\/\s*/, '')) // Remove '// ' or '//'
+    .filter(line => line.trim() !== '') // Remove empty lines
+    .join('\n');
+}
+
+
+// 元のデータを一時的に保持
+const importedData: Record<string, { title: string; codeExamples: { title: string; code: string }[] }> = {
+  'basics': basicsData,
+  'basic-types': basicTypesData,
+  'flow-control': flowControlData,
+  'functions': functionsData,
+  'data-structures': dataStructuresData,
+  'packages': packagesData,
+  'concurrency': concurrencyData,
+  'context': contextData,
+  'error-handling': errorHandlingData,
+  'methods': methodsData,
+  'interfaces': interfacesData,
+  'io-operations': ioOperationsData,
+  'generics': genericsData,
+  'references': referencesData
 };
+
+// description プロパティを追加し、コメントのみのブロックを処理して新しいマップを作成
+const sectionDataMap: Record<string, CheatSheetSection> = {};
+for (const [sectionId, sectionData] of Object.entries(importedData)) {
+  const processedExamples: { title: string; code: string; description?: string }[] = [];
+  let previousExample: { title: string; code: string; description?: string } | null = null;
+
+  for (const currentExample of sectionData.codeExamples) {
+    if (isCommentBlock(currentExample.code)) {
+      // コメントのみのブロックの場合、前のブロックの description に設定
+      if (previousExample) {
+        previousExample.description = formatCommentBlock(currentExample.code);
+      }
+      // コメントのみのブロック自体は processedExamples に追加しない
+    } else {
+      // 通常のコードブロックの場合
+      const newExample = { ...currentExample, description: undefined }; // description を初期化
+      processedExamples.push(newExample);
+      previousExample = newExample; // 次の反復のために保持
+    }
+  }
+
+  sectionDataMap[sectionId] = {
+    ...sectionData,
+    codeExamples: processedExamples,
+  };
+}
 
 // チートシートの全データを順序通りに取得
 export function getCheatSheetData(): CheatSheetSection[] {
