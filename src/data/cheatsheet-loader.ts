@@ -34,7 +34,7 @@ export const cheatSheetSectionOrder = [
 
 // セクション名とデータのマッピング
 // コードがコメントのみか判定するヘルパー関数
-function isCodeCommentOnly(code: string): boolean {
+function isCommentBlock(code: string): boolean {
   const trimmedCode = code.trim();
   if (trimmedCode === '') {
     return true; // 空文字列はコメントのみとみなす
@@ -47,7 +47,7 @@ function isCodeCommentOnly(code: string): boolean {
 }
 
 // コメント内容を整形するヘルパー関数
-function formatCommentContent(commentCode: string): string {
+function formatCommentBlock(commentCode: string): string {
   return commentCode
     .split('\n')
     .map(line => line.trim().replace(/^\/\/\s*/, '')) // Remove '// ' or '//'
@@ -81,10 +81,10 @@ for (const [sectionId, sectionData] of Object.entries(importedData)) {
   let previousExample: { title: string; code: string; description?: string } | null = null;
 
   for (const currentExample of sectionData.codeExamples) {
-    if (isCodeCommentOnly(currentExample.code)) {
+    if (isCommentBlock(currentExample.code)) {
       // コメントのみのブロックの場合、前のブロックの description に設定
       if (previousExample) {
-        previousExample.description = formatCommentContent(currentExample.code);
+        previousExample.description = formatCommentBlock(currentExample.code);
       }
       // コメントのみのブロック自体は processedExamples に追加しない
     } else {
