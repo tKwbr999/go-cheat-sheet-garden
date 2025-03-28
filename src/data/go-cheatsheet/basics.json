@@ -7,19 +7,19 @@
     },
     {
       "title": "Variables",
-      "code": "// Variable declaration\nvar name string = \"Go\"\n\n// Short variable declaration\nage := 10\n\n// Multiple variables\nvar (\n  a, b int\n  c    string\n)\n\n// Variable initialization\nvar (\n  home = os.Getenv(\"HOME\")\n  user = os.Getenv(\"USER\")\n)\n\n// Unused variables will cause errors\n// Use _ (blank identifier) to ignore values\n_, err := fmt.Println(\"Hello\")"
+      "code": "// 変数宣言\nvar name string = \"Go\"\n\n// 短い変数宣言\nage := 10\n\n// 複数の変数\nvar (\n  a, b int\n  c    string\n)\n\n// 変数の初期化\nvar (\n  home = os.Getenv(\"HOME\")\n  user = os.Getenv(\"USER\")\n)\n\n// 未使用の変数はエラーを引き起こす\n// 値を無視するには _ (ブランク識別子) を使用する\n_, err := fmt.Println(\"Hello\")"
     },
     {
       "title": "Constants",
-      "code": "// Constant declaration\nconst Pi = 3.14\n\n// Multiple constants\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota - enumeration generator\nconst (\n  Monday = iota + 1 // 1\n  Tuesday           // 2\n  Wednesday         // 3\n)\n\n// iota resets in new const block\nconst (\n  Readable = 1 << iota  // 1 (1 << 0)\n  Writable              // 2 (1 << 1)\n  Executable            // 4 (1 << 2)\n  \n  // Permissions combinations\n  ReadWrite = Readable | Writable  // 3\n)"
+      "code": "// 定数宣言\nconst Pi = 3.14\n\n// 複数の定数\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota - 列挙型ジェネレータ\nconst (\n  Monday = iota + 1 // 1\n  Tuesday           // 2\n  Wednesday         // 3\n)\n\n// iota は新しい const ブロックでリセットされる\nconst (\n  Readable = 1 << iota  // 1 (1 << 0)\n  Writable              // 2 (1 << 1)\n  Executable            // 4 (1 << 2)\n  \n  // パーミッションの組み合わせ\n  ReadWrite = Readable | Writable  // 3\n)"
     },
     {
       "title": "Naming Conventions",
-      "code": "// Packages are lowercase, single word names\npackage http\n\n// CamelCase for exported identifiers (visible outside package)\ntype Customer struct{}\nfunc WriteFile() {}\nvar MaxLength int\n\n// camelCase for unexported identifiers (private to package)\ntype httpClient struct{}\nfunc writeLog() {}\nvar maxRetries int\n\n// Acronyms are all uppercase in identifiers\n// e.g., HTTP, URL, ID\nvar userID string\nfunc parseHTTPResponse() {}\n\n// One-method interfaces end in -er\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}"
+      "code": "// パッケージ名は小文字の単一単語\npackage http\n\n// エクスポートされる識別子には CamelCase (パッケージ外から見える)\ntype Customer struct{}\nfunc WriteFile() {}\nvar MaxLength int\n\n// エクスポートされない識別子には camelCase (パッケージ内プライベート)\ntype httpClient struct{}\nfunc writeLog() {}\nvar maxRetries int\n\n// 頭字語は識別子内ですべて大文字\n// e.g., HTTP, URL, ID\nvar userID string\nfunc parseHTTPResponse() {}\n\n// 単一メソッドのインターフェースは -er で終わる\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}"
     },
     {
       "title": "Code Organization",
-      "code": "// Go code is organized into packages\n// Each directory is a package\n// Main package is the entry point of an executable\npackage main\n\n// Imports are grouped and can be factored\nimport (\n  \"fmt\"\n  \"io\"\n  \n  \"golang.org/x/net/html\"  // Third-party package\n  \"myproject/mypackage\"   // Local package\n)\n\n// A typical Go file structure:\n// 1. Package declaration\n// 2. Imports\n// 3. Constants\n// 4. Variables\n// 5. Types\n// 6. Functions"
+      "code": "// Go のコードはパッケージに整理される\n// 各ディレクトリはパッケージ\n// main パッケージは実行可能ファイルの入口\npackage main\n\n// インポートはグループ化され、ファクタリングできる\nimport (\n  \"fmt\"\n  \"io\"\n  \n  \"golang.org/x/net/html\"  // サードパーティパッケージ\n  \"myproject/mypackage\"   // ローカルパッケージ\n)\n\n// 一般的な Go ファイルの構造:\n// 1. パッケージ宣言\n// 2. インポート\n// 3. 定数\n// 4. 変数\n// 5. 型\n// 6. 関数"
     }
   ]
 }
