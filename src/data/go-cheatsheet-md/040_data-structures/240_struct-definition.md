@@ -1,18 +1,97 @@
 ---
-title: "Struct Definition" # タイトル内のダブルクォートをエスケープ
-tags: ["data-structures"]
+title: "データ構造: 構造体 (Struct) の定義"
+tags: ["data-structures", "構造体", "struct", "type", "フィールド", "値型"]
 ---
 
-```go
-// 構造体型を定義
-type Person struct {
-	Name    string
-	Age     int
-	Address *Address
-}
+配列、スライス、マップは同じ型の要素を集めたものでしたが、実世界のデータはしばしば異なる型の情報の集まりとして表現されます（例: 人の情報 = 名前(文字列) + 年齢(整数) + 住所(別の情報)）。
 
-type Address struct {
-	Street string
-	City   string
+Go言語では、このような**異なる型のデータをひとまとめにして新しい型を定義**するために**構造体 (Struct)** を使います。構造体は、関連するデータをグループ化し、プログラムをより構造化するのに役立ちます。
+
+## 構造体 (Struct) とは？
+
+*   **フィールド (Field)** と呼ばれる名前付きの要素の集まりです。
+*   各フィールドは異なる型を持つことができます。
+*   `type` キーワードを使って、新しい構造体型を定義します。
+
+## 構造体の定義
+
+**構文:**
+```go
+type 構造体名 struct {
+	フィールド名1 型1
+	フィールド名2 型2
+	// ...
 }
 ```
+
+*   `type`: 新しい型を定義することを示すキーワード。
+*   `構造体名`: 新しく定義する構造体型の名前。Goの命名規則に従います（通常はアッパーキャメルケース）。他のパッケージから使えるようにするには大文字で始めます。
+*   `struct`: これが構造体型であることを示すキーワード。
+*   `{ ... }`: 中括弧の中に、構造体が持つフィールドを一行ずつ `フィールド名 型` の形式で記述します。
+*   **フィールド名:** 構造体内の各要素の名前。命名規則は通常の変数などと同じで、大文字で始まれば他のパッケージからアクセス可能（エクスポートされる）、小文字で始まればパッケージ内でのみアクセス可能です。
+*   **型:** 各フィールドが持つデータの型。基本型、配列、スライス、マップ、ポインタ、他の構造体など、任意の型を指定できます。
+
+```go title="構造体の定義例"
+package main
+
+import "fmt"
+
+// --- 構造体の定義 ---
+
+// Address 構造体: 住所情報を保持
+type Address struct {
+	Street string // 番地 (エクスポートされる)
+	City   string // 市区町村 (エクスポートされる)
+	zip    string // 郵便番号 (小文字なのでエクスポートされない)
+}
+
+// Person 構造体: 個人情報を保持
+type Person struct {
+	Name    string   // 名前 (エクスポートされる)
+	Age     int      // 年齢 (エクスポートされる)
+	Email   string   // メールアドレス (エクスポートされる)
+	address *Address // 住所情報 (Address 構造体へのポインタ、エクスポートされない)
+	hobbies []string // 趣味 (文字列スライス、エクスポートされない)
+}
+
+func main() {
+	// --- 構造体型の変数を宣言 ---
+	// (構造体の値の作成やフィールドへのアクセスは次のセクションで説明)
+
+	// Person 型の変数を宣言 (ゼロ値で初期化)
+	var p1 Person
+	fmt.Printf("p1 (ゼロ値): %+v\n", p1)
+	// 出力: p1 (ゼロ値): {Name: Age:0 Email: address:<nil> hobbies:[]}
+	// 各フィールドがそれぞれのゼロ値 (string="", int=0, pointer=nil, slice=nil) になっている
+
+	// Address 型の変数を宣言
+	var addr Address
+	fmt.Printf("addr (ゼロ値): %+v\n", addr)
+	// 出力: addr (ゼロ値): {Street: City: zip:}
+
+	// 構造体も値型
+	// 代入や関数への引数渡しではコピーが作成される (ポインタを使わない場合)
+	p2 := p1 // p1 の内容が p2 にコピーされる
+	p2.Name = "Temporary"
+	fmt.Printf("p1.Name: %s\n", p1.Name) // p1.Name は "" のまま
+	fmt.Printf("p2.Name: %s\n", p2.Name) // p2.Name は "Temporary"
+}
+
+/* 実行結果:
+p1 (ゼロ値): {Name: Age:0 Email: address:<nil> hobbies:[]}
+addr (ゼロ値): {Street: City: zip:}
+p1.Name:
+p2.Name: Temporary
+*/
+```
+
+**コード解説:**
+
+*   `type Address struct { ... }`: `Street`, `City`, `zip` という3つのフィールドを持つ `Address` という名前の新しい構造体型を定義しています。`Street` と `City` は大文字始まりなのでエクスポートされますが、`zip` は小文字始まりなのでエクスポートされません。
+*   `type Person struct { ... }`: `Name`, `Age`, `Email`, `address`, `hobbies` というフィールドを持つ `Person` 型を定義しています。
+    *   `address *Address`: `address` フィールドの型は `*Address`、つまり `Address` 構造体への**ポインタ**です。これにより、`Person` は `Address` のデータそのものではなく、`Address` データが格納されている場所への参照を持つことになります。ポインタのゼロ値は `nil` です。
+    *   `hobbies []string`: `hobbies` フィールドの型は `[]string`、つまり文字列のスライスです。スライスのゼロ値も `nil` です。
+*   `var p1 Person`: `Person` 型の変数 `p1` を宣言しています。初期値を指定していないため、`p1` の各フィールドはそれぞれのゼロ値で初期化されます。
+*   **構造体は値型:** `p2 := p1` で `p1` を `p2` に代入すると、`p1` のすべてのフィールドの値が `p2` に**コピー**されます。そのため、`p2.Name` を変更しても `p1.Name` には影響しません。（ただし、`address` のようなポインタフィールドの場合、コピーされるのはポインタ（アドレス）なので、`p2.address` を通じて参照先の `Address` を変更すると、`p1.address` から見ても変更が見えます。）
+
+構造体を使うことで、関連するデータを一つのまとまりとして扱うことができ、コードの構成をより分かりやすくすることができます。次のセクションでは、構造体の値を作成し、そのフィールドにアクセスする方法を見ていきます。
