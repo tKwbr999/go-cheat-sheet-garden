@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import CheatSheetSection from "@/components/CheatSheetSection";
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
-import { getCheatSheetData } from "@/data/cheatsheet-loader";
+import { getCheatSheetData } from "@/data/markdown-cheatsheet-loader";
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
