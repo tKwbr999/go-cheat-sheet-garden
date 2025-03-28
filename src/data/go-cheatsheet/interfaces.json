@@ -2,28 +2,92 @@
   "title": "Interfaces",
   "codeExamples": [
     {
-      "title": "Defining Interfaces",
-      "code": "// インターフェース定義 - メソッドシグネチャのセット\ntype Shape interface {\n  Area() float64\n  Perimeter() float64\n}\n\n// インターフェースを実装する型\ntype Rectangle struct {\n  Width, Height float64\n}\n\nfunc (r Rectangle) Area() float64 {\n  return r.Width * r.Height\n}\n\nfunc (r Rectangle) Perimeter() float64 {\n  return 2 * (r.Width + r.Height)\n}\n\ntype Circle struct {\n  Radius float64\n}\n\nfunc (c Circle) Area() float64 {\n  return math.Pi * c.Radius * c.Radius\n}\n\nfunc (c Circle) Perimeter() float64 {\n  return 2 * math.Pi * c.Radius\n}\n\n// インターフェースの使用\nfunc printShapeInfo(s Shape) {\n  fmt.Printf(\"Area: %f, Perimeter: %f\\n\", \n    s.Area(), s.Perimeter())\n}\n\nrect := Rectangle{5, 10}\n// 暗黙的に Shape を満たす\nprintShapeInfo(rect)\n\ncirc := Circle{5}\n// これも Shape を満たす\nprintShapeInfo(circ)"
+      "title": "Interface Definition",
+      "code": "// インターフェース定義 - メソッドシグネチャのセット\ntype Shape interface {\n  Area() float64\n  Perimeter() float64\n}"
     },
     {
-      "title": "Interface Values",
-      "code": "// インターフェース値は 2 ワード構造:\n// 1. 型情報へのポインタ (型記述子)\n// 2. 実際のデータへのポインタ (値)\n\n// nil インターフェース\n// ゼロ値は nil\nvar s Shape\n// true\nfmt.Println(s == nil)\n\n// 具体的な値を持つインターフェース\n// s は型情報と値を含む\ns = Rectangle{5, 10}\n// \"main.Rectangle\"\nfmt.Printf(\"%T\\n\", s)\n\n// nil 値を持つインターフェース (ただし型は定義されている)\nvar p *Rectangle = nil\n// s は型情報を持つが値は nil\ns = p\n// false - インターフェース値は nil ではない\nfmt.Println(s == nil)\n// \"*main.Rectangle\"\nfmt.Printf(\"%T\\n\", s)\n\n// 型アサーション\n// Rectangle であれば具体的な値を抽出\nrect, ok := s.(Rectangle)\nif ok {\n  fmt.Println(\"It's a rectangle:\", rect)\n}\n\n// 型スイッチ\nswitch v := s.(type) {\ncase Rectangle:\n  fmt.Println(\"Rectangle with area:\", v.Area())\ncase Circle:\n  fmt.Println(\"Circle with radius:\", v.Radius)\ncase nil:\n  fmt.Println(\"nil shape\")\ndefault:\n  fmt.Println(\"Unknown shape\")\n}"
+      "title": "Implementing Interfaces",
+      "code": "// インターフェースを実装する型\ntype Rectangle struct {\n  Width, Height float64\n}\n\nfunc (r Rectangle) Area() float64 {\n  return r.Width * r.Height\n}\n\nfunc (r Rectangle) Perimeter() float64 {\n  return 2 * (r.Width + r.Height)\n}\n\ntype Circle struct {\n  Radius float64\n}\n\nfunc (c Circle) Area() float64 {\n  return math.Pi * c.Radius * c.Radius\n}\n\nfunc (c Circle) Perimeter() float64 {\n  return 2 * math.Pi * c.Radius\n}"
     },
     {
-      "title": "Empty Interface",
-      "code": "// 空インターフェース (interface{} または Go 1.18+ の any) は任意の値を保持できる\n// または: var i any (Go 1.18+)\nvar i interface{}\n\n// int\ni = 42\n// string\ni = \"hello\"\n// struct\ni = struct{}{}\n// map\ni = map[string]int{\"key\": 1}\n\n// 型アサーション\nstr, ok := i.(string)\nif ok {\n// \"hello\"\n  fmt.Println(str)\n}\n\n// チェックなしの型アサーション (間違った型だと panic する)\n// i が int でなければ panic する\nn := i.(int)\n\n// 安全な型チェックのための型スイッチ\nswitch v := i.(type) {\ncase int:\n  fmt.Println(\"int:\", v)\ncase string:\n  fmt.Println(\"string:\", v)\ncase map[string]int:\n  fmt.Println(\"map:\", v[\"key\"])\ndefault:\n  fmt.Println(\"unknown type\")\n}\n\n// 空インターフェースの一般的な使用法\n// 1. fmt.Println は ...interface{} を取る\nfmt.Println(\"value:\", 42, true)\n\n// 2. 混合型を保持するコンテナ\nmixed := []interface{}{42, \"hello\", true}\n\n// 3. 動的構造を持つ JSON のアンマーシャリング\nvar data interface{}\njson.Unmarshal(jsonBytes, &data)"
+      "title": "Using Interfaces",
+      "code": "// インターフェースの使用\nfunc printShapeInfo(s Shape) {\n  fmt.Printf(\"Area: %f, Perimeter: %f\\n\", \n    s.Area(), s.Perimeter())\n}\n\nrect := Rectangle{5, 10}\n// 暗黙的に Shape を満たす\nprintShapeInfo(rect)\n\ncirc := Circle{5}\n// これも Shape を満たす\nprintShapeInfo(circ)"
+    },
+    {
+      "title": "Interface Value Structure",
+      "code": "// インターフェース値は 2 ワード構造:\n// 1. 型情報へのポインタ (型記述子)\n// 2. 実際のデータへのポインタ (値)"
+    },
+    {
+      "title": "Nil Interface vs Interface with Nil Value",
+      "code": "// nil インターフェース\n// ゼロ値は nil\nvar s Shape\n// true\nfmt.Println(s == nil)\n\n// 具体的な値を持つインターフェース\n// s は型情報と値を含む\ns = Rectangle{5, 10}\n// \"main.Rectangle\"\nfmt.Printf(\"%T\\n\", s)\n\n// nil 値を持つインターフェース (ただし型は定義されている)\nvar p *Rectangle = nil\n// s は型情報を持つが値は nil\ns = p\n// false - インターフェース値は nil ではない\nfmt.Println(s == nil)\n// \"*main.Rectangle\"\nfmt.Printf(\"%T\\n\", s)"
+    },
+    {
+      "title": "Type Assertion",
+      "code": "// 型アサーション\n// Rectangle であれば具体的な値を抽出\nrect, ok := s.(Rectangle)\nif ok {\n  fmt.Println(\"It's a rectangle:\", rect)\n}"
+    },
+    {
+      "title": "Type Switch",
+      "code": "// 型スイッチ\nswitch v := s.(type) {\ncase Rectangle:\n  fmt.Println(\"Rectangle with area:\", v.Area())\ncase Circle:\n  fmt.Println(\"Circle with radius:\", v.Radius)\ncase nil:\n  fmt.Println(\"nil shape\")\ndefault:\n  fmt.Println(\"Unknown shape\")\n}"
+    },
+    {
+      "title": "Empty Interface (interface{} / any)",
+      "code": "// 空インターフェース (interface{} または Go 1.18+ の any) は任意の値を保持できる\n// または: var i any (Go 1.18+)\nvar i interface{}\n\n// int\ni = 42\n// string\ni = \"hello\"\n// struct\ni = struct{}{}\n// map\ni = map[string]int{\"key\": 1}"
+    },
+    {
+      "title": "Empty Interface Type Assertion",
+      "code": "// 型アサーション\nstr, ok := i.(string)\nif ok {\n// \"hello\"\n  fmt.Println(str)\n}\n\n// チェックなしの型アサーション (間違った型だと panic する)\n// i が int でなければ panic する\nn := i.(int)"
+    },
+    {
+      "title": "Empty Interface Type Switch",
+      "code": "// 安全な型チェックのための型スイッチ\nswitch v := i.(type) {\ncase int:\n  fmt.Println(\"int:\", v)\ncase string:\n  fmt.Println(\"string:\", v)\ncase map[string]int:\n  fmt.Println(\"map:\", v[\"key\"])\ndefault:\n  fmt.Println(\"unknown type\")\n}"
+    },
+    {
+      "title": "Empty Interface Common Uses",
+      "code": "// 空インターフェースの一般的な使用法\n// 1. fmt.Println は ...interface{} を取る\nfmt.Println(\"value:\", 42, true)\n\n// 2. 混合型を保持するコンテナ\nmixed := []interface{}{42, \"hello\", true}\n\n// 3. 動的構造を持つ JSON のアンマーシャリング\nvar data interface{}\njson.Unmarshal(jsonBytes, &data)"
     },
     {
       "title": "Interface Composition",
       "code": "// インターフェースは他のインターフェースから構成できる\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}\n\ntype Writer interface {\n  Write(p []byte) (n int, err error)\n}\n\n// ReadWriter は Reader と Writer を組み合わせる\ntype ReadWriter interface {\n  Reader\n  Writer\n}\n\n// 型が Reader と Writer の両方を実装していれば、ReadWriter を実装する\ntype Buffer struct {\n  // ...\n}\n\nfunc (b *Buffer) Read(p []byte) (n int, err error) {\n  // 実装\n  return len(p), nil\n}\n\nfunc (b *Buffer) Write(p []byte) (n int, err error) {\n  // 実装\n  return len(p), nil\n}\n\n// これで Buffer は ReadWriter として使用できる\nvar rw ReadWriter = &Buffer{}\n\n// 標準ライブラリの例\n// io.ReadCloser, io.WriteCloser, io.ReadWriteCloser"
     },
     {
-      "title": "Interface Best Practices",
-      "code": "// 1. インターフェースを小さく保つ (単一責任)\n// 良い例:\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}\n\ntype Writer interface {\n  Write(p []byte) (n int, err error)\n}\n\n// 2. インターフェースを受け入れ、具体的な型を返す\n// 良い例:\nfunc processData(r Reader) *Result {\n  // 任意の Reader からデータを処理\n  return &Result{...}\n}\n\n// 3. インターフェースを実装側ではなく、使用する側で定義する\n// 良い例 (クライアントコード内):\ntype UserStore interface {\n  GetUser(id string) (*User, error)\n  SaveUser(user *User) error\n}\n\n// 4. インターフェースの命名規則を使用する\n// 単一メソッドのインターフェースはしばしば -er で終わる\n// 良い例\ntype Reader interface { Read(...) }\n// 良い例\ntype Writer interface { Write(...) }\n\n// 5. 空インターフェースの使いすぎを避ける\n// 悪い例:\nfunc Process(data interface{}) interface{} {...}\n\n// より良い例:\nfunc Process(data UserData) Result {...}\n\n// 6. nil インターフェース値を正しく返す\n// 不正解 (nil でないインターフェースを返す):\nfunc getData() io.Reader {\n  var p *bytes.Buffer = nil\n// nil 値を持つ nil でないインターフェースを返す\n  return p\n}\n\n// 正解:\nfunc getData() io.Reader {\n// nil インターフェースを返す\n  return nil"
+      "title": "Best Practice: Keep Interfaces Small",
+      "code": "// 1. インターフェースを小さく保つ (単一責任)\n// 良い例:\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}\n\ntype Writer interface {\n  Write(p []byte) (n int, err error)\n}"
     },
     {
-      "title": "Generics and Interfaces (Go 1.18+)",
-      "code": "// 型パラメータ (ジェネリクス) とインターフェース\n\n// 制約インターフェース (許可される型を定義)\ntype Number interface {\n  int | int32 | int64 | float32 | float64\n}\n\n// 制約付きのジェネリック関数\nfunc Sum[T Number](values []T) T {\n  var sum T\n  for _, v := range values {\n    sum += v\n  }\n  return sum\n}\n\n// 使用法\nints := []int{1, 2, 3, 4}\n// 型推論: sum は int\nsum := Sum(ints)\n\nfloats := []float64{1.1, 2.2, 3.3}\n// 型推論: floatSum は float64\nfloatSum := Sum(floats)\n\n// メソッド制約を持つ型パラメータ\ntype Stringer interface {\n  String() string\n}\n\nfunc Join[T Stringer](values []T, sep string) string {\n  result := \"\"\n  for i, v := range values {\n    if i > 0 {\n      result += sep\n    }\n    result += v.String()\n  }\n  return result\n}\n\n// ジェネリックデータ構造\ntype List[T any] struct {\n  data []T\n}\n\nfunc (l *List[T]) Add(item T) {\n  l.data = append(l.data, item)\n}\n\nfunc (l *List[T]) Get(index int) T {\n  return l.data[index]\n}"
+      "title": "Best Practice: Accept Interfaces, Return Structs",
+      "code": "// 2. インターフェースを受け入れ、具体的な型を返す\n// 良い例:\nfunc processData(r Reader) *Result {\n  // 任意の Reader からデータを処理\n  return &Result{...}\n}"
+    },
+    {
+      "title": "Best Practice: Define Interfaces Where Used",
+      "code": "// 3. インターフェースを実装側ではなく、使用する側で定義する\n// 良い例 (クライアントコード内):\ntype UserStore interface {\n  GetUser(id string) (*User, error)\n  SaveUser(user *User) error\n}"
+    },
+    {
+      "title": "Best Practice: Naming Conventions (-er)",
+      "code": "// 4. インターフェースの命名規則を使用する\n// 単一メソッドのインターフェースはしばしば -er で終わる\n// 良い例\ntype Reader interface { Read(...) }\n// 良い例\ntype Writer interface { Write(...) }"
+    },
+    {
+      "title": "Best Practice: Avoid Overusing Empty Interface",
+      "code": "// 5. 空インターフェースの使いすぎを避ける\n// 悪い例:\nfunc Process(data interface{}) interface{} {...}\n\n// より良い例:\nfunc Process(data UserData) Result {...}"
+    },
+    {
+      "title": "Best Practice: Returning Nil Interfaces Correctly",
+      "code": "// 6. nil インターフェース値を正しく返す\n// 不正解 (nil でないインターフェースを返す):\nfunc getData() io.Reader {\n  var p *bytes.Buffer = nil\n// nil 値を持つ nil でないインターフェースを返す\n  return p\n}\n\n// 正解:\nfunc getData() io.Reader {\n// nil インターフェースを返す\n  return nil\n}"
+    },
+    {
+      "title": "Generics: Constraint Interfaces",
+      "code": "// 型パラメータ (ジェネリクス) とインターフェース\n\n// 制約インターフェース (許可される型を定義)\ntype Number interface {\n  int | int32 | int64 | float32 | float64\n}"
+    },
+    {
+      "title": "Generics: Generic Functions with Constraints",
+      "code": "// 制約付きのジェネリック関数\nfunc Sum[T Number](values []T) T {\n  var sum T\n  for _, v := range values {\n    sum += v\n  }\n  return sum\n}\n\n// 使用法\nints := []int{1, 2, 3, 4}\n// 型推論: sum は int\nsum := Sum(ints)\n\nfloats := []float64{1.1, 2.2, 3.3}\n// 型推論: floatSum は float64\nfloatSum := Sum(floats)"
+    },
+    {
+      "title": "Generics: Method Constraints",
+      "code": "// メソッド制約を持つ型パラメータ\ntype Stringer interface {\n  String() string\n}\n\nfunc Join[T Stringer](values []T, sep string) string {\n  result := \"\"\n  for i, v := range values {\n    if i > 0 {\n      result += sep\n    }\n    result += v.String()\n  }\n  return result\n}"
+    },
+    {
+      "title": "Generics: Generic Data Structures",
+      "code": "// ジェネリックデータ構造\ntype List[T any] struct {\n  data []T\n}\n\nfunc (l *List[T]) Add(item T) {\n  l.data = append(l.data, item)\n}\n\nfunc (l *List[T]) Get(index int) T {\n  return l.data[index]\n}"
     }
   ]
 }

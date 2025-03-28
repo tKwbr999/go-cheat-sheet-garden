@@ -2,28 +2,96 @@
   "title": "Concurrency",
   "codeExamples": [
     {
-      "title": "Goroutines",
-      "code": "// Goroutine は Go ランタイムによって管理される軽量スレッド\n\n// Goroutine を開始\ngo func() {\n  // コードは並行して実行される\n  fmt.Println(\"Running in goroutine\")\n}()\n\n// 関数を Goroutine で実行\ngo myFunction(arg1, arg2)\n\n// Main は実行を継続\nfmt.Println(\"Main function continues\")\n\n// Goroutine の終了を待つ (最も簡単な方法)\n// 本番環境では信頼できない\ntime.Sleep(time.Second)\n\n// ベストプラクティス: 同期プリミティブを使用する\nvar wg sync.WaitGroup\n\n// 1つの Goroutine のカウンターを追加\nwg.Add(1)\ngo func() {\n// Goroutine 終了時にカウンターをデクリメント\n  defer wg.Done()\n  // 処理を実行...\n}()\n\n// カウンターがゼロになるまで待機\nwg.Wait()\n\n// 複数の Goroutine を作成\nfor i := 0; i < 5; i++ {\n// クロージャの問題を避けるために新しい変数を作成\n  i := i\n  wg.Add(1)\n  go func() {\n    defer wg.Done()\n    fmt.Println(\"Goroutine\", i)\n  }()\n}\nwg.Wait()"
+      "title": "Starting Goroutines",
+      "code": "// Goroutine は Go ランタイムによって管理される軽量スレッド\n\n// Goroutine を開始\ngo func() {\n  // コードは並行して実行される\n  fmt.Println(\"Running in goroutine\")\n}()\n\n// 関数を Goroutine で実行\ngo myFunction(arg1, arg2)\n\n// Main は実行を継続\nfmt.Println(\"Main function continues\")\n\n// Goroutine の終了を待つ (最も簡単な方法)\n// 本番環境では信頼できない\ntime.Sleep(time.Second)"
     },
     {
-      "title": "Channels",
-      "code": "// チャネルは Goroutine 間の通信のための型付きパイプ\n\n// チャネルを作成\n// バッファなし\nch := make(chan int)\n// バッファあり (capacity 10)\nbuffCh := make(chan int, 10)\n\n// チャネルに送信 (矢印はチャネルを指す)\n// バッファなしチャネル、またはバッファありチャネルが満杯の場合にブロックする\nch <- 42\n\n// チャネルから受信 (矢印はチャネルから出る)\n// チャネルが空の場合にブロックする\nvalue := <-ch\n\n// チャネルを閉じる (送信側が閉じるべき)\nclose(ch)\n\n// チャネルが閉じているか確認\n// チャネルが閉じていて空の場合、ok は false\nvalue, ok := <-ch\n\n// チャネルを range で処理 (チャネルが閉じられると終了)\nfor value := range ch {\n  // 値を処理\n}\n\n// 方向性チャネル (型制限)\n// チャネルへの送信のみ可能\nfunc producer(ch chan<- int) {\n  ch <- 42\n}\n\n// チャネルからの受信のみ可能\nfunc consumer(ch <-chan int) {\n  value := <-ch\n}\n\n// チャネルパターン\n// ワーカープール\nfunc worker(id int, jobs <-chan int, results chan<- int) {\n  for j := range jobs {\n// 処理を実行\n    results <- j * 2\n  }\n}\n\njobs := make(chan int, 100)\nresults := make(chan int, 100)\n\n// 3つのワーカーを開始\nfor w := 1; w <= 3; w++ {\n  go worker(w, jobs, results)\n}\n\n// ジョブを送信し、結果を収集\nfor j := 1; j <= 9; j++ {\n  jobs <- j\n}\nclose(jobs)"
+      "title": "Waiting with sync.WaitGroup",
+      "code": "// ベストプラクティス: 同期プリミティブを使用する\nvar wg sync.WaitGroup\n\n// 1つの Goroutine のカウンターを追加\nwg.Add(1)\ngo func() {\n// Goroutine 終了時にカウンターをデクリメント\n  defer wg.Done()\n  // 処理を実行...\n}()\n\n// カウンターがゼロになるまで待機\nwg.Wait()"
     },
     {
-      "title": "Select",
-      "code": "// Select 文は複数のチャネル操作を待機できる\n\nselect {\ncase value := <-ch1:\n  // ch1 からの値を取り扱う\ncase ch2 <- value:\n  // ch2 に値を送信した\ncase <-time.After(1 * time.Second):\n  // 1秒後にタイムアウト\ncase <-done:\n  // done チャネルが閉じられた、終了\n  return\ndefault:\n  // 準備ができているチャネルがない場合に実行 (ノンブロッキング)\n}\n\n// 一般的なパターン\n\n// ノンブロッキングチャネル操作\nselect {\ncase x := <-ch:\n  // x を使用\ndefault:\n  // チャネル準備未完了\n}\n\n// タイムアウト\nselect {\ncase res := <-ch:\n  // res を使用\ncase <-time.After(time.Second):\n  // 1秒後にタイムアウトした\n}\n\n// 終了チャネル\nfunc worker(ch <-chan int, quit <-chan bool) {\n  for {\n    select {\n    case value := <-ch:\n      // 値を処理\n    case <-quit:\n      fmt.Println(\"Quitting\")\n      return\n    }\n  }\n}\n\n// 多方向 select ループ\nfor {\n  select {\n  case <-ch1:\n    // イベント1を処理\n  case <-ch2:\n    // イベント2を処理\n  case <-done:\n    return\n  }\n}"
+      "title": "Multiple Goroutines with WaitGroup",
+      "code": "// 複数の Goroutine を作成\nvar wg sync.WaitGroup\nfor i := 0; i < 5; i++ {\n// クロージャの問題を避けるために新しい変数を作成\n  i := i\n  wg.Add(1)\n  go func() {\n    defer wg.Done()\n    fmt.Println(\"Goroutine\", i)\n  }()\n}\nwg.Wait()"
     },
     {
-      "title": "Mutex and Sync",
-      "code": "// 共有データへの安全な並行アクセスのための相互排他\nimport \"sync\"\n\n// 基本的な mutex の使用法\nvar (\n  mu    sync.Mutex\n  count int\n)\n\nfunc increment() {\n// 共有データアクセス前にロック\n  mu.Lock()\n// アンロックが確実に行われるようにする\n  defer mu.Unlock()\n  count++\n}\n\n// 読み書き mutex (複数のリーダーまたは1つのライター)\nvar rwmu sync.RWMutex\n\nfunc readData() {\n// 複数の Goroutine が読み取りロックを保持できる\n  rwmu.RLock()\n  defer rwmu.RUnlock()\n  // 共有データを読み取る...\n}\n\nfunc writeData() {\n// 書き込みのための排他ロック\n  rwmu.Lock()\n  defer rwmu.Unlock()\n  // 共有データを変更する...\n}\n\n// Once - 厳密に一度だけ実行\nvar once sync.Once\n\nfunc initialize() {\n  once.Do(func() {\n    // 初期化コード、厳密に一度だけ実行される\n  })\n}\n\n// WaitGroup - Goroutine のコレクションを待機\nvar wg sync.WaitGroup\n\n// カウンターを3に設定\nwg.Add(3)\ngo func() {\n// カウンターをデクリメント\n  defer wg.Done()\n  // 処理 1\n}()\n// ... さらに Goroutine を起動\n// カウンターがゼロになるまでブロック\nwg.Wait()\n\n// Cond - イベント待機のための条件変数\ncond := sync.NewCond(&sync.Mutex{})\n\n// ブロードキャスト\ncond.L.Lock()\n// 状態を変更\n// すべての待機者を起こす\ncond.Broadcast()\ncond.L.Unlock()\n\n// 待機中\ncond.L.Lock()\nfor !condition() {\n// アンロックし、待機し、再度ロックする\n  cond.Wait()\n}\n// 条件を使用\ncond.L.Unlock()"
+      "title": "Channel Basics (Create, Send, Receive, Close)",
+      "code": "// チャネルは Goroutine 間の通信のための型付きパイプ\n\n// チャネルを作成\n// バッファなし\nch := make(chan int)\n// バッファあり (capacity 10)\nbuffCh := make(chan int, 10)\n\n// チャネルに送信 (矢印はチャネルを指す)\n// バッファなしチャネル、またはバッファありチャネルが満杯の場合にブロックする\nch <- 42\n\n// チャネルから受信 (矢印はチャネルから出る)\n// チャネルが空の場合にブロックする\nvalue := <-ch\n\n// チャネルを閉じる (送信側が閉じるべき)\nclose(ch)\n\n// チャネルが閉じているか確認\n// チャネルが閉じていて空の場合、ok は false\nvalue, ok := <-ch"
     },
     {
-      "title": "Atomic Operations",
-      "code": "// 低レベル同期のためのアトミック操作\nimport \"sync/atomic\"\n\n// Go 1.19+\nvar counter atomic.Int64\n\n// 値を追加して取得\ncounter.Add(10)\nvalue := counter.Load()\n\n// 比較して交換\n// 値が 10 なら 20 に設定\nswapped := counter.CompareAndSwap(10, 20)\n\n// 値を格納\ncounter.Store(100)\n\n// In Go <1.19\nvar counter int64\n\n// 追加して取得\natomic.AddInt64(&counter, 10)\nvalue := atomic.LoadInt64(&counter)\n\n// 比較して交換\nswapped := atomic.CompareAndSwapInt64(&counter, 10, 20)\n\n// 値を格納\natomic.StoreInt64(&counter, 100)\n\n// アトミックポインタ操作\n// Go 1.19+\nvar ptr atomic.Pointer[T]\nptr.Store(&myStruct)\nvalue := ptr.Load()\nswapped := ptr.CompareAndSwap(oldPtr, newPtr)"
+      "title": "Ranging Over Channels",
+      "code": "// チャネルを range で処理 (チャネルが閉じられると終了)\nch := make(chan int, 2)\nch <- 1\nch <- 2\nclose(ch)\nfor value := range ch {\n  // 値を処理 (1, 2)\n  fmt.Println(value)\n}"
     },
     {
-      "title": "Context",
-      "code": "// Context はデッドライン、キャンセルシグナル、リクエストスコープの値を運ぶ\nimport \"context\"\n\n// Context の作成\n// Background context (すべての context のルート)\nctx := context.Background()\n\n// WithCancel - キャンセル可能な context\nctx, cancel := context.WithCancel(context.Background())\n// 完了時にキャンセル\ndefer cancel()\n\n// 時間制限付き context\nctx, cancel := context.WithTimeout(context.Background(), time.Second)\ndefer cancel()\n\nctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Minute))\ndefer cancel()\n\n// Context 値 (リクエストスコープデータ用)\nctx = context.WithValue(ctx, \"key\", \"value\")\nvalue := ctx.Value(\"key\").(string)\n\n// 関数での context の使用\nfunc doWork(ctx context.Context) error {\n  select {\n  case <-time.After(100 * time.Millisecond):\n    return nil\n  case <-ctx.Done():\n// context.Canceled or context.DeadlineExceeded\n    return ctx.Err()\n  }\n}\n\n// キャンセル\nctx, cancel := context.WithCancel(context.Background())\ngo func() {\n  time.Sleep(time.Second)\n// キャンセルを通知\n  cancel()\n}()\ndoWork(ctx)"
+      "title": "Directional Channels",
+      "code": "// 方向性チャネル (型制限)\n// チャネルへの送信のみ可能\nfunc producer(ch chan<- int) {\n  ch <- 42\n  // <-ch // コンパイルエラー\n}\n\n// チャネルからの受信のみ可能\nfunc consumer(ch <-chan int) {\n  value := <-ch\n  // ch <- 42 // コンパイルエラー\n  fmt.Println(value)\n}"
+    },
+    {
+      "title": "Worker Pool Pattern",
+      "code": "// チャネルパターン: ワーカープール\nfunc worker(id int, jobs <-chan int, results chan<- int) {\n  for j := range jobs {\n    fmt.Printf(\"Worker %d processing job %d\\n\", id, j)\n    time.Sleep(time.Millisecond * 500) // 処理をシミュレート\n    results <- j * 2\n  }\n}\n\njobs := make(chan int, 100)\nresults := make(chan int, 100)\n\n// 3つのワーカーを開始\nnumWorkers := 3\nfor w := 1; w <= numWorkers; w++ {\n  go worker(w, jobs, results)\n}\n\n// ジョブを送信\nnumJobs := 9\nfor j := 1; j <= numJobs; j++ {\n  jobs <- j\n}\nclose(jobs)\n\n// 結果を収集\nfor a := 1; a <= numJobs; a++ {\n  <-results\n}"
+    },
+    {
+      "title": "Basic Select",
+      "code": "// Select 文は複数のチャネル操作を待機できる\nch1 := make(chan string)\nch2 := make(chan string)\n\ngo func() { time.Sleep(1 * time.Second); ch1 <- \"one\" }()\ngo func() { time.Sleep(2 * time.Second); ch2 <- \"two\" }()\n\nfor i := 0; i < 2; i++ {\n  select {\n  case msg1 := <-ch1:\n    fmt.Println(\"received\", msg1)\n  case msg2 := <-ch2:\n    fmt.Println(\"received\", msg2)\n  }\n}"
+    },
+    {
+      "title": "Select with Timeout",
+      "code": "// タイムアウト\nch := make(chan string, 1)\ngo func() {\n  time.Sleep(2 * time.Second)\n  ch <- \"result\"\n}()\n\nselect {\ncase res := <-ch:\n  fmt.Println(res)\ncase <-time.After(1 * time.Second):\n  fmt.Println(\"timeout 1\")\n}"
+    },
+    {
+      "title": "Select with Quit Channel",
+      "code": "// 終了チャネル\nfunc worker(ch <-chan int, quit <-chan bool) {\n  for {\n    select {\n    case value := <-ch:\n      fmt.Println(\"Processing\", value)\n    case <-quit:\n      fmt.Println(\"Quitting\")\n      return\n    }\n  }\n}\n\nch := make(chan int)\nquit := make(chan bool)\n\ngo worker(ch, quit)\n\nch <- 1\nch <- 2\nquit <- true"
+    },
+    {
+      "title": "Non-Blocking Select (Default Case)",
+      "code": "// ノンブロッキングチャネル操作\nch := make(chan string)\n\nselect {\ncase msg := <-ch:\n  fmt.Println(\"received message\", msg)\ndefault:\n  fmt.Println(\"no message received\")\n}"
+    },
+    {
+      "title": "Mutex (sync.Mutex)",
+      "code": "// 共有データへの安全な並行アクセスのための相互排他\nimport \"sync\"\n\nvar (\n  mu    sync.Mutex\n  count int\n)\n\nfunc increment() {\n// 共有データアクセス前にロック\n  mu.Lock()\n// アンロックが確実に行われるようにする\n  defer mu.Unlock()\n  count++\n}\n\n// 使用例\ngo increment()\ngo increment()\n// 最終的な count は 2 になる (競合状態なし)"
+    },
+    {
+      "title": "RWMutex (sync.RWMutex)",
+      "code": "// 読み書き mutex (複数のリーダーまたは1つのライター)\nvar (\n  rwmu   sync.RWMutex\n  balance int\n)\n\nfunc readBalance() int {\n// 複数の Goroutine が読み取りロックを保持できる\n  rwmu.RLock()\n  defer rwmu.RUnlock()\n  return balance\n}\n\nfunc writeBalance(amount int) {\n// 書き込みのための排他ロック\n  rwmu.Lock()\n  defer rwmu.Unlock()\n  balance += amount\n}"
+    },
+    {
+      "title": "Once (sync.Once)",
+      "code": "// Once - 厳密に一度だけ実行\nvar once sync.Once\n\nfunc initialize() {\n  fmt.Println(\"Initializing...\")\n  // 初期化コード\n}\n\nfunc getInstance() {\n  once.Do(initialize) // initialize は一度だけ呼び出される\n  fmt.Println(\"Instance ready\")\n}\n\ngo getInstance()\ngo getInstance()"
+    },
+    {
+      "title": "WaitGroup (sync.WaitGroup)",
+      "code": "// WaitGroup - Goroutine のコレクションを待機\nvar wg sync.WaitGroup\n\n// カウンターを3に設定\nwg.Add(3)\ngo func() {\n  defer wg.Done() // カウンターをデクリメント\n  fmt.Println(\"Task 1 done\")\n}()\ngo func() {\n  defer wg.Done()\n  fmt.Println(\"Task 2 done\")\n}()\ngo func() {\n  defer wg.Done()\n  fmt.Println(\"Task 3 done\")\n}()\n\n// カウンターがゼロになるまでブロック\nwg.Wait()\nfmt.Println(\"All tasks completed\")"
+    },
+    {
+      "title": "Cond (sync.Cond)",
+      "code": "// Cond - イベント待機のための条件変数\nvar sharedRsc = make(map[string]string)\nvar mu sync.Mutex\ncond := sync.NewCond(&mu)\n\ngo func() { // producer\n  time.Sleep(1 * time.Second)\n  cond.L.Lock()\n  sharedRsc[\"data\"] = \"some data\"\n  fmt.Println(\"Producer produced data\")\n  cond.Signal() // 待機中の Goroutine を1つ起こす\n  // cond.Broadcast() // すべての待機者を起こす\n  cond.L.Unlock()\n}()\n\n// consumer\ncond.L.Lock()\nfor sharedRsc[\"data\"] == \"\" { // 条件をチェック\n  fmt.Println(\"Consumer waiting...\")\n  cond.Wait() // アンロックし、待機し、再度ロックする\n}\nfmt.Println(\"Consumer received:\", sharedRsc[\"data\"])\ncond.L.Unlock()"
+    },
+    {
+      "title": "Atomic Integers (Go 1.19+)",
+      "code": "// 低レベル同期のためのアトミック操作 (Go 1.19+)\nimport \"sync/atomic\"\n\nvar counter atomic.Int64\n\n// 値を追加して取得\ncounter.Add(10)\nvalue := counter.Load()\nfmt.Println(\"Counter:\", value) // 10\n\n// 比較して交換\n// 値が 10 なら 20 に設定\nswapped := counter.CompareAndSwap(10, 20)\nfmt.Println(\"Swapped:\", swapped) // true\nfmt.Println(\"Counter:\", counter.Load()) // 20\n\n// 値を格納\ncounter.Store(100)\nfmt.Println(\"Counter:\", counter.Load()) // 100"
+    },
+    {
+      "title": "Atomic Integers (Go <1.19)",
+      "code": "// Go <1.19 のアトミック操作\nimport \"sync/atomic\"\n\nvar counter int64\n\n// 追加して取得\natomic.AddInt64(&counter, 10)\nvalue := atomic.LoadInt64(&counter)\nfmt.Println(\"Counter:\", value) // 10\n\n// 比較して交換\nswapped := atomic.CompareAndSwapInt64(&counter, 10, 20)\nfmt.Println(\"Swapped:\", swapped) // true\nfmt.Println(\"Counter:\", atomic.LoadInt64(&counter)) // 20\n\n// 値を格納\natomic.StoreInt64(&counter, 100)\nfmt.Println(\"Counter:\", atomic.LoadInt64(&counter)) // 100"
+    },
+    {
+      "title": "Atomic Pointers (Go 1.19+)",
+      "code": "// アトミックポインタ操作 (Go 1.19+)\nimport \"sync/atomic\"\n\ntype Config struct{ Version string }\n\nvar cfg atomic.Pointer[Config]\n\noldCfg := &Config{Version: \"v1\"}\nnewCfg := &Config{Version: \"v2\"}\n\ncfg.Store(oldCfg)\n\nloadedCfg := cfg.Load()\nfmt.Println(\"Loaded Cfg:\", loadedCfg.Version) // v1\n\nswapped := cfg.CompareAndSwap(oldCfg, newCfg)\nfmt.Println(\"Swapped Ptr:\", swapped) // true\nfmt.Println(\"Loaded Cfg:\", cfg.Load().Version) // v2"
+    },
+    {
+      "title": "Creating Contexts",
+      "code": "// Context はデッドライン、キャンセルシグナル、リクエストスコープの値を運ぶ\nimport (\n  \"context\"\n  \"time\"\n)\n\n// Context の作成\n// Background context (すべての context のルート)\nctxBg := context.Background()\n\n// WithCancel - キャンセル可能な context\nctxCancel, cancelFunc := context.WithCancel(ctxBg)\ndefer cancelFunc() // 完了時にキャンセル\n\n// 時間制限付き context\nctxTimeout, cancelTimeout := context.WithTimeout(ctxBg, time.Second)\ndefer cancelTimeout()\n\nctxDeadline, cancelDeadline := context.WithDeadline(ctxBg, time.Now().Add(time.Minute))\ndefer cancelDeadline()"
+    },
+    {
+      "title": "Context with Values",
+      "code": "// Context 値 (リクエストスコープデータ用)\ntype ctxKey string\nconst requestIDKey ctxKey = \"requestID\"\n\nctx := context.WithValue(context.Background(), requestIDKey, \"12345\")\n\n// 値を取得\nvalue, ok := ctx.Value(requestIDKey).(string)\nif ok {\n  fmt.Println(\"Request ID:\", value) // 12345\n}"
+    },
+    {
+      "title": "Using Context in Functions (Checking Done)",
+      "code": "// 関数での context の使用\nfunc doWork(ctx context.Context) error {\n  select {\n  case <-time.After(2 * time.Second): // 作業をシミュレート\n    fmt.Println(\"Work done\")\n    return nil\n  case <-ctx.Done(): // context がキャンセルされたか確認\n    fmt.Println(\"Work cancelled\")\n    // context.Canceled or context.DeadlineExceeded\n    return ctx.Err()\n  }\n}"
+    },
+    {
+      "title": "Context Cancellation",
+      "code": "// キャンセル\nctx, cancel := context.WithCancel(context.Background())\n\nvar wg sync.WaitGroup\nwg.Add(1)\ngo func(innerCtx context.Context) {\n  defer wg.Done()\n  err := doWork(innerCtx)\n  if err != nil {\n    fmt.Println(\"Goroutine error:\", err)\n  }\n}(ctx)\n\n// 少し待ってからキャンセル\ntime.Sleep(500 * time.Millisecond)\nfmt.Println(\"Cancelling context\")\ncancel() // キャンセルを通知\n\nwg.Wait()"
     }
   ]
 }
