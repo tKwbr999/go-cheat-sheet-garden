@@ -12,11 +12,11 @@ go func() { time.Sleep(1 * time.Second); ch1 <- "one" }()
 go func() { time.Sleep(2 * time.Second); ch2 <- "two" }()
 
 for i := 0; i < 2; i++ {
-  select {
-  case msg1 := <-ch1:
-    fmt.Println("received", msg1)
-  case msg2 := <-ch2:
-    fmt.Println("received", msg2)
-  }
+	select {
+	case msg1 := <-ch1:
+		fmt.Println("received", msg1)
+	case msg2 := <-ch2:
+		fmt.Println("received", msg2)
+	}
 }
 ```

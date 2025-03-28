@@ -6,6 +6,6 @@ tags: ["error-handling"]
 ```go
 // Error インターフェース
 type error interface {
-  Error() string
+	Error() string
 }
 ```

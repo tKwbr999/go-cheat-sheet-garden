@@ -6,6 +6,6 @@ tags: ["flow-control"]
 ```go
 // while としての For
 for condition {
-  // ループ本体
+	// ループ本体
 }
 ```

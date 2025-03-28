@@ -6,7 +6,7 @@ tags: ["basics"]
 ```go
 // 複数の定数
 const (
-  StatusOK    = 200
-  StatusError = 500
+	StatusOK    = 200
+	StatusError = 500
 )
 ```

@@ -7,6 +7,7 @@ tags: ["io-operations"]
 // reader からすべて読み込む
 reader := strings.NewReader("some data")
 data, err := io.ReadAll(reader)
-if err != nil { /* エラー処理 */ }
+if err != nil { /* エラー処理 */
+}
 fmt.Println(string(data))
 ```

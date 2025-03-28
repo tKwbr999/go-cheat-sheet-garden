@@ -7,12 +7,12 @@ tags: ["interfaces"]
 // 安全な型チェックのための型スイッチ
 switch v := i.(type) {
 case int:
-  fmt.Println("int:", v)
+	fmt.Println("int:", v)
 case string:
-  fmt.Println("string:", v)
+	fmt.Println("string:", v)
 case map[string]int:
-  fmt.Println("map:", v["key"])
+	fmt.Println("map:", v["key"])
 default:
-  fmt.Println("unknown type")
+	fmt.Println("unknown type")
 }
 ```

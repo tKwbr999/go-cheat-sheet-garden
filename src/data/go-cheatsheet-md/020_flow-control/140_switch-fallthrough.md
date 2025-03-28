@@ -7,10 +7,10 @@ tags: ["flow-control"]
 // Fallthrough は次の case の実行を強制する
 switch n {
 case 0:
-  fmt.Println("zero")
-  fallthrough
+	fmt.Println("zero")
+	fallthrough
 case 1:
-  fmt.Println("one")
-  // n が 0 または 1 の場合に実行される
+	fmt.Println("one")
+	// n が 0 または 1 の場合に実行される
 }
 ```

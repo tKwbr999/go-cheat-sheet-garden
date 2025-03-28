@@ -7,8 +7,8 @@ tags: ["context"]
 // 値の取得
 userID, ok := ctx.Value("userID").(string)
 if !ok {
-  fmt.Println("UserID not found or not a string")
+	fmt.Println("UserID not found or not a string")
 } else {
-  fmt.Println("UserID:", userID)
+	fmt.Println("UserID:", userID)
 }
 ```

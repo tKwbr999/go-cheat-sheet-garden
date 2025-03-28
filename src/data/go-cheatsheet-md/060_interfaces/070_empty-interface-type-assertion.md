@@ -7,8 +7,8 @@ tags: ["interfaces"]
 // 型アサーション
 str, ok := i.(string)
 if ok {
-// "hello"
-  fmt.Println(str)
+	// "hello"
+	fmt.Println(str)
 }
 
 // チェックなしの型アサーション (間違った型だと panic する)

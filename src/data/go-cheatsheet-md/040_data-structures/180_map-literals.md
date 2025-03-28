@@ -6,7 +6,7 @@ tags: ["data-structures"]
 ```go
 // マップリテラル
 m = map[string]int{
-  "one": 1,
-  "two": 2,
+	"one": 1,
+	"two": 2,
 }
 ```

@@ -19,6 +19,7 @@ csvString := `"Header 1","Header 2"
 `
 csvReader := csv.NewReader(strings.NewReader(csvString))
 records, err := csvReader.ReadAll()
-if err != nil { /* エラー処理 */ }
+if err != nil { /* エラー処理 */
+}
 fmt.Println(records) // [[Header 1 Header 2] [Value 1 Value 2]]
 ```

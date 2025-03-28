@@ -18,6 +18,6 @@ err = writer.WriteByte('X')
 // バッファを基底の writer にフラッシュ (重要!)
 err = writer.Flush()
 if err != nil {
-  // エラー処理
+	// エラー処理
 }
 ```

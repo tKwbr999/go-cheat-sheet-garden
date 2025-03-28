@@ -6,8 +6,8 @@ tags: ["references"]
 ```go
 // ベンチマーク
 func BenchmarkAdd(b *testing.B) {
-  for i := 0; i < b.N; i++ {
-    mypackage.Add(2, 3)
-  }
+	for i := 0; i < b.N; i++ {
+		mypackage.Add(2, 3)
+	}
 }
 ```

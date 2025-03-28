@@ -12,11 +12,11 @@ set["apple"] = struct{}{}
 
 // メンバーシップを確認
 if _, ok := set["apple"]; ok {
-  // "apple" はセット内にある
+	// "apple" はセット内にある
 }
 
 // セット要素を反復処理
 for element := range set {
-  fmt.Println(element)
+	fmt.Println(element)
 }
 ```

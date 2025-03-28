@@ -6,6 +6,6 @@ tags: ["data-structures"]
 ```go
 // マップの反復処理 (ランダムな順序)
 for key, value := range m {
-  fmt.Println(key, value)
+	fmt.Println(key, value)
 }
 ```

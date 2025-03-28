@@ -7,7 +7,7 @@ tags: ["references"]
 // 6. クリーンアップに defer を使用する
 f, err := os.Open(filename)
 if err != nil {
-  return err
+	return err
 }
 // エラーパスでも常に閉じる
 defer f.Close()

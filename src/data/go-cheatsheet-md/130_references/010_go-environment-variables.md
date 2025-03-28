@@ -14,7 +14,7 @@ GOROOT
 // Go バイナリのインストールディレクトリ
 GOBIN
 // クロスコンパイルのためのターゲット OS/アーキテクチャ
-GOOS/GOARCH
+GOOS / GOARCH
 // 'go' コマンドのデフォルトフラグ
 GOFLAGS
 ```

@@ -6,8 +6,8 @@ tags: ["data-structures"]
 ```go
 // カスタム連結リストの実装
 type Node struct {
-  Value int
-  Next  *Node
+	Value int
+	Next  *Node
 }
 
 // 連結リストを作成
@@ -17,6 +17,6 @@ head.Next.Next = &Node{Value: 3}
 
 // 走査
 for current := head; current != nil; current = current.Next {
-  fmt.Println(current.Value)
+	fmt.Println(current.Value)
 }
 ```

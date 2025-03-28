@@ -9,8 +9,8 @@ import "fmt"
 
 // 複数インポート
 import (
-  "fmt"
-  "math"
-  "strings"
+	"fmt"
+	"math"
+	"strings"
 )
 ```

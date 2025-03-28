@@ -12,16 +12,16 @@ tags: ["references"]
 package mypackage_test
 
 import (
-  "testing"
-  "example.com/mypackage"
+	"example.com/mypackage"
+	"testing"
 )
 
 // 基本的なテスト関数
 func TestAdd(t *testing.T) {
-  got := mypackage.Add(2, 3)
-  want := 5
-  if got != want {
-    t.Errorf("Add(2, 3) = %d; want %d", got, want)
-  }
+	got := mypackage.Add(2, 3)
+	want := 5
+	if got != want {
+		t.Errorf("Add(2, 3) = %d; want %d", got, want)
+	}
 }
 ```

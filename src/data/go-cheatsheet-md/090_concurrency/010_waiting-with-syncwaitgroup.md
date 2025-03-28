@@ -10,9 +10,9 @@ var wg sync.WaitGroup
 // 1つの Goroutine のカウンターを追加
 wg.Add(1)
 go func() {
-// Goroutine 終了時にカウンターをデクリメント
-  defer wg.Done()
-  // 処理を実行...
+	// Goroutine 終了時にカウンターをデクリメント
+	defer wg.Done()
+	// 処理を実行...
 }()
 
 // カウンターがゼロになるまで待機

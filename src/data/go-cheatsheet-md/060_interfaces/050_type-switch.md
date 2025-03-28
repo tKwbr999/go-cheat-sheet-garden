@@ -7,12 +7,12 @@ tags: ["interfaces"]
 // 型スイッチ
 switch v := s.(type) {
 case Rectangle:
-  fmt.Println("Rectangle with area:", v.Area())
+	fmt.Println("Rectangle with area:", v.Area())
 case Circle:
-  fmt.Println("Circle with radius:", v.Radius)
+	fmt.Println("Circle with radius:", v.Radius)
 case nil:
-  fmt.Println("nil shape")
+	fmt.Println("nil shape")
 default:
-  fmt.Println("Unknown shape")
+	fmt.Println("Unknown shape")
 }
 ```

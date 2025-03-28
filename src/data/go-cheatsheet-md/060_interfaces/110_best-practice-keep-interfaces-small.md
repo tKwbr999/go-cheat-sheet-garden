@@ -7,10 +7,10 @@ tags: ["interfaces"]
 // 1. インターフェースを小さく保つ (単一責任)
 // 良い例:
 type Reader interface {
-  Read(p []byte) (n int, err error)
+	Read(p []byte) (n int, err error)
 }
 
 type Writer interface {
-  Write(p []byte) (n int, err error)
+	Write(p []byte) (n int, err error)
 }
 ```

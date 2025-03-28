@@ -7,6 +7,6 @@ tags: ["flow-control"]
 // For-range ループ (配列、スライス、文字列、マップ、チャネル)
 // 配列、スライス、文字列: インデックス、値
 for index, value := range collection {
-  // インデックスと値を使用
+	// インデックスと値を使用
 }
 ```

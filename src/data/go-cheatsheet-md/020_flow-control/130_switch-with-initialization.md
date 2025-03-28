@@ -7,10 +7,10 @@ tags: ["flow-control"]
 // 初期化ステートメント付きの Switch
 switch os := runtime.GOOS; os {
 case "darwin":
-  fmt.Println("OS X")
+	fmt.Println("OS X")
 case "linux":
-  fmt.Println("Linux")
+	fmt.Println("Linux")
 default:
-  fmt.Printf("%s\n", os)
+	fmt.Printf("%s\n", os)
 }
 ```

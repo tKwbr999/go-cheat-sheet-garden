@@ -6,9 +6,9 @@ tags: ["packages"]
 ```go
 // エイリアス付きインポート
 import (
-// f.Println()
-  f "fmt"
-// m.Pi
-  m "math"
+	// f.Println()
+	f "fmt"
+	// m.Pi
+	m "math"
 )
 ```

@@ -9,6 +9,6 @@ file, _ := os.Create("output.txt")
 defer file.Close()
 n, err := file.Write([]byte("Hello, Go!"))
 if err != nil {
-  // エラー処理
+	// エラー処理
 }
 ```

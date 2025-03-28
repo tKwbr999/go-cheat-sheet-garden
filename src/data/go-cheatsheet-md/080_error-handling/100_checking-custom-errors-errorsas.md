@@ -8,6 +8,6 @@ tags: ["error-handling"]
 err := doSomething()
 var myErr *MyError
 if errors.As(err, &myErr) {
-  fmt.Println("Code:", myErr.Code)
+	fmt.Println("Code:", myErr.Code)
 }
 ```

@@ -6,13 +6,13 @@ tags: ["data-structures"]
 ```go
 // 構造体型を定義
 type Person struct {
-  Name    string
-  Age     int
-  Address *Address
+	Name    string
+	Age     int
+	Address *Address
 }
 
 type Address struct {
-  Street string
-  City   string
+	Street string
+	City   string
 }
 ```

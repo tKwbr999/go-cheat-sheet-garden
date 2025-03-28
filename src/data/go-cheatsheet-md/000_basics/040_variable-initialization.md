@@ -6,7 +6,7 @@ tags: ["basics"]
 ```go
 // 変数の初期化
 var (
-  home = os.Getenv("HOME")
-  user = os.Getenv("USER")
+	home = os.Getenv("HOME")
+	user = os.Getenv("USER")
 )
 ```

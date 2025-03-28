@@ -13,8 +13,8 @@ $ go test -cover
 ```go
 // テスト可能な例 (ドキュメントとテスト)
 func ExampleAdd() {
-  sum := mypackage.Add(1, 2)
-  fmt.Println(sum)
-  // Output: 3
+	sum := mypackage.Add(1, 2)
+	fmt.Println(sum)
+	// Output: 3
 }
 ```

@@ -10,7 +10,7 @@ defer file.Close()
 // 開始位置から10バイト目にシーク
 newPos, err := file.Seek(10, io.SeekStart)
 if err != nil {
-  // エラー処理
+	// エラー処理
 }
 // 現在位置から5バイト戻る
 newPos, err = file.Seek(-5, io.SeekCurrent)
