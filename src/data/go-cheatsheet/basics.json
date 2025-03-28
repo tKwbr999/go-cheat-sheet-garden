@@ -11,7 +11,7 @@
     },
     {
       "title": "Constants",
-      "code": "// 定数宣言\nconst Pi = 3.14\n\n// 複数の定数\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota - 列挙型ジェネレータ\nconst (\n  Monday = iota + 1 // 1\n  Tuesday           // 2\n  Wednesday         // 3\n)\n\n// iota は新しい const ブロックでリセットされる\nconst (\n  Readable = 1 << iota  // 1 (1 << 0)\n  Writable              // 2 (1 << 1)\n  Executable            // 4 (1 << 2)\n  \n  // パーミッションの組み合わせ\n  ReadWrite = Readable | Writable  // 3\n)"
+      "code": "// 定数宣言\nconst Pi = 3.14\n\n// 複数の定数\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)\n\n// iota - 列挙型ジェネレータ\nconst (\n// 1\n  Monday = iota + 1\n// 2\n  Tuesday\n// 3\n  Wednesday\n)\n\n// iota は新しい const ブロックでリセットされる\nconst (\n// 1 (1 << 0)\n  Readable = 1 << iota\n// 2 (1 << 1)\n  Writable\n// 4 (1 << 2)\n  Executable\n  \n  // パーミッションの組み合わせ\n// 3\n  ReadWrite = Readable | Writable\n)"
     },
     {
       "title": "Naming Conventions",
@@ -19,7 +19,7 @@
     },
     {
       "title": "Code Organization",
-      "code": "// Go のコードはパッケージに整理される\n// 各ディレクトリはパッケージ\n// main パッケージは実行可能ファイルの入口\npackage main\n\n// インポートはグループ化され、ファクタリングできる\nimport (\n  \"fmt\"\n  \"io\"\n  \n  \"golang.org/x/net/html\"  // サードパーティパッケージ\n  \"myproject/mypackage\"   // ローカルパッケージ\n)\n\n// 一般的な Go ファイルの構造:\n// 1. パッケージ宣言\n// 2. インポート\n// 3. 定数\n// 4. 変数\n// 5. 型\n// 6. 関数"
+      "code": "// Go のコードはパッケージに整理される\n// 各ディレクトリはパッケージ\n// main パッケージは実行可能ファイルの入口\npackage main\n\n// インポートはグループ化され、ファクタリングできる\nimport (\n  \"fmt\"\n  \"io\"\n  \n// サードパーティパッケージ\n  \"golang.org/x/net/html\"\n// ローカルパッケージ\n  \"myproject/mypackage\"\n)\n\n// 一般的な Go ファイルの構造:\n// 1. パッケージ宣言\n// 2. インポート\n// 3. 定数\n// 4. 変数\n// 5. 型\n// 6. 関数"
     }
   ]
 }

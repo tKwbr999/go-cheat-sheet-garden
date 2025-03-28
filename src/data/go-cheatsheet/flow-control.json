@@ -3,7 +3,7 @@
   "codeExamples": [
     {
       "title": "If-else",
-      "code": "// 基本的な if-else\nif x > 10 {\n  // 何かを行う\n} else if x > 5 {\n  // 別の何かを行う\n} else {\n  // さらに別の何かを行う\n}\n\n// 短いステートメント付きの If\nif value := getValue(); value > 10 {\n  // value はこのスコープ内でのみ利用可能\n  // かつ条件が true であった場合\n}\n\n// エラーチェック付きの If (一般的なパターン)\nif err := doSomething(); err != nil {\n  // エラーを処理する\n  return err\n}\n\n// return 後の else を避ける (Go スタイル)\nif condition {\n  // このケースを処理する\n  return // または break, continue\n}\n// \"else\" ケースのコードはここから続く"
+      "code": "// 基本的な if-else\nif x > 10 {\n  // 何かを行う\n} else if x > 5 {\n  // 別の何かを行う\n} else {\n  // さらに別の何かを行う\n}\n\n// 短いステートメント付きの If\nif value := getValue(); value > 10 {\n  // value はこのスコープ内でのみ利用可能\n  // かつ条件が true であった場合\n}\n\n// エラーチェック付きの If (一般的なパターン)\nif err := doSomething(); err != nil {\n  // エラーを処理する\n  return err\n}\n\n// return 後の else を避ける (Go スタイル)\nif condition {\n  // このケースを処理する\n// または break, continue\n  return\n}\n// \"else\" ケースのコードはここから続く"
     },
     {
       "title": "For loops",
@@ -15,11 +15,11 @@
     },
     {
       "title": "Defer",
-      "code": "// Defer 文は、囲んでいる関数が戻る前に関数を実行する\n// クリーンアップ操作に使用される (ファイル、接続などを閉じる)\nfunc ReadFile(filename string) ([]byte, error) {\n  f, err := os.Open(filename)\n  if err != nil {\n    return nil, err\n  }\n  defer f.Close()  // f.Close() は ReadFile が戻るときに実行される\n  \n  return io.ReadAll(f)\n}\n\n// 複数の defer は LIFO (後入れ先出し) 順で実行される\nfunc ProcessFiles() {\n  defer fmt.Println(\"1. Done processing\")\n  defer fmt.Println(\"2. Closing files\")\n  defer fmt.Println(\"3. Saving results\")\n  \n  // 関数が戻るときの出力:\n  // 3. Saving results\n  // 2. Closing files\n  // 1. Done processing\n}\n\n// Defer は引数をすぐに評価するが、関数の実行は後で行う\nfunc example() {\n  i := 1\n  defer fmt.Println(\"deferred:\", i)  // \"deferred: 1\" と出力される\n  i++\n  fmt.Println(\"regular:\", i)  // \"regular: 2\" と出力される\n}\n\n// 一般的な使用例: Mutex のロック/アンロック\nfunc UpdateData(data *Data) {\n  data.mu.Lock()\n  defer data.mu.Unlock()\n  \n  // データを更新...\n}"
+      "code": "// Defer 文は、囲んでいる関数が戻る前に関数を実行する\n// クリーンアップ操作に使用される (ファイル、接続などを閉じる)\nfunc ReadFile(filename string) ([]byte, error) {\n  f, err := os.Open(filename)\n  if err != nil {\n    return nil, err\n  }\n// f.Close() は ReadFile が戻るときに実行される\n  defer f.Close()\n  \n  return io.ReadAll(f)\n}\n\n// 複数の defer は LIFO (後入れ先出し) 順で実行される\nfunc ProcessFiles() {\n  defer fmt.Println(\"1. Done processing\")\n  defer fmt.Println(\"2. Closing files\")\n  defer fmt.Println(\"3. Saving results\")\n  \n  // 関数が戻るときの出力:\n  // 3. Saving results\n  // 2. Closing files\n  // 1. Done processing\n}\n\n// Defer は引数をすぐに評価するが、関数の実行は後で行う\nfunc example() {\n  i := 1\n// \"deferred: 1\" と出力される\n  defer fmt.Println(\"deferred:\", i)\n  i++\n// \"regular: 2\" と出力される\n  fmt.Println(\"regular:\", i)\n}\n\n// 一般的な使用例: Mutex のロック/アンロック\nfunc UpdateData(data *Data) {\n  data.mu.Lock()\n  defer data.mu.Unlock()\n  \n  // データを更新...\n}"
     },
     {
       "title": "Panic and Recover",
-      "code": "// Panic は現在の goroutine の通常の実行を停止する\n// 遅延関数は依然として実行される\nfunc divide(a, b int) int {\n  if b == 0 {\n    panic(\"division by zero\")  // 回復されない限りプログラムをクラッシュさせる\n  }\n  return a / b\n}\n\n// Recover は panic をキャプチャし、通常の実行を再開する\n// 遅延関数内でのみ有用\nfunc SafeDivide(a, b int) (result int, err error) {\n  // 回復を設定\n  defer func() {\n    if r := recover(); r != nil {\n      // panic をエラーに変換\n      err = fmt.Errorf(\"panic occurred: %v\", r)\n    }\n  }()\n  \n  // b が 0 の場合、これは panic するが、recover がそれをキャッチする\n  result = a / b\n  return result, nil\n}\n\n// 使用例\nresult, err := SafeDivide(10, 0)  // クラッシュする代わりに 0 とエラーを返す\n\n// ベストプラクティス:\n// 1. 回復不能なエラー (例: 破損) にのみ panic を使用する\n// 2. 通常のエラー処理では、panic/recover ではなくエラーリターンを使用すべき\n// 3. 予期される panic からのみ回復する"
+      "code": "// Panic は現在の goroutine の通常の実行を停止する\n// 遅延関数は依然として実行される\nfunc divide(a, b int) int {\n  if b == 0 {\n// 回復されない限りプログラムをクラッシュさせる\n    panic(\"division by zero\")\n  }\n  return a / b\n}\n\n// Recover は panic をキャプチャし、通常の実行を再開する\n// 遅延関数内でのみ有用\nfunc SafeDivide(a, b int) (result int, err error) {\n  // 回復を設定\n  defer func() {\n    if r := recover(); r != nil {\n      // panic をエラーに変換\n      err = fmt.Errorf(\"panic occurred: %v\", r)\n    }\n  }()\n  \n  // b が 0 の場合、これは panic するが、recover がそれをキャッチする\n  result = a / b\n  return result, nil\n}\n\n// 使用例\n// クラッシュする代わりに 0 とエラーを返す\nresult, err := SafeDivide(10, 0)\n\n// ベストプラクティス:\n// 1. 回復不能なエラー (例: 破損) にのみ panic を使用する\n// 2. 通常のエラー処理では、panic/recover ではなくエラーリターンを使用すべき\n// 3. 予期される panic からのみ回復する"
     }
   ]
 }
