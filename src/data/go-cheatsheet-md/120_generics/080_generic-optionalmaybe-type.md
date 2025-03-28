@@ -8,23 +8,23 @@ tags: ["generics"]
 
 // 1. ジェネリック Optional/Maybe 型
 type Optional[T any] struct {
-  value T
-  valid bool
+	value T
+	valid bool
 }
 
 func Some[T any](value T) Optional[T] {
-  return Optional[T]{value: value, valid: true}
+	return Optional[T]{value: value, valid: true}
 }
 
 func None[T any]() Optional[T] {
-  return Optional[T]{valid: false}
+	return Optional[T]{valid: false}
 }
 
 func (o Optional[T]) IsPresent() bool {
-  return o.valid
+	return o.valid
 }
 
 func (o Optional[T]) Get() (T, bool) {
-  return o.value, o.valid
+	return o.value, o.valid
 }
 ```

@@ -7,7 +7,7 @@ tags: ["functions"]
 // 変数としての関数
 var compute func(int, int) int
 compute = func(a, b int) int {
-  return a + b
+	return a + b
 }
 // 8
 result := compute(5, 3)

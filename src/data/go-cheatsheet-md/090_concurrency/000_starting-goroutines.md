@@ -8,8 +8,8 @@ tags: ["concurrency"]
 
 // Goroutine を開始
 go func() {
-  // コードは並行して実行される
-  fmt.Println("Running in goroutine")
+	// コードは並行して実行される
+	fmt.Println("Running in goroutine")
 }()
 
 // 関数を Goroutine で実行

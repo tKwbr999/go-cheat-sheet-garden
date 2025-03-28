@@ -8,6 +8,6 @@ tags: ["interfaces"]
 // Rectangle であれば具体的な値を抽出
 rect, ok := s.(Rectangle)
 if ok {
-  fmt.Println("It's a rectangle:", rect)
+	fmt.Println("It's a rectangle:", rect)
 }
 ```

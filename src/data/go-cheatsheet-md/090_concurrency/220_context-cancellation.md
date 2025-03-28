@@ -10,11 +10,11 @@ ctx, cancel := context.WithCancel(context.Background())
 var wg sync.WaitGroup
 wg.Add(1)
 go func(innerCtx context.Context) {
-  defer wg.Done()
-  err := doWork(innerCtx)
-  if err != nil {
-    fmt.Println("Goroutine error:", err)
-  }
+	defer wg.Done()
+	err := doWork(innerCtx)
+	if err != nil {
+		fmt.Println("Goroutine error:", err)
+	}
 }(ctx)
 
 // 少し待ってからキャンセル

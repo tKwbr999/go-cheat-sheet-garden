@@ -7,7 +7,7 @@ tags: ["packages"]
 // init 関数はパッケージがインポートされるときに実行される
 // main() が開始する前に
 func init() {
-  PackageVar = 42
-  // 初期化コード
+	PackageVar = 42
+	// 初期化コード
 }
 ```

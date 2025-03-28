@@ -6,12 +6,12 @@ tags: ["basics"]
 ```go
 // インポートはグループ化され、ファクタリングできる
 import (
-  "fmt"
-  "io"
-  
-// サードパーティパッケージ
-  "golang.org/x/net/html"
-// ローカルパッケージ
-  "myproject/mypackage"
+	"fmt"
+	"io"
+
+	// サードパーティパッケージ
+	"golang.org/x/net/html"
+	// ローカルパッケージ
+	"myproject/mypackage"
 )
 ```

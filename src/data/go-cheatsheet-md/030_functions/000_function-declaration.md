@@ -6,6 +6,6 @@ tags: ["functions"]
 ```go
 // 関数宣言
 func add(a int, b int) int {
-  return a + b
+	return a + b
 }
 ```

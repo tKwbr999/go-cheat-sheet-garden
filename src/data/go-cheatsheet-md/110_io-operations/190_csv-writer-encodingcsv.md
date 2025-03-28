@@ -8,11 +8,12 @@ tags: ["io-operations"]
 var buf bytes.Buffer
 csvWriter := csv.NewWriter(&buf)
 records := [][]string{
-    {"Header 1", "Header 2"},
-    {"Value 1", "Value 2"},
+	{"Header 1", "Header 2"},
+	{"Value 1", "Value 2"},
 }
 err := csvWriter.WriteAll(records)
-if err != nil { /* エラー処理 */ }
+if err != nil { /* エラー処理 */
+}
 csvWriter.Flush() // バッファをフラッシュ
 fmt.Println(buf.String())
 ```

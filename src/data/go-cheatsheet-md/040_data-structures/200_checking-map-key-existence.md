@@ -8,6 +8,6 @@ tags: ["data-structures"]
 // キーが見つからない場合 value=0, exists=false
 value, exists := m["four"]
 if exists {
-  // キーが存在する
+	// キーが存在する
 }
 ```

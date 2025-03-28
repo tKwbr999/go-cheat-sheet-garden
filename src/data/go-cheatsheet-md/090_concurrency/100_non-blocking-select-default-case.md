@@ -9,8 +9,8 @@ ch := make(chan string)
 
 select {
 case msg := <-ch:
-  fmt.Println("received message", msg)
+	fmt.Println("received message", msg)
 default:
-  fmt.Println("no message received")
+	fmt.Println("no message received")
 }
 ```

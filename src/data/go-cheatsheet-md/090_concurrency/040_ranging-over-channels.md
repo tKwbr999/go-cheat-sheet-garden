@@ -10,7 +10,7 @@ ch <- 1
 ch <- 2
 close(ch)
 for value := range ch {
-  // 値を処理 (1, 2)
-  fmt.Println(value)
+	// 値を処理 (1, 2)
+	fmt.Println(value)
 }
 ```

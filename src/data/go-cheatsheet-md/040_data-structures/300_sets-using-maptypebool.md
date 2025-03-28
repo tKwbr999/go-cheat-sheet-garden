@@ -16,7 +16,7 @@ set["banana"] = true
 
 // メンバーシップを確認
 if set["apple"] {
-  // "apple" はセット内にある
+	// "apple" はセット内にある
 }
 
 // 要素を削除

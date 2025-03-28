@@ -10,6 +10,6 @@ var db *sql.DB
 
 // より良い例:
 type Service struct {
-  db *sql.DB
+	db *sql.DB
 }
 ```

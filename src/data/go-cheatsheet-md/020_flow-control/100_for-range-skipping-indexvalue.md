@@ -6,11 +6,11 @@ tags: ["flow-control"]
 ```go
 // アンダースコアでインデックスまたは値をスキップ
 for _, value := range collection {
-  // 値のみを使用
+	// 値のみを使用
 }
 
 // インデックスのみ
 for index := range collection {
-  // インデックスのみを使用
+	// インデックスのみを使用
 }
 ```

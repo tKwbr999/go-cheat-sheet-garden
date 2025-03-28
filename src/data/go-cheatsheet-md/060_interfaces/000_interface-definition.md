@@ -6,7 +6,7 @@ tags: ["interfaces"]
 ```go
 // インターフェース定義 - メソッドシグネチャのセット
 type Shape interface {
-  Area() float64
-  Perimeter() float64
+	Area() float64
+	Perimeter() float64
 }
 ```

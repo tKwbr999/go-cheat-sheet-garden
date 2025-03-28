@@ -7,7 +7,7 @@ tags: ["io-operations"]
 // ファイル全体を読み込む
 data, err := os.ReadFile("filename.txt")
 if err != nil {
-  // エラー処理
+	// エラー処理
 }
 fmt.Println(string(data))
 ```

@@ -7,12 +7,12 @@ tags: ["data-structures"]
 // すべてのキーを取得
 keys := make([]string, 0, len(m))
 for k := range m {
-  keys = append(keys, k)
+	keys = append(keys, k)
 }
 
 // 一貫した順序のためにキーをソート
 sort.Strings(keys)
 for _, k := range keys {
-  fmt.Printf("%s: %d\n", k, m[k])
+	fmt.Printf("%s: %d\n", k, m[k])
 }
 ```

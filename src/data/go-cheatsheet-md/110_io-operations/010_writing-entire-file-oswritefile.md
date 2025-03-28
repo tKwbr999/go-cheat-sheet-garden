@@ -7,6 +7,6 @@ tags: ["io-operations"]
 // ファイルへの書き込み
 err = os.WriteFile("output.txt", []byte("Hello, world!"), 0644)
 if err != nil {
-  // エラー処理
+	// エラー処理
 }
 ```

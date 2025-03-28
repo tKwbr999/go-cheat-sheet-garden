@@ -7,6 +7,6 @@ tags: ["references"]
 // エラー処理 - エラーをすぐにチェック
 result, err := DoSomething()
 if err != nil {
-  return nil, fmt.Errorf("failed to do something: %w", err)
+	return nil, fmt.Errorf("failed to do something: %w", err)
 }
 ```

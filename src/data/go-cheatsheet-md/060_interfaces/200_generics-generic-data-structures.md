@@ -6,14 +6,14 @@ tags: ["interfaces"]
 ```go
 // ジェネリックデータ構造
 type List[T any] struct {
-  data []T
+	data []T
 }
 
 func (l *List[T]) Add(item T) {
-  l.data = append(l.data, item)
+	l.data = append(l.data, item)
 }
 
 func (l *List[T]) Get(index int) T {
-  return l.data[index]
+	return l.data[index]
 }
 ```

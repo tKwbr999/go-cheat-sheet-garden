@@ -13,6 +13,6 @@ ctx := context.WithValue(context.Background(), requestIDKey, "12345")
 // 値を取得
 value, ok := ctx.Value(requestIDKey).(string)
 if ok {
-  fmt.Println("Request ID:", value) // 12345
+	fmt.Println("Request ID:", value) // 12345
 }
 ```

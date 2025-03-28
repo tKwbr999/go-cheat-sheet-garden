@@ -6,10 +6,10 @@ tags: ["data-structures"]
 ```go
 // 無名フィールド (埋め込み)
 type Employee struct {
-// すべての Person フィールドを埋め込む
-  Person
-  CompanyName string
-  Salary      float64
+	// すべての Person フィールドを埋め込む
+	Person
+	CompanyName string
+	Salary      float64
 }
 
 e := Employee{}

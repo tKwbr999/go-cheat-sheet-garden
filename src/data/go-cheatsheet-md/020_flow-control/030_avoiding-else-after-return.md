@@ -6,9 +6,9 @@ tags: ["flow-control"]
 ```go
 // return 後の else を避ける (Go スタイル)
 if condition {
-  // このケースを処理する
-// または break, continue
-  return
+	// このケースを処理する
+	// または break, continue
+	return
 }
 // "else" ケースのコードはここから続く
 ```

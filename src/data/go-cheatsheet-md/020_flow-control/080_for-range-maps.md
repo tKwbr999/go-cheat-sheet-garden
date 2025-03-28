@@ -6,6 +6,6 @@ tags: ["flow-control"]
 ```go
 // マップ: キー、値
 for key, value := range myMap {
-  // キーと値を使用
+	// キーと値を使用
 }
 ```

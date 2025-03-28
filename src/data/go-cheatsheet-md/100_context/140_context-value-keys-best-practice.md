@@ -9,8 +9,8 @@ tags: ["context"]
 type contextKey string
 
 const (
-  userIDKey   contextKey = "userID"
-  authTokenKey contextKey = "authToken"
+	userIDKey    contextKey = "userID"
+	authTokenKey contextKey = "authToken"
 )
 
 ctx := context.WithValue(context.Background(), userIDKey, "12345")

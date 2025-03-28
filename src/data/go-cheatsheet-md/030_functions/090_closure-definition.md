@@ -11,12 +11,12 @@ errors.Join(errs ...error) error
 ```go
 // 関数を返す関数 (クロージャ)
 func adder() func(int) int {
-// この変数は「キャプチャされる」
-  sum := 0
-  return func(x int) int {
-// キャプチャされた変数を変更する
-    sum += x
-    return sum
-  }
+	// この変数は「キャプチャされる」
+	sum := 0
+	return func(x int) int {
+		// キャプチャされた変数を変更する
+		sum += x
+		return sum
+	}
 }
 ```

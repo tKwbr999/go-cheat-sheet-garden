@@ -9,20 +9,20 @@ import "errors"
 
 // Join は複数のエラーを単一のエラーに結合する
 func validateForm(data Form) error {
-  var errs []error
-  
-  if data.Name == "" {
-    errs = append(errs, errors.New("name is required"))
-  }
-  
-  if data.Email == "" {
-    errs = append(errs, errors.New("email is required"))
-  }
-  
-  if len(errs) > 0 {
-// 単一のエラーを返す
-    return errors.Join(errs...)
-  }
-  return nil
+	var errs []error
+
+	if data.Name == "" {
+		errs = append(errs, errors.New("name is required"))
+	}
+
+	if data.Email == "" {
+		errs = append(errs, errors.New("email is required"))
+	}
+
+	if len(errs) > 0 {
+		// 単一のエラーを返す
+		return errors.Join(errs...)
+	}
+	return nil
 }
 ```

@@ -10,7 +10,7 @@ defer file.Close()
 buf := make([]byte, 1024)
 n, err := file.Read(buf)
 if err != nil && err != io.EOF {
-  // エラー処理
+	// エラー処理
 }
 // バッファを実際に読み取られたバイト数にリサイズ
 readData := buf[:n]
