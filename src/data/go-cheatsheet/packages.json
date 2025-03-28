@@ -2,24 +2,88 @@
   "title": "Packages",
   "codeExamples": [
     {
-      "title": "Package",
-      "code": "// ファイル: math.go\npackage math\n\n// エクスポートされた関数 (大文字で始まる)\nfunc Add(a, b int) int {\n  return a + b\n}\n\n// エクスポートされない関数 (小文字で始まる)\nfunc multiply(a, b int) int {\n  return a * b\n}\n\n// パッケージドキュメント\n// package 宣言の前のこのコメントは\n// godoc でパッケージドキュメントになる\n\n// Package math は基本的な数学的操作を提供する。\npackage math"
+      "title": "Package Declaration",
+      "code": "// ファイル: math.go\npackage math"
     },
     {
-      "title": "Import",
-      "code": "// 単一インポート\nimport \"fmt\"\n\n// 複数インポート\nimport (\n  \"fmt\"\n  \"math\"\n  \"strings\"\n)\n\n// エイリアス付きインポート\nimport (\n// f.Println()\n  f \"fmt\"\n// m.Pi\n  m \"math\"\n// Pi (直接アクセス、本番コードでは避ける)\n  . \"math\"\n// PNG デコーダを登録するが、直接は使用しない\n  _ \"image/png\"\n)\n\n// ドットインポート (非推奨)\nimport . \"math\"\n// パッケージ名なしで直接アクセス\nfmt.Println(Pi)\n\n// ブランクインポート (副作用のためだけに使用)\n// プロファイリングハンドラを登録\nimport _ \"net/http/pprof\"\n\n// 相対インポート (go modules 内)\nimport (\n// 標準インポート\n  \"example.com/project/pkg/util\"\n// modules では無効\n  \"./mylocal\"\n)"
+      "title": "Exported vs Unexported",
+      "code": "// エクスポートされた関数 (大文字で始まる)\nfunc Add(a, b int) int {\n  return a + b\n}\n\n// エクスポートされない関数 (小文字で始まる)\nfunc multiply(a, b int) int {\n  return a * b\n}"
     },
     {
-      "title": "Package initialization",
-      "code": "package mypackage\n\n// パッケージ変数\nvar PackageVar int\n\n// init 関数はパッケージがインポートされるときに実行される\n// main() が開始する前に\nfunc init() {\n  PackageVar = 42\n  // 初期化コード\n}\n\n// 複数の init 関数は宣言順に実行される\nfunc init() {\n  // 最初の init\n}\n\nfunc init() {\n  // 2番目の init\n}\n\nfunc DoSomething() {\n  // 関数コード\n}\n\n// パッケージ初期化順序:\n// 1. パッケージレベルの変数初期化\n// 2. 宣言順の init() 関数\n\n// パッケージ間:\n// 1. インポートされたパッケージが最初に初期化される\n// 2. 次にインポート元のパッケージが初期化される"
+      "title": "Package Documentation",
+      "code": "// パッケージドキュメント\n// package 宣言の前のこのコメントは\n// godoc でパッケージドキュメントになる\n\n// Package math は基本的な数学的操作を提供する。\npackage math"
     },
     {
-      "title": "Go Modules",
-      "code": "// モジュール初期化\n// 新しいモジュールを作成\ngo mod init example.com/mymodule\n\n// モジュールファイル (go.mod)\nmodule example.com/mymodule\n\n// 最小 Go バージョン\ngo 1.19\n\nrequire (\n  github.com/pkg/errors v0.9.1\n  golang.org/x/text v0.9.0\n)\n\nexclude github.com/unwanted/package v1.0.0\n\nreplace github.com/original/package => github.com/fork/package v1.2.0\n\n// 依存関係の管理\n// 依存関係を追加\ngo get github.com/pkg/errors\n// 特定のバージョン\ngo get github.com/pkg/errors@v0.9.1\n// すべての依存関係を更新\ngo get -u\n// 未使用の依存関係をクリーンアップ\ngo mod tidy\n// vendor ディレクトリを作成\ngo mod vendor\n// 依存関係を説明\ngo mod why github.com/pkg/errors\n// すべての依存関係をリスト\ngo list -m all"
+      "title": "Single and Multiple Imports",
+      "code": "// 単一インポート\nimport \"fmt\"\n\n// 複数インポート\nimport (\n  \"fmt\"\n  \"math\"\n  \"strings\"\n)"
     },
     {
-      "title": "Standard Library Packages",
-      "code": "// 主要な標準ライブラリパッケージ\n\n// フォーマット\nimport \"fmt\"\nfmt.Println(\"Hello, world\")\nfmt.Printf(\"%d %s\\n\", 42, \"text\")\n\n// 入出力\nimport \"io\"\nimport \"os\"\nfile, err := os.Open(\"file.txt\")\ndata, err := io.ReadAll(file)\n\n// 文字列\nimport \"strings\"\ns := strings.ToUpper(\"hello\")\ncontains := strings.Contains(s, \"EL\")\nparts := strings.Split(\"a,b,c\", \",\")\n\n// 時間\nimport \"time\"\nnow := time.Now()\ntime.Sleep(time.Second * 2)\nduration := time.Since(now)\n\n// JSON\nimport \"encoding/json\"\ntype Person struct {\n  Name string `json:\"name\"`\n  Age  int    `json:\"age\"`\n}\ndata, err := json.Marshal(person)\nperson := Person{}\nerr := json.Unmarshal(data, &person)\n\n// HTTP\nimport \"net/http\"\nhttp.HandleFunc(\"/hello\", func(w http.ResponseWriter, r *http.Request) {\n  fmt.Fprintf(w, \"Hello\")\n})\nhttp.ListenAndServe(\":8080\", nil)"
+      "title": "Aliased Imports",
+      "code": "// エイリアス付きインポート\nimport (\n// f.Println()\n  f \"fmt\"\n// m.Pi\n  m \"math\"\n)"
+    },
+    {
+      "title": "Dot Imports (Avoid)",
+      "code": "// ドットインポート (非推奨)\nimport . \"math\"\n// パッケージ名なしで直接アクセス\nfmt.Println(Pi)"
+    },
+    {
+      "title": "Blank Imports (Side Effects)",
+      "code": "// ブランクインポート (副作用のためだけに使用)\n// PNG デコーダを登録するが、直接は使用しない\nimport _ \"image/png\"\n// プロファイリングハンドラを登録\nimport _ \"net/http/pprof\""
+    },
+    {
+      "title": "Relative Imports (Go Modules)",
+      "code": "// 相対インポート (go modules 内)\nimport (\n// 標準インポート\n  \"example.com/project/pkg/util\"\n// modules では無効\n//  \"./mylocal\"\n)"
+    },
+    {
+      "title": "Package Variables",
+      "code": "package mypackage\n\n// パッケージ変数\nvar PackageVar int"
+    },
+    {
+      "title": "init() Function",
+      "code": "// init 関数はパッケージがインポートされるときに実行される\n// main() が開始する前に\nfunc init() {\n  PackageVar = 42\n  // 初期化コード\n}"
+    },
+    {
+      "title": "Multiple init() Functions",
+      "code": "// 複数の init 関数は宣言順に実行される\nfunc init() {\n  // 最初の init\n}\n\nfunc init() {\n  // 2番目の init\n}"
+    },
+    {
+      "title": "Package Initialization Order",
+      "code": "// パッケージ初期化順序:\n// 1. パッケージレベルの変数初期化\n// 2. 宣言順の init() 関数\n\n// パッケージ間:\n// 1. インポートされたパッケージが最初に初期化される\n// 2. 次にインポート元のパッケージが初期化される"
+    },
+    {
+      "title": "Go Modules: Initialization (go mod init)",
+      "code": "// モジュール初期化\n// 新しいモジュールを作成\ngo mod init example.com/mymodule"
+    },
+    {
+      "title": "Go Modules: go.mod File",
+      "code": "// モジュールファイル (go.mod)\nmodule example.com/mymodule\n\n// 最小 Go バージョン\ngo 1.19\n\nrequire (\n  github.com/pkg/errors v0.9.1\n  golang.org/x/text v0.9.0\n)\n\nexclude github.com/unwanted/package v1.0.0\n\nreplace github.com/original/package => github.com/fork/package v1.2.0"
+    },
+    {
+      "title": "Go Modules: Dependency Management",
+      "code": "// 依存関係の管理\n// 依存関係を追加\ngo get github.com/pkg/errors\n// 特定のバージョン\ngo get github.com/pkg/errors@v0.9.1\n// すべての依存関係を更新\ngo get -u\n// 未使用の依存関係をクリーンアップ\ngo mod tidy\n// vendor ディレクトリを作成\ngo mod vendor\n// 依存関係を説明\ngo mod why github.com/pkg/errors\n// すべての依存関係をリスト\ngo list -m all"
+    },
+    {
+      "title": "Standard Library: fmt",
+      "code": "// フォーマット\nimport \"fmt\"\nfmt.Println(\"Hello, world\")\nfmt.Printf(\"%d %s\\n\", 42, \"text\")"
+    },
+    {
+      "title": "Standard Library: io / os",
+      "code": "// 入出力\nimport \"io\"\nimport \"os\"\nfile, err := os.Open(\"file.txt\")\ndata, err := io.ReadAll(file)"
+    },
+    {
+      "title": "Standard Library: strings",
+      "code": "// 文字列\nimport \"strings\"\ns := strings.ToUpper(\"hello\")\ncontains := strings.Contains(s, \"EL\")\nparts := strings.Split(\"a,b,c\", \",\")"
+    },
+    {
+      "title": "Standard Library: time",
+      "code": "// 時間\nimport \"time\"\nnow := time.Now()\ntime.Sleep(time.Second * 2)\nduration := time.Since(now)"
+    },
+    {
+      "title": "Standard Library: encoding/json",
+      "code": "// JSON\nimport \"encoding/json\"\ntype Person struct {\n  Name string `json:\"name\"`\n  Age  int    `json:\"age\"`\n}\ndata, err := json.Marshal(person)\nperson := Person{}\nerr := json.Unmarshal(data, &person)"
+    },
+    {
+      "title": "Standard Library: net/http",
+      "code": "// HTTP\nimport \"net/http\"\nhttp.HandleFunc(\"/hello\", func(w http.ResponseWriter, r *http.Request) {\n  fmt.Fprintf(w, \"Hello\")\n})\nhttp.ListenAndServe(\":8080\", nil)"
     },
     {
       "title": "Internal Packages",
