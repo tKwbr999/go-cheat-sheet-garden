@@ -1,22 +1,112 @@
 ---
-title: "Basic Select" # タイトル内のダブルクォートをエスケープ
-tags: ["concurrency"]
+title: "並行処理: `select` 文による複数チャネル操作の待機"
+tags: ["concurrency", "channel", "goroutine", "select", "case", "同期", "通信"]
 ---
 
+Goの並行処理では、複数のチャネルからの受信、または複数のチャネルへの送信を**同時に待ち受け**、最初に準備ができた（ブロックせずに実行できる）操作を実行したい場合があります。このような多方向の通信/同期を実現するのが **`select`** 文です。
+
+`select` 文は `switch` 文と似ていますが、`case` で評価するのは値ではなく、**チャネルの送受信操作**です。
+
+## `select` 文の基本構文と動作
+
+**構文:**
 ```go
-// Select 文は複数のチャネル操作を待機できる
-ch1 := make(chan string)
-ch2 := make(chan string)
-
-go func() { time.Sleep(1 * time.Second); ch1 <- "one" }()
-go func() { time.Sleep(2 * time.Second); ch2 <- "two" }()
-
-for i := 0; i < 2; i++ {
-	select {
-	case msg1 := <-ch1:
-		fmt.Println("received", msg1)
-	case msg2 := <-ch2:
-		fmt.Println("received", msg2)
-	}
+select {
+case 送受信操作1:
+	// 操作1 が実行可能になった場合の処理
+case 送受信操作2:
+	// 操作2 が実行可能になった場合の処理
+// ... 他の case ...
+default: // オプション
+	// どの case もすぐに実行できない場合の処理 (ノンブロッキング)
 }
 ```
+
+*   `select` 文は、その中のすべての `case` で指定されたチャネルの送受信操作を監視します。
+*   **実行可能な `case` が見つかるまでブロック**します。
+    *   `case value := <-ch:`: チャネル `ch` から受信が可能になると実行可能。
+    *   `case ch <- value:`: チャネル `ch` へ送信が可能になると実行可能。
+*   **複数の `case` が同時に実行可能**な場合、`select` はその中から**ランダムに一つを選択**して実行します。特定の `case` が優先されることはありません。
+*   実行可能な `case` が一つ選択されると、その `case` の送受信操作と、それに続く処理ブロックが実行されます。その後、`select` 文は終了します（`switch` と同様に自動的なフォールスルーはありません）。
+*   **`default` 節 (オプション):** `default` 節があると、`select` 文はブロックしません。実行時にどの `case` もすぐに実行できない場合、`default` 節が実行されます。これはノンブロッキングな送受信を試みる際に使われます（後のセクションで説明）。
+
+## コード例: 複数のチャネルからの受信
+
+2つの異なる Goroutine が、それぞれ異なるタイミングでチャネルにメッセージを送信し、`main` Goroutine が `select` を使って先に届いたメッセージから順番に受信する例を見てみましょう。
+
+```go title="select による複数チャネルからの受信"
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	// 2つの string 型チャネルを作成
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+
+	// Goroutine 1: 1秒後に ch1 に送信
+	go func() {
+		time.Sleep(1 * time.Second)
+		ch1 <- "メッセージ from 1"
+	}()
+
+	// Goroutine 2: 500ミリ秒後に ch2 に送信
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		ch2 <- "メッセージ from 2"
+	}()
+
+	fmt.Println("チャネルからの受信を待機中...")
+
+	// 2つのメッセージを受信するために2回ループ
+	for i := 0; i < 2; i++ {
+		fmt.Printf("(%d回目) select 開始:\n", i+1)
+		// select で ch1 または ch2 のどちらか受信可能な方を待つ
+		select {
+		case msg1 := <-ch1: // ch1 から受信できたら実行
+			fmt.Printf("  ch1 から受信: %s\n", msg1)
+		case msg2 := <-ch2: // ch2 から受信できたら実行
+			fmt.Printf("  ch2 から受信: %s\n", msg2)
+			// case <-time.After(2 * time.Second): // タイムアウト処理 (後のセクションで説明)
+			// 	fmt.Println("  タイムアウトしました。")
+			// default: // ノンブロッキング (後のセクションで説明)
+			//  fmt.Println("  現在受信可能なメッセージはありません。")
+		}
+		fmt.Printf("(%d回目) select 終了\n", i+1)
+	}
+
+	fmt.Println("\nすべてのメッセージを受信しました。")
+}
+
+/* 実行結果の例:
+チャネルからの受信を待機中...
+(1回目) select 開始:
+  ch2 から受信: メッセージ from 2  <- ch2 の方が先に送信されるため、通常はこちらが先に実行される
+(1回目) select 終了
+(2回目) select 開始:
+  ch1 から受信: メッセージ from 1  <- 次に ch1 から受信
+(2回目) select 終了
+
+すべてのメッセージを受信しました。
+*/
+```
+
+**コード解説:**
+
+*   `ch1` と `ch2` という2つのチャネルを作成します。
+*   2つの Goroutine を起動し、それぞれ異なる時間待機した後、`ch1` と `ch2` にメッセージを送信します (`ch2` の方が早く送信されます)。
+*   `main` Goroutine の `for` ループ内で `select` 文を実行します。
+*   **1回目のループ:**
+    *   `select` は `<-ch1` と `<-ch2` のどちらが受信可能になるかを待ちます。
+    *   Goroutine 2 が先に `ch2 <- "メッセージ from 2"` を実行するため、`case msg2 := <-ch2:` が実行可能になります。
+    *   `select` はこの `case` を選択し、`msg2` に値が代入され、「ch2 から受信...」が出力され、`select` 文が終了します。
+*   **2回目のループ:**
+    *   再び `select` は `<-ch1` と `<-ch2` を待ちます。
+    *   Goroutine 1 が `ch1 <- "メッセージ from 1"` を実行するため、`case msg1 := <-ch1:` が実行可能になります。
+    *   `select` はこの `case` を選択し、`msg1` に値が代入され、「ch1 から受信...」が出力され、`select` 文が終了します。
+*   `for` ループが終了し、プログラムが完了します。
+
+`select` 文は、複数の Goroutine との通信や同期を調整するための強力なツールです。タイムアウト処理やノンブロッキング操作など、さらに高度な使い方も可能です。
