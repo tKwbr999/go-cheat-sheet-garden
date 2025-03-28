@@ -1,22 +1,97 @@
 ---
-title: "Predefined Constraints (constraints.Ordered)" # タイトル内のダブルクォートをエスケープ
-tags: ["generics"]
+title: "ジェネリクス: 定義済みの型制約 (`comparable`, `cmp.Ordered`)"
+tags: ["generics", "ジェネリクス", "型制約", "type constraint", "comparable", "cmp", "Ordered", "比較", "順序付け"]
 ---
 
-```go
-// golang.org/x/exp/constraints から事前定義された制約を使用する
-import "golang.org/x/exp/constraints"
+型パラメータに制約を課す際、よく使われる制約パターンがあります。例えば、「比較可能な型 (`==`, `!=`)」や「順序付け可能な型 (`<`, `<=`, `>`, `>=`)」などです。Goでは、これらの一般的な制約が事前に定義されています。
 
-func Max[T constraints.Ordered](a, b T) T {
-  if a > b {
-    return a
-  }
-  return b
+## `comparable` 制約
+
+*   Go 1.18 から言語組み込みで提供されている制約です。
+*   `==` および `!=` 演算子を使って比較できるすべての型を許可します。
+*   これには、数値型、文字列型、ポインタ型、チャネル型、インターフェース型、そしてすべてのフィールドが比較可能な構造体型、すべての要素が比較可能な配列型などが含まれます。
+*   **スライス、マップ、関数型は比較可能ではない**ため、`comparable` 制約を満たしません。
+*   **主な用途:** マップのキーとして使える型をジェネリック関数や型で扱いたい場合など。
+
+```go
+// K は比較可能な型である必要がある
+func FindKey[K comparable, V any](m map[K]V, value V) (K, bool) {
+	// マップのキー K は comparable 制約を満たす必要がある
+	// ... (実装は省略) ...
+	var zero K
+	return zero, false
+}
+```
+
+## `cmp.Ordered` 制約 (Go 1.21+)
+
+*   Go 1.21 から標準ライブラリの **`cmp`** パッケージで提供されています (`import "cmp"`)。
+    *   (Go 1.18 ~ 1.20 では、実験的な `golang.org/x/exp/constraints` パッケージで `constraints.Ordered` として提供されていました。)
+*   `cmp.Ordered` は、**順序付け可能な (Ordered)** 型、つまり `<`, `<=`, `>`, `>=` 演算子を使って比較できる型のみを許可する制約です。
+*   具体的には、**組み込みの整数型、浮動小数点数型、そして文字列型**がこの制約を満たします。
+*   **主な用途:** ジェネリックな最小値/最大値関数、ソート関数など、大小比較が必要な処理を実装する場合。
+
+## コード例: ジェネリックな `Max` 関数
+
+`cmp.Ordered` 制約を使って、任意の順序付け可能な型のうち大きい方を返すジェネリック関数 `Max` を実装してみましょう。
+
+```go title="cmp.Ordered 制約を使った Max 関数"
+package main
+
+import (
+	"cmp" // Go 1.21+ で Ordered を使うためにインポート
+	"fmt"
+)
+
+// --- ジェネリック関数 Max の定義 ---
+// 型パラメータ T に cmp.Ordered 制約を課す
+// これにより、T は整数、浮動小数点数、または文字列であることが保証される
+func Max[T cmp.Ordered](a, b T) T {
+	// ★ > 演算子が使用可能 ★
+	// cmp.Ordered 制約により、T 型の値に対して > 演算子が使えることが保証される
+	if a > b {
+		return a
+	}
+	return b
 }
 
-// 使用法
-// int で動作する
-Max(5, 10)
-// string で動作する (文字列は順序付け可能)
-Max("a", "b")
+func main() {
+	// --- int で使用 ---
+	fmt.Printf("Max(10, 5)   = %v\n", Max(10, 5)) // 10
+
+	// --- float64 で使用 ---
+	fmt.Printf("Max(3.14, 2.71) = %v\n", Max(3.14, 2.71)) // 3.14
+
+	// --- string で使用 (辞書順で比較される) ---
+	fmt.Printf("Max(\"apple\", \"banana\") = %v\n", Max("apple", "banana")) // "banana"
+	fmt.Printf("Max(\"Go\", \"Go\")      = %v\n", Max("Go", "Go"))          // "Go"
+
+	// --- エラーになる例 ---
+	// スライス型は cmp.Ordered を満たさないためコンパイルエラー
+	// slice1 := []int{1}
+	// slice2 := []int{2}
+	// Max(slice1, slice2) // コンパイルエラー！
+
+	// 構造体型も cmp.Ordered を満たさないためコンパイルエラー
+	// type Point struct{ X, Y int }
+	// p1 := Point{1, 2}
+	// p2 := Point{2, 1}
+	// Max(p1, p2) // コンパイルエラー！
+}
+
+/* 実行結果:
+Max(10, 5)   = 10
+Max(3.14, 2.71) = 3.14
+Max("apple", "banana") = banana
+Max("Go", "Go")      = Go
+*/
 ```
+
+**コード解説:**
+
+*   `import "cmp"`: `Ordered` 制約を使うために `cmp` パッケージをインポートします (Go 1.21 以降)。
+*   `func Max[T cmp.Ordered](a, b T) T`: 型パラメータ `T` に `cmp.Ordered` 制約を指定しています。
+*   `if a > b { ... }`: 関数内で `>` 演算子を使っています。`cmp.Ordered` 制約があるため、コンパイラは `T` 型が `>` 演算をサポートしていることを認識し、コンパイルを許可します。もし制約が `any` であれば、`>` 演算子は使えずコンパイルエラーになります。
+*   `Max` 関数は `int`, `float64`, `string` 型で正しく動作しますが、`[]int` や構造体のような順序付けできない型を渡そうとするとコンパイルエラーになります。
+
+`comparable` や `cmp.Ordered` のような定義済みの制約を使うことで、一般的な操作（比較、順序付け）を必要とするジェネリックなコードを簡単に記述できます。自分でインターフェースを使って型リストを定義する代わりに、これらの標準的な制約が利用できないかまず検討すると良いでしょう。
