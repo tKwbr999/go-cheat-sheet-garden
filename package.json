@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run bundle-data && vite",
-    "build": "npm run bundle-data && vite build",
-    "build:dev": "npm run bundle-data && vite build --mode development",
+    "dev": "vite",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "bundle-data": "node scripts/bundle-cheatsheet-data.ts"
+    "bundle-data": "bun run scripts/bundle-cheatsheet-data.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
