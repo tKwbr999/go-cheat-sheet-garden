@@ -1,0 +1,125 @@
+{
+  "title": "Io Operations",
+  "codeExamples": [
+    {
+      "title": "I/O 操作: ファイル全体を読み込む (`os.ReadFile`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os パッケージ\n)\n\nfunc main() {\n\tfileName := \"example.txt\" // 読み込むファイル名\n\t// 事前にファイルを作成しておく必要があります\n\t// os.WriteFile(fileName, []byte(\"ファイル内容\"), 0644)\n\n\tfmt.Printf(\"'%s' を読み込み中...\\n\", fileName)\n\t// os.ReadFile でファイル全体をバイトスライスに読み込む\n\tdata, err := os.ReadFile(fileName)\n\n\t// エラーチェックは必須\n\tif err != nil {\n\t\tlog.Fatalf(\"読み込み失敗: %v\", err)\n\t}\n\n\t// 読み込んだ内容 (バイトスライス) を文字列に変換して表示\n\tfmt.Println(\"--- 内容 ---\")\n\tfmt.Print(string(data))\n\tfmt.Println(\"------------\")\n\tfmt.Printf(\"バイト数: %d\\n\", len(data))\n\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: ファイルへの書き込み (`os.WriteFile`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os パッケージ\n)\n\nfunc main() {\n\tfileName := \"output.txt\"\n\tcontent := \"os.WriteFile で書き込むテキスト。\\n改行もOK。\\n\"\n\tdata := []byte(content) // 文字列をバイトスライスに変換\n\n\t// os.WriteFile でファイルに書き込む (パーミッション 0644)\n\terr := os.WriteFile(fileName, data, 0644)\n\n\t// エラーチェックは必須\n\tif err != nil {\n\t\tlog.Fatalf(\"書き込み失敗 '%s': %v\", fileName, err)\n\t}\n\n\tfmt.Printf(\"'%s' に書き込み成功。\\n\", fileName)\n\n\t// (確認のため os.ReadFile で読み込む処理は省略)\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: ファイルを開く/作成する (`os.Open`, `os.Create`, `os.OpenFile`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"test_open.txt\"\n\n\t// os.Create: 書き込み用に作成 (または上書き)\n\tfile1, err := os.Create(fileName)\n\tif err != nil { log.Fatalf(\"Create failed: %v\", err) }\n\tfmt.Printf(\"'%s' created/opened for writing.\\n\", fileName)\n\tdefer file1.Close() // ★ 必ず Close する\n\t// file1.WriteString(\"...\") // 書き込み可能\n\n\t// os.Open: 読み取り専用で開く\n\tfile2, err := os.Open(fileName) // 既存ファイルを開く\n\tif err != nil { log.Fatalf(\"Open failed: %v\", err) }\n\tfmt.Printf(\"'%s' opened for reading.\\n\", fileName)\n\tdefer file2.Close() // ★ 必ず Close する\n\t// content, _ := io.ReadAll(file2) // 読み取り可能\n\n\t// os.OpenFile: 追記モードで開く (例)\n\t// flag := os.O_WRONLY | os.O_APPEND | os.O_CREATE\n\t// file3, err := os.OpenFile(fileName, flag, 0644)\n\t// if err != nil { log.Fatalf(\"OpenFile failed: %v\", err) }\n\t// fmt.Printf(\"'%s' opened for appending.\\n\", fileName)\n\t// defer file3.Close()\n\t// file3.WriteString(\"Appended text.\\n\")\n\n\tos.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: ファイルからの読み込み (`file.Read`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.EOF\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"example.txt\" // 事前に作成しておく\n\t// os.WriteFile(fileName, []byte(\"Line1\\nLine2\"), 0644)\n\n\tfile, err := os.Open(fileName) // 読み取り用に開く\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close() // ★ 必ず閉じる\n\n\tbuffer := make([]byte, 32) // 読み込み用バッファ\n\ttotalBytes := 0\n\tfmt.Println(\"--- Reading ---\")\n\n\tfor {\n\t\t// バッファに読み込む\n\t\tbytesRead, err := file.Read(buffer)\n\t\tif bytesRead > 0 {\n\t\t\t// 読み込んだ分だけ処理 (例: 表示)\n\t\t\tfmt.Printf(\"Read %d bytes: %s\\n\", bytesRead, string(buffer[:bytesRead]))\n\t\t\ttotalBytes += bytesRead\n\t\t}\n\n\t\t// ★ エラーチェック (EOF含む) ★\n\t\tif err != nil {\n\t\t\tif err == io.EOF { // ファイル終端なら正常終了\n\t\t\t\tfmt.Println(\"--- EOF ---\")\n\t\t\t\tbreak // ループを抜ける\n\t\t\t}\n\t\t\t// EOF 以外のエラー\n\t\t\tlog.Fatalf(\"Read error: %v\", err)\n\t\t}\n\t}\n\tfmt.Printf(\"Total read: %d bytes\\n\", totalBytes)\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: ファイルへの書き込み (`file.Write`, `file.WriteString`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"output_write.txt\"\n\tfile, err := os.Create(fileName) // 書き込み用に作成/オープン\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close() // ★ 必ず閉じる\n\n\tfmt.Printf(\"'%s' を書き込み用にオープン\\n\", fileName)\n\n\t// file.Write でバイトスライスを書き込む\n\tdata1 := []byte(\"Write で書き込み\\n\")\n\tn1, err := file.Write(data1)\n\tif err != nil { log.Fatalf(\"Write 失敗: %v\", err) }\n\tfmt.Printf(\"Write: %d バイト書き込み\\n\", n1)\n\n\t// file.WriteString で文字列を書き込む\n\tn2, err := file.WriteString(\"WriteString で書き込み\\n\")\n\tif err != nil { log.Fatalf(\"WriteString 失敗: %v\", err) }\n\tfmt.Printf(\"WriteString: %d バイト書き込み\\n\", n2)\n\n\t// fmt.Fprintf(file, \"Fprintf も使える\\n\") // *os.File は io.Writer\n\n\tfmt.Println(\"書き込み完了\")\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: ファイル内の位置移動 (`file.Seek`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // Seek 定数\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"example_seek.txt\"\n\t// 事前にファイル作成: os.WriteFile(fileName, []byte(\"0123456789ABC...\"), 0644)\n\n\tfile, err := os.OpenFile(fileName, os.O_RDWR, 0644) // 読み書きで開く\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\tbuffer := make([]byte, 5)\n\n\t// 1. 先頭から 10 バイト目に移動 (SeekStart)\n\tnewOffset, err := file.Seek(10, io.SeekStart)\n\tif err != nil { log.Fatal(err) }\n\tfmt.Printf(\"Seek(10, Start): Offset=%d\\n\", newOffset) // 10\n\n\t// 2. 現在位置から 5 バイト読み込む\n\tn, err := file.Read(buffer)\n\tif err != nil { log.Fatal(err) }\n\tfmt.Printf(\" Read: %s\\n\", string(buffer[:n])) // ABCDE\n\n\t// 3. 末尾から 5 バイト前に移動 (SeekEnd)\n\tnewOffset, err = file.Seek(-5, io.SeekEnd)\n\tif err != nil { log.Fatal(err) }\n\tfmt.Printf(\"Seek(-5, End): Offset=%d\\n\", newOffset) // 例: 31\n\n\t// 4. 現在位置から 5 バイト読み込む\n\tn, err = file.Read(buffer)\n\tif err != nil && err != io.EOF { log.Fatal(err) }\n\tfmt.Printf(\" Read: %s\\n\", string(buffer[:n])) // VWXYZ\n\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: データのコピー (`io.Copy`, `io.CopyN`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.Copy\n\t\"log\"\n\t\"os\"\n\t// \"strings\" // strings.NewReader の例は省略\n)\n\nfunc main() {\n\t// --- ファイルからファイルへのコピー ---\n\tsrcFileName := \"source.txt\"\n\tdstFileName := \"dest.txt\"\n\tos.WriteFile(srcFileName, []byte(\"Source content.\\n\"), 0644) // 元ファイル準備\n\n\tsrcFile, err := os.Open(srcFileName) // Reader として開く\n\tif err != nil { log.Fatal(err) }\n\tdefer srcFile.Close()\n\n\tdstFile, err := os.Create(dstFileName) // Writer として開く\n\tif err != nil { log.Fatal(err) }\n\tdefer dstFile.Close()\n\n\t// ★ io.Copy で src から dst へコピー ★\n\tbytesCopied, err := io.Copy(dstFile, srcFile)\n\tif err != nil {\n\t\tlog.Fatalf(\"コピー失敗: %v\", err)\n\t}\n\tfmt.Printf(\"Copied %d bytes from %s to %s\\n\", bytesCopied, srcFileName, dstFileName)\n\n\t// (コピー結果確認や後片付けは省略)\n\t// os.Remove(srcFileName); os.Remove(dstFileName)\n}"
+    },
+    {
+      "title": "I/O 操作: 一時ディレクトリの作成 (`os.MkdirTemp`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n\t// \"path/filepath\"\n)\n\nfunc main() {\n\tfmt.Println(\"一時ディレクトリ作成...\")\n\n\t// システム一時ディレクトリ内に \"myapp-*\" パターンのディレクトリ作成\n\ttempDir, err := os.MkdirTemp(\"\", \"myapp-*\")\n\tif err != nil {\n\t\tlog.Fatalf(\"作成失敗: %v\", err)\n\t}\n\n\t// ★★★ defer で必ず削除 ★★★\n\tdefer func() {\n\t\tfmt.Printf(\"defer: '%s' を削除\\n\", tempDir)\n\t\terr := os.RemoveAll(tempDir) // ディレクトリと中身を削除\n\t\tif err != nil { log.Printf(\"警告: 削除失敗: %v\", err) }\n\t}()\n\n\tfmt.Printf(\"作成された一時ディレクトリ: %s\\n\", tempDir)\n\n\t// --- 一時ディレクトリ内にファイル作成等 ---\n\t// filePath := filepath.Join(tempDir, \"temp.txt\")\n\t// os.WriteFile(filePath, []byte(\"data\"), 0644)\n\tfmt.Println(\"一時ディレクトリ内で処理実行中...\")\n\n\t// main 終了時に defer が実行される\n}"
+    },
+    {
+      "title": "I/O 操作: 一時ファイルの作成 (`os.CreateTemp`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfmt.Println(\"一時ファイル作成...\")\n\n\t// 一時ディレクトリ内に \"temp-*.txt\" パターンのファイルを作成・オープン\n\ttempFile, err := os.CreateTemp(\"\", \"temp-*.txt\")\n\tif err != nil { log.Fatal(err) }\n\n\t// ★★★ 2段階 defer でクリーンアップ ★★★\n\t// 1. ファイルハンドルを閉じる (Remove より先に defer)\n\tdefer func() {\n\t\tfmt.Printf(\"defer: Close '%s'\\n\", tempFile.Name())\n\t\ttempFile.Close()\n\t}()\n\t// 2. ファイル自体を削除する (Close より後に defer)\n\tdefer func() {\n\t\tfmt.Printf(\"defer: Remove '%s'\\n\", tempFile.Name())\n\t\tos.Remove(tempFile.Name())\n\t}()\n\n\n\tfmt.Printf(\"作成された一時ファイル: %s\\n\", tempFile.Name())\n\n\t// 一時ファイルに書き込む\n\t_, err = tempFile.Write([]byte(\"一時データ\"))\n\tif err != nil { log.Fatal(err) }\n\tfmt.Println(\"一時ファイルに書き込み完了\")\n\n\t// main 終了時に defer が逆順 (Remove -> Close) で実行される\n}"
+    },
+    {
+      "title": "I/O 操作: Reader からすべて読み込む (`io.ReadAll`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.ReadAll\n\t\"log\"\n\t\"strings\" // strings.NewReader\n\t// \"os\"\n\t// \"net/http\"\n)\n\nfunc main() {\n\t// 例: strings.Reader から読み込む\n\treader := strings.NewReader(\"リーダーからのデータ。\")\n\tdata, err := io.ReadAll(reader) // Reader から全て読み込む\n\n\tif err != nil { // EOF 以外のエラーチェック\n\t\tlog.Fatalf(\"ReadAll 失敗: %v\", err)\n\t}\n\n\t// data は []byte\n\tfmt.Printf(\"読み込み成功 (%d bytes): %s\\n\", len(data), string(data))\n\n\t// --- 他の Reader の例 ---\n\t// file, _ := os.Open(\"file.txt\")\n\t// defer file.Close()\n\t// fileData, _ := io.ReadAll(file)\n\n\t// resp, _ := http.Get(\"...\")\n\t// defer resp.Body.Close()\n\t// bodyData, _ := io.ReadAll(resp.Body)\n}"
+    },
+    {
+      "title": "I/O 操作: 複数の Reader の連結 (`io.MultiReader`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.MultiReader, io.Copy\n\t\"log\"\n\t\"os\"\n\t\"strings\" // strings.NewReader\n)\n\nfunc main() {\n\t// 複数の Reader を準備\n\tr1 := strings.NewReader(\"First part. \")\n\tr2 := strings.NewReader(\"Second part. \")\n\tr3 := strings.NewReader(\"Third part.\")\n\n\t// io.MultiReader で連結\n\tmultiReader := io.MultiReader(r1, r2, r3)\n\n\tfmt.Println(\"--- Reading from MultiReader ---\")\n\n\t// 連結された Reader から io.Copy で読み込む\n\tbytesCopied, err := io.Copy(os.Stdout, multiReader) // 標準出力へコピー\n\tfmt.Println() // 改行\n\tif err != nil {\n\t\tlog.Fatalf(\"Copy failed: %v\", err)\n\t}\n\tfmt.Printf(\"(Copied %d bytes)\\n\", bytesCopied)\n\n\t// 読み込み後、元の r1, r2, r3 は EOF になっている\n}"
+    },
+    {
+      "title": "I/O 操作: 複数への同時書き込み (`io.MultiWriter`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"bytes\" // bytes.Buffer\n\t\"fmt\"\n\t\"io\" // io.MultiWriter, io.WriteString\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\t// 書き込み先を準備\n\tw1 := os.Stdout      // 1. 標準出力\n\tvar w2 bytes.Buffer // 2. メモリバッファ (io.Writer を満たす)\n\t// w3, _ := os.Create(\"file.log\") // 3. ファイル (例)\n\t// defer w3.Close()\n\n\t// io.MultiWriter で複数の Writer を束ねる\n\t// ここでは標準出力とメモリバッファに書き込む Writer を作成\n\tmultiWriter := io.MultiWriter(w1, &w2) // バッファはポインタを渡す\n\n\tfmt.Println(\"--- Writing to MultiWriter ---\")\n\n\t// multiWriter に書き込むと、w1 と w2 の両方に書き込まれる\n\tmessage := \"Log message.\\n\"\n\tn, err := io.WriteString(multiWriter, message)\n\tif err != nil {\n\t\tlog.Fatalf(\"Write failed: %v\", err)\n\t}\n\tfmt.Printf(\"(Wrote %d bytes)\\n\", n)\n\n\tfmt.Println(\"--- End Writing ---\")\n\n\t// 結果確認 (バッファの内容)\n\tfmt.Println(\"\\n--- Buffer Content ---\")\n\tfmt.Print(w2.String()) // \"Log message.\\n\" が入っている\n}"
+    },
+    {
+      "title": "I/O 操作: バッファ付きリーダー (`bufio.NewReader`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"bufio\" // bufio パッケージ\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"os\"\n\t// \"strings\"\n)\n\nfunc main() {\n\tfileName := \"example.txt\" // 事前に作成しておく\n\t// os.WriteFile(fileName, []byte(\"Line1\\nLine2\\n\"), 0644)\n\n\tfile, err := os.Open(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\t// bufio.NewReader でラップ\n\treader := bufio.NewReader(file)\n\n\tfmt.Println(\"--- Reading line by line ---\")\n\tfor {\n\t\t// ReadString('\\n') で改行まで読み込む\n\t\tline, err := reader.ReadString('\\n')\n\t\tif len(line) > 0 {\n\t\t\tfmt.Print(line) // 読み込んだ行を表示 (改行含む)\n\t\t}\n\n\t\t// エラーチェック (EOF含む)\n\t\tif err != nil {\n\t\t\tif err == io.EOF {\n\t\t\t\tfmt.Println(\"--- EOF ---\")\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tlog.Fatalf(\"Read error: %v\", err)\n\t\t}\n\t}\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: バッファ付きスキャナー (`bufio.Scanner`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"bufio\" // bufio.Scanner\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n\t// \"strings\"\n)\n\nfunc main() {\n\tfileName := \"example_scanner.txt\" // 事前に作成しておく\n\t// os.WriteFile(fileName, []byte(\"Line 1\\nLine 2\\n\"), 0644)\n\n\tfile, err := os.Open(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\t// Scanner を作成 (デフォルトは行単位でスキャン)\n\tscanner := bufio.NewScanner(file)\n\n\tfmt.Println(\"--- Reading file line by line ---\")\n\tlineNum := 1\n\t// for scanner.Scan() ループで反復処理\n\tfor scanner.Scan() {\n\t\t// scanner.Text() で現在の行を取得 (改行は含まない)\n\t\tline := scanner.Text()\n\t\tfmt.Printf(\"%d: %s\\n\", lineNum, line)\n\t\tlineNum++\n\t}\n\n\t// ★ ループ終了後、必ずエラーをチェック ★\n\tif err := scanner.Err(); err != nil {\n\t\tlog.Fatalf(\"Scan error: %v\", err)\n\t}\n\tfmt.Println(\"Scan finished.\")\n\t// os.Remove(fileName) // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: バッファ付きライター (`bufio.Writer`)",
+      "description": "`io.Writer` に頻繁に小さな書き込みを行うと非効率な場合があります。\n**バッファリング**で書き込み効率を改善できます。\n\n`bufio` パッケージの **`NewWriter`** は、既存の `io.Writer` を\nラップし、内部バッファを持つ `*bufio.Writer` を作成します。\n`import \"bufio\"` で利用します。\n\n**使い方:**\n`writer := bufio.NewWriter(wr io.Writer)`\n*   `wr`: 元の `io.Writer` (例: `*os.File`)。\n*   `writer`: `*bufio.Writer` (これも `io.Writer`)。\n*   デフォルトバッファサイズ 4096 バイト (`NewWriterSize` で指定可)。\n\n`writer` への `Write`, `WriteString` 等はまず内部バッファに書き込まれます。\nバッファが一杯になるか、**`Flush()`** が呼ばれるまで、\n元の `wr` には書き込まれません。\n\n**`Flush()` メソッドの重要性:**\n`err := writer.Flush()`\n*   バッファに残っているデータを元の `io.Writer` に書き出す。\n*   **重要:** `bufio.Writer` を使ったら、書き込み処理の\n    **最後に必ず `Flush()` を呼ぶ**必要があります。\n    忘れるとデータが書き込まれず欠損します。\n*   `defer` で呼ぶことも可能ですが、`Flush()` 自体のエラー処理が必要です。",
+      "code": "package main\n\nimport (\n\t\"bufio\" // bufio.Writer\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"output_buffered.txt\"\n\tfile, err := os.Create(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close() // ファイル自体の Close も必要\n\n\t// bufio.NewWriter でラップ\n\twriter := bufio.NewWriter(file)\n\n\tfmt.Println(\"Writing to buffer...\")\n\t// データ書き込み (バッファへ)\n\tn1, _ := writer.WriteString(\"Buffered Write 1.\\n\")\n\tn2, _ := writer.Write([]byte(\"Buffered Write 2.\\n\"))\n\t_ = writer.WriteByte('!')\n\tfmt.Printf(\"Buffered: %d bytes\\n\", writer.Buffered()) // バッファ内のバイト数\n\n\t// ★★★ Flush でバッファ内容を書き出す ★★★\n\tfmt.Println(\"Flushing buffer...\")\n\terr = writer.Flush() // この時点でファイルに書き込まれる\n\tif err != nil { log.Fatalf(\"Flush failed: %v\", err) }\n\tfmt.Println(\"Flush complete.\")\n\tfmt.Printf(\"Buffered after flush: %d bytes\\n\", writer.Buffered()) // 0\n\n\t// (ファイル内容確認や os.Remove は省略)\n}"
+    },
+    {
+      "title": "I/O 操作: 文字列を Reader として扱う (`strings.NewReader`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"os\"\n\t\"strings\" // strings.NewReader\n)\n\n// io.Reader を受け取る関数 (例)\nfunc printContent(r io.Reader) error {\n\tfmt.Println(\"--- Content ---\")\n\t_, err := io.Copy(os.Stdout, r) // Reader から標準出力へコピー\n\tfmt.Println(\"\\n---------------\")\n\treturn err\n}\n\nfunc main() {\n\tmyString := \"メモリ上の文字列データ。\\nReader として扱える。\"\n\n\t// strings.NewReader で文字列から Reader を作成\n\tstringReader := strings.NewReader(myString)\n\n\t// io.Reader を引数に取る関数に渡す\n\terr := printContent(stringReader)\n\tif err != nil { log.Fatal(err) }\n\n\t// 読み込み後は EOF になっている\n\t// n, readErr := stringReader.Read([]byte{0}) // n=0, readErr=io.EOF\n\n\t// Seek も可能 (io.Seeker を満たす)\n\t// stringReader.Seek(10, io.SeekStart)\n}"
+    },
+    {
+      "title": "I/O 操作: バイトバッファ (`bytes.Buffer`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"bytes\" // bytes.Buffer\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t// \"os\"\n)\n\nfunc main() {\n\t// 空のバッファを作成\n\tvar buffer bytes.Buffer\n\n\t// 書き込み (io.Writer として動作)\n\tbuffer.WriteString(\"Hello, \")\n\tbuffer.Write([]byte(\"Buffer!\\n\"))\n\tfmt.Fprintf(&buffer, \"Length: %d\\n\", buffer.Len())\n\n\t// 内容取得\n\tfmt.Println(\"--- Content ---\")\n\tfmt.Print(buffer.String()) // 未読部分を文字列で取得\n\tfmt.Println(\"---------------\")\n\n\t// 読み込み (io.Reader として動作)\n\tfmt.Println(\"--- Reading ---\")\n\tline, err := buffer.ReadString('\\n') // 1行読み込み\n\tif err != nil && err != io.EOF { log.Fatal(err) }\n\tfmt.Printf(\"Read line: %s\", line)\n\n\tremaining, _ := io.ReadAll(&buffer) // 残りを全て読み込み\n\tfmt.Printf(\"Read remaining: %s\", string(remaining))\n\tfmt.Printf(\"Len after read: %d\\n\", buffer.Len()) // 0\n\n\t// buffer.Reset() // バッファを空にする\n}"
+    },
+    {
+      "title": "I/O 操作: 読み込みサイズの制限 (`io.LimitReader`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"strings\"\n)\n\nfunc main() {\n\toriginalData := \"0123456789ABCDEFGHIJ\" // 20バイトのデータ\n\treader := strings.NewReader(originalData)\n\n\t// LimitReader で最大 15 バイトに制限\n\tlimitReader := io.LimitReader(reader, 15)\n\n\t// ReadAll で読み込む (最大15バイトしか読めない)\n\tdata, err := io.ReadAll(limitReader)\n\tif err != nil {\n\t\tlog.Fatalf(\"ReadAll failed: %v\", err)\n\t}\n\tfmt.Printf(\"Read (%d bytes): %s\\n\", len(data), string(data)) // 15バイト\n\n\t// さらに読み込もうとしても EOF になる\n\t// n, err := limitReader.Read([]byte{0}) // n=0, err=io.EOF\n\n\t// 元の reader は 15 バイト分進んでいる\n\t// remaining, _ := io.ReadAll(reader) // \"FGHIJ\" が読める\n}"
+    },
+    {
+      "title": "I/O 操作: CSV データの読み込み (`encoding/csv`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"encoding/csv\" // csv パッケージ\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"strings\"\n\t// \"os\" // ファイルから読む場合は os.Open\n)\n\nfunc main() {\n\tcsvData := `\"Name\",\"Age\",\"City\"\\n\"Alice\",\"30\",\"New York\"\\n\"Bob\",\"\",\"London\"`\n\n\t// csv.NewReader でリーダー作成\n\treader := csv.NewReader(strings.NewReader(csvData))\n\t// reader.Comma = '\\t' // タブ区切りなど、オプション設定可能\n\n\tfmt.Println(\"--- Reading CSV record by record ---\")\n\t// ヘッダー行読み飛ばし (オプション)\n\t// header, _ := reader.Read()\n\t// fmt.Println(\"Header:\", header)\n\n\tfor {\n\t\t// Read() で1レコード (1行) ずつ読み込む\n\t\trecord, err := reader.Read()\n\t\tif err != nil {\n\t\t\tif err == io.EOF { break } // 終端でループ終了\n\t\t\tlog.Fatal(err) // EOF 以外のエラー\n\t\t}\n\t\t// record は []string (フィールドのスライス)\n\t\tfmt.Printf(\"Record: %v, Fields: %d\\n\", record, len(record))\n\t\t// fmt.Printf(\" Name: %s, Age: %s\\n\", record[0], record[1])\n\t}\n\tfmt.Println(\"Finished reading.\")\n}"
+    },
+    {
+      "title": "I/O 操作: CSV データの書き込み (`encoding/csv`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"encoding/csv\" // csv パッケージ\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n\t// \"bytes\"\n)\n\nfunc main() {\n\trecords := [][]string{\n\t\t{\"Header1\", \"Header2\"},\n\t\t{\"Data1\", \"Value, with comma\"},\n\t\t{\"Data2\", \"Value\\nwith newline\"},\n\t}\n\tfileName := \"output.csv\"\n\n\tfile, err := os.Create(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\t// csv.NewWriter を作成 (io.Writer を渡す)\n\twriter := csv.NewWriter(file)\n\t// writer.Comma = '\\t' // オプション: 区切り文字変更\n\t// writer.UseCRLF = true // オプション: 改行を CRLF に\n\n\t// Write で1レコードずつ書き込み\n\tfor _, record := range records {\n\t\terr := writer.Write(record) // 自動でクォート等処理\n\t\tif err != nil { log.Fatalf(\"Write failed: %v\", err) }\n\t}\n\n\t// ★ Flush でバッファ内容を書き出す (Write を使った場合は必須) ★\n\twriter.Flush()\n\tif err := writer.Error(); err != nil { // Flush 後のエラーチェック\n\t\tlog.Fatalf(\"Flush error: %v\", err)\n\t}\n\n\tfmt.Printf(\"'%s' に書き込み完了\\n\", fileName)\n\t// (ファイル内容確認や os.Remove は省略)\n}"
+    },
+    {
+      "title": "I/O 操作: ディレクトリの作成 (`os.Mkdir`, `os.MkdirAll`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os.Mkdir, os.MkdirAll\n)\n\nfunc main() {\n\t// os.Mkdir: 単一ディレクトリ作成 (親が必要)\n\tdirName1 := \"single_dir\"\n\terr := os.Mkdir(dirName1, 0755) // パーミッション 0755\n\tif err != nil {\n\t\tlog.Printf(\"Mkdir %s failed: %v\", dirName1, err)\n\t\t// if os.IsExist(err) { /* 既に存在する場合の処理 */ }\n\t} else {\n\t\tfmt.Printf(\"'%s' created.\\n\", dirName1)\n\t}\n\t// os.Remove(dirName1) // 後片付け\n\n\t// os.Mkdir: 親がないとエラー\n\t// err = os.Mkdir(\"parent/child\", 0755)\n\t// if err != nil { fmt.Println(\"Mkdir parent/child error:\", err) }\n\n\t// os.MkdirAll: 親ディレクトリも含めて作成\n\tdirPathAll := \"path/to/nested\"\n\terr = os.MkdirAll(dirPathAll, 0755) // path, path/to も作成\n\tif err != nil {\n\t\tlog.Printf(\"MkdirAll %s failed: %v\", dirPathAll, err)\n\t} else {\n\t\tfmt.Printf(\"'%s' (and parents) created.\\n\", dirPathAll)\n\t}\n\t// os.RemoveAll(\"path\") // 後片付け\n}"
+    },
+    {
+      "title": "I/O 操作: カレントワーキングディレクトリ (`os.Getwd`, `os.Chdir`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\t// 現在のワーキングディレクトリを取得\n\tinitialWd, err := os.Getwd()\n\tif err != nil { log.Fatalf(\"Getwd failed: %v\", err) }\n\tfmt.Printf(\"Initial WD: %s\\n\", initialWd)\n\n\t// (例: 一時ディレクトリを作成)\n\t// tempDir, _ := os.MkdirTemp(\"\", \"chdir-example-*\")\n\t// defer os.RemoveAll(tempDir)\n\t// defer os.Chdir(initialWd) // 元に戻る defer\n\n\t// os.Chdir でワーキングディレクトリを変更 (例: /tmp へ)\n\t// 注意: 存在し、アクセス可能なディレクトリを指定する必要がある\n\ttargetDir := os.TempDir() // システムの一時ディレクトリを取得\n\tfmt.Printf(\"Changing WD to: %s\\n\", targetDir)\n\terr = os.Chdir(targetDir)\n\tif err != nil {\n\t\tlog.Fatalf(\"Chdir to %s failed: %v\", targetDir, err)\n\t}\n\n\t// 変更後のワーキングディレクトリを確認\n\tnewWd, err := os.Getwd()\n\tif err != nil { log.Fatalf(\"Getwd after Chdir failed: %v\", err) }\n\tfmt.Printf(\"New WD: %s\\n\", newWd)\n\n\t// 相対パスでのファイル操作は newWd が基準になる\n\t// os.WriteFile(\"relative.txt\", ...)\n}"
+    },
+    {
+      "title": "I/O 操作: ディレクトリエントリの読み込み (`os.ReadDir`, Go 1.16+)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os.ReadDir\n)\n\nfunc main() {\n\ttargetDir := \".\" // カレントディレクトリ\n\n\tfmt.Printf(\"Reading directory '%s'...\\n\", targetDir)\n\n\t// os.ReadDir でエントリを取得\n\tentries, err := os.ReadDir(targetDir)\n\tif err != nil {\n\t\tlog.Fatalf(\"ReadDir failed: %v\", err)\n\t}\n\n\tfmt.Println(\"--- Directory Entries ---\")\n\t// 取得したエントリをループ処理\n\tfor _, entry := range entries {\n\t\t// entry は os.DirEntry\n\t\tfmt.Printf(\" Name: %-20s IsDir: %t\\n\", entry.Name(), entry.IsDir())\n\n\t\t// 詳細情報が必要なら entry.Info() を使う (エラーチェック必要)\n\t\t// info, err := entry.Info()\n\t\t// if err == nil { fmt.Printf(\"  Size: %d\\n\", info.Size()) }\n\t}\n\tfmt.Println(\"-----------------------\")\n}"
+    },
+    {
+      "title": "I/O 操作: ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io/fs\" // fs.DirEntry, fs.WalkDirFunc\n\t\"log\"\n\t\"path/filepath\" // filepath.WalkDir, filepath.SkipDir, filepath.Ext\n\t// \"os\" // テスト用ファイル作成・削除は省略\n)\n\nfunc main() {\n\t// 事前にテスト用ディレクトリ・ファイルを作成しておく想定\n\t// os.MkdirAll(\"tmp/subdir\", 0755)\n\t// os.MkdirAll(\"tmp/.git\", 0755)\n\t// os.WriteFile(\"tmp/file.txt\", ...)\n\t// os.WriteFile(\"tmp/app.log\", ...)\n\t// os.WriteFile(\"tmp/subdir/other.log\", ...)\n\n\troot := \"tmp\" // 探索開始ディレクトリ\n\tfmt.Printf(\"Walking directory '%s'...\\n\", root)\n\n\terr := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {\n\t\t// 1. パスアクセスエラーチェック\n\t\tif err != nil {\n\t\t\tfmt.Printf(\"Error accessing path %q: %v\\n\", path, err)\n\t\t\treturn err // エラーがあれば探索中断 (nil を返せば続行)\n\t\t}\n\n\t\t// 2. 特定ディレクトリをスキップ (例: .git)\n\t\tif d.IsDir() && d.Name() == \".git\" {\n\t\t\tfmt.Printf(\"Skipping dir: %s\\n\", path)\n\t\t\treturn filepath.SkipDir // このディレクトリ以下は探索しない\n\t\t}\n\n\t\t// 3. ファイルのみ対象とし、拡張子チェック (例: .log)\n\t\tif !d.IsDir() && filepath.Ext(path) == \".log\" {\n\t\t\tfmt.Printf(\"Found log file: %s\\n\", path)\n\t\t}\n\n\t\treturn nil // 探索続行\n\t})\n\n\tif err != nil {\n\t\tlog.Fatalf(\"WalkDir failed: %v\", err)\n\t}\n\tfmt.Println(\"Walk finished.\")\n\t// os.RemoveAll(root) // 後片付け\n}"
+    }
+  ]
+}

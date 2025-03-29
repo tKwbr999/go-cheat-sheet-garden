@@ -1,0 +1,120 @@
+{
+  "title": "Flow Control",
+  "codeExamples": [
+    {
+      "title": "制御構文: 条件分岐 `if`, `else if`, `else`",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ttemperature := 25\n\n\tif temperature >= 30 {\n\t\tfmt.Println(\"暑いですね！\")\n\t} else if temperature >= 15 {\n\t\tfmt.Println(\"過ごしやすい気温です。\")\n\t} else if temperature >= 0 {\n\t\tfmt.Println(\"少し肌寒いですね。\")\n\t} else {\n\t\tfmt.Println(\"とても寒いです！\")\n\t}\n}"
+    },
+    {
+      "title": "制御構文: `if` 文と短い初期化ステートメント",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math/rand\"\n)\n\nfunc getRandomValue() int {\n\treturn rand.Intn(20) // 0-19 の乱数\n}\n\nfunc main() {\n\tif value := getRandomValue(); value > 10 {\n\t\tfmt.Printf(\"値 %d は 10 より大きい\\n\", value)\n\t} else if value > 5 {\n\t\tfmt.Printf(\"値 %d は 5 より大きく 10 以下\\n\", value)\n\t} else {\n\t\tfmt.Printf(\"値 %d は 5 以下\\n\", value)\n\t}\n\t// fmt.Println(value) // エラー: value は if の外では未定義\n}"
+    },
+    {
+      "title": "制御構文: `if` 文を使ったエラーチェック",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n)\n\n// エラーを返す可能性のある関数 (例)\nfunc processData(input string) (string, error) {\n\tval, err := strconv.Atoi(input)\n\tif err != nil {\n\t\treturn \"\", fmt.Errorf(\"変換失敗: %w\", err) // エラー時は nil 以外を返す\n\t}\n\treturn fmt.Sprintf(\"結果: %d\", val*2), nil // 成功時は nil を返す\n}\n\nfunc main() {\n\tinput := \"123\" // または \"abc\" などエラーになる入力\n\n\t// if の初期化ステートメントで関数を呼び出し、エラーをチェック\n\tif result, err := processData(input); err != nil {\n\t\t// エラー処理 (err はこの if ブロック内でのみ有効)\n\t\tfmt.Printf(\"'%s' の処理エラー: %v\\n\", input, err)\n\t} else {\n\t\t// 正常処理 (result と err はこの else ブロック内でのみ有効)\n\t\tfmt.Printf(\"'%s' の処理成功: %s\\n\", input, result)\n\t}\n\t// fmt.Println(err) // エラー: err は if の外では未定義\n}"
+    },
+    {
+      "title": "制御構文: `return` 後の `else` を避けるスタイル (早期リターン)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\nfunc processIfNotEmptyEarlyReturn(input string) (string, error) {\n\t// 先に異常系のチェックとリターン (ガード節)\n\tif input == \"\" {\n\t\treturn \"\", errors.New(\"入力が空です\")\n\t}\n\n\t// ここから下は input が空でないことが保証される\n\t// 正常系の処理がインデントされずに書ける\n\tprocessed := \"処理結果: \" + input\n\tfmt.Println(\"正常系の処理を実行中...\")\n\treturn processed, nil\n}\n\nfunc main() {\n\tres1, err1 := processIfNotEmptyEarlyReturn(\"データあり\")\n\tif err1 != nil { fmt.Println(\"エラー:\", err1) } else { fmt.Println(res1) }\n\n\tres2, err2 := processIfNotEmptyEarlyReturn(\"\")\n\tif err2 != nil { fmt.Println(\"エラー:\", err2) } else { fmt.Println(res2) }\n}"
+    },
+    {
+      "title": "制御構文: 繰り返し処理 `for` (基本形)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"--- 0から4までカウントアップ ---\")\n\tfor i := 0; i < 5; i++ {\n\t\tfmt.Println(\"現在の i:\", i)\n\t}\n\t// fmt.Println(i) // エラー: i はループの外では未定義\n}"
+    },
+    {
+      "title": "制御構文: `for` を `while` ループとして使う",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tsum := 0\n\tnum := 1\n\n\t// sum が 100 以下の間ループ (while sum <= 100)\n\tfor sum <= 100 {\n\t\tsum += num\n\t\tnum++\n\t\tfmt.Printf(\"num=%d, sum=%d\\n\", num-1, sum)\n\t}\n\n\tfmt.Printf(\"\\n最終合計: %d\\n\", sum)\n}"
+    },
+    {
+      "title": "制御構文: 無限ループ `for {}` と `break`",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tcount := 0\n\tfmt.Println(\"無限ループ開始 (5回で break)\")\n\n\tfor { // 条件式を省略すると無限ループ\n\t\tcount++\n\t\tfmt.Printf(\"ループ %d 回目\\n\", count)\n\n\t\tif count >= 5 {\n\t\t\tfmt.Println(\"break します。\")\n\t\t\tbreak // ループを終了\n\t\t}\n\t}\n\n\tfmt.Println(\"ループ終了。\")\n}"
+    },
+    {
+      "title": "制御構文: `for range` ループ (配列, スライス, 文字列)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 配列の例\n\tprimes := [4]int{2, 3, 5, 7}\n\tfmt.Println(\"--- 配列の for range ---\")\n\tfor index, value := range primes {\n\t\tfmt.Printf(\"インデックス %d: 値 %d\\n\", index, value)\n\t}\n\n\t// 値だけが必要な場合 (インデックスを _ で無視)\n\tfmt.Println(\"\\n--- 値だけを使う場合 ---\")\n\tsum := 0\n\tnums := []int{10, 20, 30} // スライス\n\tfor _, num := range nums {\n\t\tsum += num\n\t}\n\tfmt.Printf(\"合計: %d\\n\", sum)\n\n\t// インデックスだけが必要な場合\n\t// for i := range nums { fmt.Println(i) }\n}"
+    },
+    {
+      "title": "制御構文: `for range` ループ (マップ)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tscores := map[string]int{\n\t\t\"Alice\": 85,\n\t\t\"Bob\":   92,\n\t\t\"Carol\": 78,\n\t}\n\n\tfmt.Println(\"--- マップのキーと値 ---\")\n\t// キー(name)と値(score)を取得\n\tfor name, score := range scores {\n\t\tfmt.Printf(\"名前: %s, 点数: %d\\n\", name, score)\n\t}\n\t// 順序は保証されない！\n\n\tfmt.Println(\"\\n--- キーだけを使う場合 ---\")\n\t// 値を受け取る変数を省略するとキーのみ取得\n\tfor name := range scores {\n\t\tfmt.Printf(\"名前: %s\\n\", name)\n\t}\n\n\t// 値だけを使う場合\n\t// for _, score := range scores { ... }\n}"
+    },
+    {
+      "title": "制御構文: `for range` ループ (チャネル)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\" // 説明のため短時間スリープさせるのに使用\n)\n\nfunc main() {\n\tmessageChannel := make(chan int)\n\n\t// 別 Goroutine で値を送信\n\tgo func() {\n\t\tfor i := 1; i <= 3; i++ {\n\t\t\tfmt.Printf(\"送信: %d\\n\", i)\n\t\t\tmessageChannel <- i\n\t\t\ttime.Sleep(10 * time.Millisecond) // 送受信の様子を見るため少し待つ\n\t\t}\n\t\tclose(messageChannel) // ★重要: 送信完了後にクローズ\n\t\tfmt.Println(\"送信側: チャネルクローズ完了\")\n\t}()\n\n\tfmt.Println(\"受信側: ループ開始\")\n\t// チャネルから値を受信 (チャネルがクローズされるまで)\n\tfor value := range messageChannel {\n\t\tfmt.Printf(\"受信: %d\\n\", value)\n\t}\n\tfmt.Println(\"受信側: ループ終了 (チャネルクローズのため)\")\n}"
+    },
+    {
+      "title": "制御構文: `for range` でインデックスや値を無視する",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// スライスの例\n\tnumbers := []int{10, 20, 30, 40}\n\n\tfmt.Println(\"--- 値のみ (スライス) ---\")\n\tsum := 0\n\tfor _, value := range numbers { // インデックスを _ で無視\n\t\tfmt.Printf(\"値: %d\\n\", value)\n\t\tsum += value\n\t}\n\tfmt.Printf(\"合計: %d\\n\", sum)\n\n\t// マップの例\n\tconfig := map[string]string{\n\t\t\"host\": \"localhost\", \"port\": \"8080\", \"user\": \"admin\",\n\t}\n\n\tfmt.Println(\"\\n--- キーのみ (マップ) ---\")\n\tfor key, _ := range config { // 値を _ で無視\n\t\tfmt.Printf(\"設定キー: %s\\n\", key)\n\t}\n\n\tfmt.Println(\"\\n--- 値のみ (マップ) ---\")\n\tfor _, value := range config { // キーを _ で無視\n\t\tfmt.Printf(\"設定値: %s\\n\", value)\n\t}\n}"
+    },
+    {
+      "title": "制御構文: 条件分岐 `switch` (基本形)",
+      "description": "一つの変数の値に基づいて多数の分岐を行いたい場合、\n`if-else if-else` よりも **`switch`** 文が\n簡潔に書けることがあります。\n\n**基本構文:**",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\ttoday := time.Now().Weekday()\n\tfmt.Printf(\"今日は %s です。\\n\", today)\n\n\tswitch today {\n\tcase time.Saturday, time.Sunday: // 複数の値を指定\n\t\tfmt.Println(\"週末です！\")\n\tcase time.Friday:\n\t\tfmt.Println(\"金曜日！あと一日！\")\n\tdefault: // 上記以外 (月〜木)\n\t\tfmt.Println(\"平日です。頑張りましょう！\")\n\t}\n}"
+    },
+    {
+      "title": "制御構文: 式を省略した `switch` 文",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc getGradeSwitch(score int) string {\n\tgrade := \"\"\n\tswitch { // 式を省略 (switch true と同じ)\n\tcase score >= 90:\n\t\tgrade = \"A\"\n\tcase score >= 80:\n\t\tgrade = \"B\"\n\tcase score >= 70:\n\t\tgrade = \"C\"\n\tcase score >= 60:\n\t\tgrade = \"D\"\n\tdefault:\n\t\tgrade = \"F\"\n\t}\n\treturn grade\n}\n\nfunc main() {\n\tfmt.Printf(\"85点の成績: %s\\n\", getGradeSwitch(85)) // B\n\tfmt.Printf(\"55点の成績: %s\\n\", getGradeSwitch(55)) // F\n}"
+    },
+    {
+      "title": "制御構文: `switch` 文と初期化ステートメント",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math/rand\"\n)\n\n// ランダムなステータスコードを返す (例)\nfunc getStatusCode() int {\n\tcodes := []int{200, 400, 404, 500, 503}\n\treturn codes[rand.Intn(len(codes))]\n}\n\nfunc main() {\n\t// 初期化ステートメントで値を取得し、switch で評価\n\tswitch code := getStatusCode(); code {\n\tcase 200:\n\t\tfmt.Println(\"ステータス: OK (200)\")\n\tcase 400:\n\t\tfmt.Println(\"ステータス: Bad Request (400)\")\n\tcase 404:\n\t\tfmt.Println(\"ステータス: Not Found (404)\")\n\tcase 500:\n\t\tfmt.Println(\"ステータス: Internal Server Error (500)\")\n\tdefault:\n\t\tfmt.Printf(\"ステータス: 不明 (%d)\\n\", code)\n\t}\n\t// fmt.Println(code) // エラー: code は switch の外では未定義\n}"
+    },
+    {
+      "title": "制御構文: `switch` 文での `fallthrough`",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tnumber := 2\n\tfmt.Printf(\"数値 %d の評価:\\n\", number)\n\n\tswitch number {\n\tcase 1:\n\t\tfmt.Println(\" - case 1\")\n\tcase 2:\n\t\tfmt.Println(\" - case 2\")\n\t\tfallthrough // 次の case 3 へ\n\tcase 3:\n\t\tfmt.Println(\" - case 3 (fallthrough)\") // number==2 でも実行される\n\tcase 4:\n\t\tfmt.Println(\" - case 4\")\n\t\tfallthrough // 次の default へ\n\tdefault:\n\t\tfmt.Println(\" - default (case 4 から fallthrough)\")\n\t}\n}"
+    },
+    {
+      "title": "制御構文: 型スイッチ (Type Switch)",
+      "description": "Goのインターフェース型、特に空インターフェース `any`\n(`interface{}`) は、任意の型の値を保持できます。\nインターフェース変数に格納された値の**実際の型**に\n基づいて処理を分岐させたい場合に**型スイッチ**を使います。\nこれは `switch` 文の特殊な形式です。\n\n**構文:**",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc printTypeAndValue(value any) { // any は interface{} のエイリアス\n\tfmt.Printf(\"入力: %v, \", value)\n\n\tswitch v := value.(type) { // 型スイッチ\n\tcase nil:\n\t\tfmt.Println(\"型: nil\")\n\tcase int:\n\t\tfmt.Printf(\"型: int, 値*2: %d\\n\", v*2) // v は int\n\tcase string:\n\t\tfmt.Printf(\"型: string, 値: %s\\n\", v) // v は string\n\tcase bool:\n\t\tfmt.Printf(\"型: bool, 値: %t\\n\", v) // v は bool\n\tdefault:\n\t\tfmt.Printf(\"型: 不明 (%T)\\n\", v) // v は元の型 (any)\n\t}\n}\n\nfunc main() {\n\tprintTypeAndValue(123)\n\tprintTypeAndValue(\"Hello\")\n\tprintTypeAndValue(true)\n\tprintTypeAndValue(nil)\n\tprintTypeAndValue(1.23) // default にマッチ\n}"
+    },
+    {
+      "title": "制御構文: `defer` による後処理の予約",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// ファイルを作成し、テキストを書き込む関数 (defer の例)\nfunc writeFile(filename, text string) error {\n\tfile, err := os.Create(filename)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"ファイル作成失敗: %w\", err)\n\t}\n\t// ★ファイルを開いた直後にクローズ処理を defer で予約\n\tdefer file.Close()\n\tfmt.Println(\"defer file.Close() を登録\")\n\n\t_, err = file.WriteString(text)\n\tif err != nil {\n\t\t// エラーで return する場合も defer は実行される\n\t\treturn fmt.Errorf(\"ファイル書き込み失敗: %w\", err)\n\t}\n\n\tfmt.Println(\"書き込み成功、関数終了\")\n\t// 正常に return する場合も defer は実行される\n\treturn nil\n}\n\n// main 関数 (呼び出し例) は省略\n// func main() {\n// \twriteFile(\"temp.txt\", \"Hello defer\")\n// \tos.Remove(\"temp.txt\")\n// }"
+    },
+    {
+      "title": "制御構文: 複数の `defer` と実行順序 (LIFO)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"main: 開始\")\n\n\tdefer fmt.Println(\"defer 1 (最後に実行)\") // 1番目に defer\n\tdefer fmt.Println(\"defer 2\")             // 2番目に defer\n\tdefer fmt.Println(\"defer 3 (最初に実行)\") // 3番目に defer\n\n\tfmt.Println(\"main: 終了前\")\n\t// main 関数終了直前に defer 3 -> defer 2 -> defer 1 の順で実行\n}"
+    },
+    {
+      "title": "制御構文: `defer` される関数の引数評価タイミング",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc printValue(prefix string, value int) {\n\tfmt.Printf(\"%s: %d\\n\", prefix, value)\n}\n\nfunc main() {\n\ti := 0\n\tfmt.Printf(\"初期値 i = %d\\n\", i)\n\n\t// defer 実行時に i の値 (0) が評価・記憶される\n\tdefer printValue(\"defer 1\", i)\n\n\ti++\n\tfmt.Printf(\"i++ 後 i = %d\\n\", i)\n\n\t// defer 実行時に i の値 (1) が評価・記憶される\n\tdefer printValue(\"defer 2\", i)\n\n\ti++\n\tfmt.Printf(\"さらに i++ 後 i = %d\\n\", i)\n\n\tfmt.Println(\"main 関数終了直前\")\n\t// LIFO順で実行: defer 2 (引数1), defer 1 (引数0)\n}"
+    },
+    {
+      "title": "制御構文: `defer` とミューテックス (`sync.Mutex`)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n)\n\n// 共有データとMutexを持つ構造体\ntype SafeCounter struct {\n\tmu    sync.Mutex\n\tvalue int\n}\n\n// 値を安全にインクリメントするメソッド\nfunc (c *SafeCounter) Increment() {\n\tc.mu.Lock() // ロック取得\n\t// ★ Lock() の直後に Unlock() を defer で予約\n\tdefer c.mu.Unlock()\n\n\t// --- クリティカルセクション ---\n\tc.value++\n\tfmt.Printf(\"インクリメント実行中: %d\\n\", c.value)\n\t// --- クリティカルセクション終了 ---\n\t// 関数終了時に defer された Unlock が実行される\n}\n\n// main 関数 (呼び出し例) は省略\n// func main() {\n// \tcounter := SafeCounter{}\n// \t// 複数の Goroutine から counter.Increment() を呼び出す\n// }"
+    },
+    {
+      "title": "制御構文: パニック `panic`",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc divide(a, b int) int {\n\tfmt.Printf(\"divide(%d, %d) 呼び出し\\n\", a, b)\n\tdefer fmt.Printf(\"divide(%d, %d) 終了\\n\", a, b) // panic でも実行される\n\n\tif b == 0 {\n\t\tpanic(\"ゼロ除算エラー！\") // 意図的な panic\n\t}\n\treturn a / b // panic が発生すると実行されない\n}\n\nfunc main() {\n\tfmt.Println(\"--- 意図的な panic ---\")\n\t// divide(10, 0) // コメント解除で panic 発生\n\tfmt.Println(\"divide(10, 2) 結果:\", divide(10, 2))\n\n\tfmt.Println(\"\\nmain 関数終了\")\n}\n\n/*\ndivide(10, 0) 実行時の出力例:\n--- 意図的な panic ---\ndivide(10, 0) 呼び出し\ndivide(10, 0) 終了\npanic: ゼロ除算エラー！\n\ngoroutine 1 [running]:\nmain.divide(...)\n        ...\nmain.main()\n        ...\nexit status 2\n*/"
+    },
+    {
+      "title": "制御構文: パニックからの回復 `recover`",
+      "description": "`panic` は通常プログラムを異常終了させますが、\n組み込み関数 **`recover`** を使うと、\n`panic` から**回復**し実行を継続できます。\n\n**`recover` とは？**\n`panic` で中断された Goroutine の制御を取り戻す関数です。\n\n**重要ルール:**\n`recover` は **`defer` された関数の中で\n呼び出された場合にのみ**効果を発揮します。\n\n**動作:**\n*   Goroutine が `panic` 中に `defer` 内で `recover()` が\n    呼ばれると、`recover` は `panic` に渡された値を返し、\n    プログラムの異常終了プロセスが停止します。\n    `defer` 関数の完了後、通常の実行が再開されます\n    (panic発生関数の呼び出し元に戻る)。\n*   `panic` していない場合や `defer` 外で呼ばれた場合、\n    `recover` は `nil` を返します。\n\n**使い方: `defer` との組み合わせ**\n通常、`defer func() { ... }()` 内で `recover` を呼び出します。",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc mightPanic(shouldPanic bool) (result string, err error) {\n\t// defer + 無名関数 + recover で panic を捕捉\n\tdefer func() {\n\t\tif r := recover(); r != nil {\n\t\t\t// panic が発生した場合、r は panic 値\n\t\t\tfmt.Printf(\"Recovered from panic: %v\\n\", r)\n\t\t\t// panic を通常の error に変換して返す\n\t\t\terr = fmt.Errorf(\"内部 panic: %v\", r)\n\t\t}\n\t}()\n\n\tif shouldPanic {\n\t\tfmt.Println(\"Panic を発生させます...\")\n\t\tpanic(\"意図的なパニック\")\n\t}\n\n\tfmt.Println(\"Panic は発生しませんでした。\")\n\tresult = \"正常終了\"\n\treturn result, nil // err は nil (ゼロ値)\n}\n\nfunc main() {\n\tfmt.Println(\"--- panic する場合 ---\")\n\tres, err := mightPanic(true)\n\tif err != nil {\n\t\tfmt.Printf(\"エラー: %v\\n\", err) // recover で設定されたエラー\n\t} else {\n\t\tfmt.Printf(\"結果: %s\\n\", res)\n\t}\n\tfmt.Println(\"main 終了 (panic せずに到達)\")\n}"
+    },
+    {
+      "title": "制御構文: `panic` と `recover` の適切な使い方",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// panic を起こす可能性があり、内部で recover する関数\nfunc SafeDivide(a, b int) (result int, err error) {\n\tdefer func() {\n\t\tif r := recover(); r != nil {\n\t\t\terr = fmt.Errorf(\"panic を回復: %v\", r)\n\t\t}\n\t}()\n\tresult = a / b // b が 0 だと panic する\n\treturn result, nil\n}\n\nfunc main() {\n\tfmt.Println(\"--- 正常な除算 ---\")\n\tres1, err1 := SafeDivide(10, 2)\n\tif err1 != nil { fmt.Println(\"エラー:\", err1) } else { fmt.Printf(\"結果: %d\\n\", res1) }\n\n\tfmt.Println(\"\\n--- ゼロ除算 (panic -> error) ---\")\n\tres2, err2 := SafeDivide(10, 0) // panic するが recover される\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // recover で設定された error\n\t} else {\n\t\tfmt.Printf(\"結果: %d\\n\", res2)\n\t}\n\tfmt.Println(\"\\nプログラムは正常終了\")\n}"
+    }
+  ]
+}

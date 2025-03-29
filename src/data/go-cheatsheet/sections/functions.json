@@ -1,0 +1,100 @@
+{
+  "title": "Functions",
+  "codeExamples": [
+    {
+      "title": "関数: 処理をまとめる部品",
+      "description": "**関数 (Function)** は、特定のタスクを実行する\n一連の処理をまとめ、名前を付けて再利用可能にした部品です。\n\n**なぜ使うか？**\n*   **再利用性:** 同じコードを繰り返し書かなくて済む。\n*   **可読性:** 処理に名前が付き、コードが理解しやすくなる。\n*   **保守性:** 修正箇所が関数の定義だけで済む。\n*   **モジュール化:** プログラムを機能単位に分割できる。\n\n**基本構文:**",
+      "code": "package main\n\nimport \"fmt\"\n\n// 2つの int 引数を取り、合計 (int) を返す関数\nfunc add(a int, b int) int {\n\tsum := a + b\n\treturn sum // 戻り値を返す\n}\n\nfunc main() {\n\t// add 関数を呼び出し、戻り値を受け取る\n\tresult1 := add(5, 3)\n\tfmt.Printf(\"add(5, 3) = %d\\n\", result1) // 8\n\n\tresult2 := add(10, -2)\n\tfmt.Printf(\"add(10, -2) = %d\\n\", result2) // 8\n}"
+    },
+    {
+      "title": "関数: 引数の型指定をまとめる",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// x と y は両方とも int 型\nfunc multiply(x, y int) int {\n\treturn x * y\n}\n\n// width と height は int 型、label は string 型\nfunc drawRectangle(width, height int, label string) {\n\tfmt.Printf(\"描画: 幅=%d, 高さ=%d, ラベル=\\\"%s\\\"\\n\", width, height, label)\n}\n\nfunc main() {\n\tproduct := multiply(6, 7)\n\tfmt.Printf(\"multiply(6, 7) = %d\\n\", product)\n\n\tdrawRectangle(100, 50, \"ボタン\")\n}"
+    },
+    {
+      "title": "関数: 複数の戻り値",
+      "description": "Goの関数は**複数の値を返す**ことができます。\nこれはGoの特徴的で便利な機能です。\n\n**宣言方法:**\n戻り値の型指定部分を `()` で囲み、\n返す値の型をカンマ `,` で区切って列挙します。\n`func 関数名(...) (戻り値1の型, 戻り値2の型, ...)`\n\n**返し方:**\n`return` 文で、宣言した型と順序に合わせて\n値をカンマ区切りで返します。\n`return 値1, 値2, ...`\n\n**受け取り方:**\n関数呼び出しの左辺で、複数の変数をカンマ区切りで\n記述し、それぞれの戻り値を代入します。\n`var1, var2, ... := 関数名(...)`\n\n**戻り値の無視:**\n不要な戻り値はブランク識別子 `_` で無視できます。\n`q, _, err := divideAndRemainder(...)`\n\n**エラー処理での活用:**\nGoでは、処理結果とエラー情報を一緒に返すために\n複数の戻り値が非常によく使われます。\n最後の戻り値を `error` 型にするのが一般的です。",
+      "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// 商 (int) と 余り (int) と エラー (error) の3つを返す\nfunc divideAndRemainder(a, b int) (int, int, error) {\n\tif b == 0 {\n\t\treturn 0, 0, errors.New(\"ゼロ除算エラー\") // エラー時\n\t}\n\tquotient := a / b\n\tremainder := a % b\n\treturn quotient, remainder, nil // 成功時 (エラーは nil)\n}\n\nfunc main() {\n\t// 戻り値を複数の変数で受け取る\n\tq1, r1, err1 := divideAndRemainder(10, 3)\n\tif err1 != nil { fmt.Println(\"エラー:\", err1) } else { fmt.Printf(\"10/3: 商%d, 余り%d\\n\", q1, r1) }\n\n\t// 一部の戻り値を _ で無視 (余りを無視)\n\tq2, _, err2 := divideAndRemainder(14, 5)\n\tif err2 != nil { fmt.Println(\"エラー:\", err2) } else { fmt.Printf(\"14/5: 商%d\\n\", q2) }\n\n\t// エラーのみチェック\n\t_, _, err3 := divideAndRemainder(5, 0)\n\tif err3 != nil { fmt.Println(\"エラー:\", err3) }\n}"
+    },
+    {
+      "title": "関数: 名前付き戻り値 (Named Return Values)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// 戻り値に名前 (quotient, remainder, err) を付ける\nfunc divideAndRemainderNamed(a, b int) (quotient, remainder int, err error) {\n\t// 関数開始時、quotient=0, remainder=0, err=nil で初期化\n\n\tif b == 0 {\n\t\terr = errors.New(\"ゼロ除算エラー\")\n\t\treturn // Naked Return: (0, 0, エラー情報) が返る\n\t}\n\n\tquotient = a / b\n\tremainder = a % b\n\t// err は nil のまま\n\treturn // Naked Return: (商, 余り, nil) が返る\n}\n\nfunc main() {\n\tq1, r1, err1 := divideAndRemainderNamed(10, 3)\n\tif err1 != nil { fmt.Println(\"エラー:\", err1) } else { fmt.Printf(\"10/3: 商%d, 余り%d\\n\", q1, r1) }\n\n\t_, _, err2 := divideAndRemainderNamed(5, 0) // 戻り値は使わないがエラーはチェック\n\tif err2 != nil { fmt.Println(\"エラー:\", err2) }\n}"
+    },
+    {
+      "title": "関数: エラーを返す (`error` 型)",
+      "description": "Goには例外 (`try-catch`) はなく、エラー処理は\n**`error` 型の値を返す**ことで行います。\n「エラーは値である (Errors are values)」という考え方です。\n\n**`error` 型:**\n組み込みインターフェース型です。",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\n// ファイル内容 ([]byte) と エラー (error) を返す関数\nfunc readFileContent(path string) ([]byte, error) {\n\tfile, err := os.Open(path) // エラーの可能性\n\tif err != nil {\n\t\t// 失敗: 結果のゼロ値(nil)とエラーを返す\n\t\treturn nil, fmt.Errorf(\"ファイル '%s' を開けません: %w\", path, err)\n\t}\n\tdefer file.Close() // 必ず閉じる\n\n\tdata, err := io.ReadAll(file) // エラーの可能性\n\tif err != nil {\n\t\t// 失敗: 結果のゼロ値(nil)とエラーを返す\n\t\treturn nil, fmt.Errorf(\"ファイル '%s' 読込失敗: %w\", path, err)\n\t}\n\n\t// 成功: データと nil (エラーなし) を返す\n\treturn data, nil\n}\n\nfunc main() {\n\t// テスト用ファイル作成 (エラー無視)\n\t_ = os.WriteFile(\"temp.txt\", []byte(\"テスト\"), 0644)\n\tdefer os.Remove(\"temp.txt\") // 終了時に削除\n\n\t// 成功例\n\tcontent, err := readFileContent(\"temp.txt\")\n\tif err != nil { fmt.Println(\"エラー:\", err) } else { fmt.Printf(\"成功: %s\\n\", string(content)) }\n\n\t// 失敗例\n\t_, err = readFileContent(\"not_exist.txt\")\n\tif err != nil { fmt.Println(\"エラー:\", err) }\n}"
+    },
+    {
+      "title": "関数: 可変長引数 (...) の定義",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// 任意の個数の int 引数を受け取り合計を返す\n// nums は関数内で []int スライスとして扱われる\nfunc sum(nums ...int) int {\n\tfmt.Printf(\"引数: %v (%T)\\n\", nums, nums)\n\ttotal := 0\n\tfor _, num := range nums {\n\t\ttotal += num\n\t}\n\treturn total\n}\n\nfunc main() {\n\tfmt.Println(sum(1, 2, 3))       // 引数 3つ -> 6\n\tfmt.Println(sum(10, 20))        // 引数 2つ -> 30\n\tfmt.Println(sum())              // 引数 0個 -> 0\n\tfmt.Println(sum(5, -1, 4, 10)) // 引数 4つ -> 18\n}"
+    },
+    {
+      "title": "関数: 可変長引数関数の呼び出し",
+      "description": "可変長引数を持つ関数 (`func f(args ...T)`) を\n呼び出す方法は主に2つあります。\n\n**1. 個別の引数を渡す**\n通常の関数のように、カンマ `,` で区切って\n値を直接渡します。0個以上の任意の個数を渡せます。",
+      "code": "package main\n\nimport \"fmt\"\n\n// 可変長引数関数 (再掲)\nfunc sum(nums ...int) int {\n\tfmt.Printf(\"渡された引数 (スライスとして): %v\\n\", nums)\n\ttotal := 0\n\tfor _, num := range nums {\n\t\ttotal += num\n\t}\n\treturn total\n}\n\nfunc main() {\n\tmyNumbers := []int{5, 10, 15}\n\tmoreNumbers := []int{1, 2}\n\temptySlice := []int{}\n\n\t// スライスを展開して渡す: スライス名...\n\ttotal1 := sum(myNumbers...) // 5, 10, 15 が渡される\n\tfmt.Printf(\"合計1: %d\\n\\n\", total1)\n\n\ttotal2 := sum(moreNumbers...) // 1, 2 が渡される\n\tfmt.Printf(\"合計2: %d\\n\\n\", total2)\n\n\ttotal3 := sum(emptySlice...) // 空のスライス -> 引数0個\n\tfmt.Printf(\"合計3: %d\\n\\n\", total3)\n\n\t// sum(1, myNumbers...) // これはコンパイルエラー\n}"
+    },
+    {
+      "title": "関数: 可変長引数 (スライス) の一部を渡す",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\n// joinStrings は可変長引数を受け取り連結する (例)\nfunc joinStrings(strs ...string) string {\n\treturn strings.Join(strs, \" \")\n}\n\n// title と body (可変長) を受け取る関数\nfunc processDocument(title string, body ...string) {\n\tfmt.Printf(\"\\nタイトル: %s\\n\", title)\n\tif len(body) >= 2 {\n\t\t// body スライスの最初の2要素を取得 (body[:2]) し、\n\t\t// それを ... で展開して joinStrings に渡す\n\t\tfirstTwo := joinStrings(body[:2]...)\n\t\tfmt.Printf(\"冒頭2単語: \\\"%s\\\"\\n\", firstTwo)\n\n\t\t// 同様に body[1:]... で2単語目以降を渡すことも可能\n\t} else if len(body) > 0 {\n\t\tfmt.Printf(\"本文: \\\"%s\\\"\\n\", joinStrings(body...))\n\t} else {\n\t\tfmt.Println(\"本文なし\")\n\t}\n}\n\nfunc main() {\n\tprocessDocument(\"レポート\", \"これは\", \"テスト\", \"です\")\n\tprocessDocument(\"短いメモ\", \"重要\")\n}"
+    },
+    {
+      "title": "関数: 可変長引数と固定引数の組み合わせ",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\n// 固定引数 prefix と 可変長引数 messages を組み合わせる\nfunc printWithPrefix(prefix string, messages ...string) {\n\tfmt.Printf(\"[%s] \", prefix)\n\tif len(messages) > 0 {\n\t\tfmt.Println(strings.Join(messages, \" \"))\n\t} else {\n\t\tfmt.Println(\"(メッセージなし)\")\n\t}\n}\n\nfunc main() {\n\t// 固定引数 + 個別の可変長引数\n\tprintWithPrefix(\"INFO\", \"処理開始\")\n\tprintWithPrefix(\"DEBUG\", \"値:\", \"10\")\n\tprintWithPrefix(\"ERROR\") // 可変長部分は0個\n\n\t// 固定引数 + スライス展開\n\tlogMsgs := []string{\"データ受信\", \"完了\"}\n\tprintWithPrefix(\"PROCESS\", logMsgs...)\n}"
+    },
+    {
+      "title": "関数: クロージャ (Closure) の定義",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// `func(int) int` 型の関数を返す関数\nfunc adder() func(int) int {\n\tsum := 0 // この sum は返される関数にキャプチャされる\n\tfmt.Println(\"adder 呼び出し, sum 初期値:\", sum)\n\n\t// 関数リテラル (無名関数) を返す -> これがクロージャ\n\treturn func(x int) int {\n\t\tsum += x // キャプチャした sum を更新\n\t\tfmt.Printf(\"  内部関数: x=%d 加算, 現在 sum=%d\\n\", x, sum)\n\t\treturn sum\n\t}\n}\n\nfunc main() {\n\t// adder() が返すクロージャを pos に代入\n\t// pos は専用の sum 変数 (初期値 0) を持つ\n\tpos := adder()\n\n\tfmt.Println(pos(1))  // sum = 1\n\tfmt.Println(pos(10)) // sum = 11\n\tfmt.Println(pos(5))  // sum = 16\n\n\t// neg := adder() // 再度呼ぶと別の sum を持つクロージャが作られる\n\t// fmt.Println(neg(-1)) // neg の sum = -1\n\t// fmt.Println(pos(100)) // pos の sum = 116 (neg とは独立)\n}"
+    },
+    {
+      "title": "関数: クロージャの使い方 (状態の保持)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// adder 関数は `func(int) int` 型のクロージャを返す (再掲)\nfunc adder() func(int) int {\n\tsum := 0 // この sum が状態としてキャプチャされる\n\treturn func(x int) int {\n\t\tsum += x\n\t\treturn sum\n\t}\n}\n\nfunc main() {\n\t// pos は adder() が返したクロージャ (内部に sum=0 を保持)\n\tpos := adder()\n\n\t// pos を呼び出すたびに、pos が持つ sum が更新される\n\tfmt.Println(pos(1)) // -> 1\n\tfmt.Println(pos(8)) // -> 9 (1+8)\n\tfmt.Println(pos(3)) // -> 12 (9+3)\n\n\t// neg := adder() // 再度呼ぶと別の sum を持つクロージャが作られる\n\t// fmt.Println(neg(-2)) // neg の sum は -2\n\t// fmt.Println(pos(100)) // pos の sum は 12+100 = 112\n}"
+    },
+    {
+      "title": "関数: クロージャごとに独立した状態",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// adder 関数 (再掲)\nfunc adder() func(int) int {\n\tsum := 0\n\treturn func(x int) int {\n\t\tsum += x\n\t\treturn sum\n\t}\n}\n\nfunc main() {\n\t// 1つ目のクロージャ (内部に sum=0 を持つ)\n\tpos1 := adder()\n\t// 2つ目のクロージャ (別の独立した sum=0 を持つ)\n\tpos2 := adder()\n\n\tfmt.Println(pos1(10)) // pos1 の sum は 10\n\tfmt.Println(pos2(20)) // pos2 の sum は 20 (pos1 に影響なし)\n\tfmt.Println(pos1(40)) // pos1 の sum は 50 (10+40)\n\tfmt.Println(pos2(5))  // pos2 の sum は 25 (20+5)\n}"
+    },
+    {
+      "title": "関数: ループ内でのクロージャの落とし穴",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar funcs []func()\n\n\tfmt.Println(\"ループ内でクロージャ作成...\")\n\tfor i := 0; i < 3; i++ {\n\t\t// このクロージャは変数 i への参照をキャプチャする\n\t\tfuncs = append(funcs, func() {\n\t\t\t// 実行されるのはループ終了後なので、i は 3 になっている\n\t\t\tfmt.Printf(\"i の値: %d\\n\", i)\n\t\t})\n\t\tfmt.Printf(\"  ループ %d 回目 (現在の i = %d)\\n\", i, i)\n\t}\n\n\tfmt.Println(\"\\nクロージャ実行...\")\n\tfor j := 0; j < len(funcs); j++ {\n\t\tfmt.Printf(\"funcs[%d]() -> \", j)\n\t\tfuncs[j]() // すべて i=3 と出力される\n\t}\n}"
+    },
+    {
+      "title": "関数: ループ内クロージャの落とし穴の解決策",
+      "description": "`for` ループ内でクロージャがループ変数の参照を共有してしまう\n問題を解決し、各反復時点での値を正しくキャプチャする\n一般的な方法が2つあります。\n\n**解決策1: ループ内で新しい変数を作成 (コード例)**\nループの各反復の**内部**で、ループ変数と同じ名前の\n**新しい変数**を宣言し (`i := i`)、ループ変数の\n現在の値をコピーします。\nクロージャ内ではこの**新しい変数**を参照します。\n\n*   `i := i`: これは**シャドーイング**と呼ばれ、\n    ループの反復ごとに新しい変数 `i` が作られます。\n*   クロージャ `func() { fmt.Println(i) }` は、\n    この**内側の `i`** への参照をキャプチャします。\n*   各クロージャは、作成された時点のループ変数の値を\n    持つ独立した変数を参照するため、期待通りの結果になります。\n\nこの `i := i` は Go 1.22 より前のバージョンで一般的な\n解決策でした。(Go 1.22 からはループ変数の扱いが変わり、\nこの問題は発生しにくくなりましたが、パターンとして有効な場面もあります。)\n\n**解決策2: ループ変数を引数として渡す**\nもう一つの方法は、ループ変数の値をクロージャ生成時に\n**引数**として渡すことです。",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar funcs []func()\n\n\tfmt.Println(\"ループ内でクロージャ作成 (解決策1)...\")\n\tfor i := 0; i < 3; i++ {\n\t\t// ループごとに新しい変数 i を宣言し、値をコピー\n\t\ti := i // この内側の i をクロージャがキャプチャする\n\n\t\tfuncs = append(funcs, func() {\n\t\t\tfmt.Printf(\"i の値: %d\\n\", i) // 内側の i を参照\n\t\t})\n\t\tfmt.Printf(\"  ループ %d 回目 (内側の i = %d)\\n\", i, i)\n\t}\n\n\tfmt.Println(\"\\nクロージャ実行...\")\n\tfor j := 0; j < len(funcs); j++ {\n\t\tfmt.Printf(\"funcs[%d]() -> \", j)\n\t\tfuncs[j]() // 期待通り 0, 1, 2 が出力される\n\t}\n}"
+    },
+    {
+      "title": "関数: 関数型 (Function Type) の宣言",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// 関数型の宣言: int引数2つ、戻り値int の関数型に Operator という名前を付ける\ntype Operator func(int, int) int\n\n// Operator 型の関数を引数として受け取る関数\nfunc calculate(a, b int, op Operator) int {\n\tfmt.Printf(\"実行: %T\\n\", op)\n\treturn op(a, b)\n}\n\n// Operator 型のシグネチャに合致する具体的な関数\nfunc add(a, b int) int {\n\treturn a + b\n}\n\nfunc main() {\n\t// 関数型の変数に関数を代入\n\tvar opAdd Operator = add\n\n\t// 関数型を引数として渡す\n\tresult1 := calculate(10, 5, opAdd) // 変数を渡す\n\tresult2 := calculate(10, 5, add)   // 関数を直接渡す\n\n\tfmt.Printf(\"10 + 5 = %d\\n\", result1)\n\tfmt.Printf(\"10 + 5 = %d\\n\", result2)\n}"
+    },
+    {
+      "title": "関数: 関数を変数に代入する",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc add(a, b int) int {\n\treturn a + b\n}\n\n// 関数型を定義 (オプション)\ntype BinaryIntOperator func(int, int) int\n\nfunc main() {\n\t// 関数型の変数を宣言し、関数名を代入\n\tvar operation BinaryIntOperator\n\toperation = add // シグネチャが一致すれば代入可能\n\n\t// 変数 operation を使って add 関数を呼び出す\n\tresult1 := operation(10, 5)\n\tfmt.Printf(\"operation(10, 5) = %d\\n\", result1) // 15\n\n\t// 関数リテラル (無名関数) を変数に代入\n\tgreet := func(name string) string {\n\t\treturn \"Hello, \" + name + \"!\"\n\t}\n\tmessage := greet(\"Gopher\")\n\tfmt.Println(message) // Hello, Gopher!\n}"
+    },
+    {
+      "title": "関数: 関数を引数として渡す (高階関数)",
+      "description": "Goでは関数が第一級オブジェクトのため、関数を\n**他の関数の引数として渡す**ことができます。\n関数を引数に取ったり戻り値で返す関数を\n**高階関数 (Higher-Order Function)** と呼びます。\n\n**関数を引数に取る関数の定義:**\n引数リストで**関数型**を指定します。\n`type` で定義した関数型名を使うと読みやすくなります。",
+      "code": "package main\n\nimport \"fmt\"\n\n// 関数型の定義\ntype IntTransformer func(int) int\n\n// 高階関数の定義: スライスと IntTransformer 型の関数を受け取る\nfunc mapInts(slice []int, transformer IntTransformer) []int {\n\tresult := make([]int, len(slice))\n\tfor i, value := range slice {\n\t\tresult[i] = transformer(value) // 引数で渡された関数を実行\n\t}\n\treturn result\n}\n\n// 適用する具体的な関数\nfunc double(n int) int {\n\treturn n * 2\n}\n\nfunc main() {\n\tnumbers := []int{1, 2, 3, 4}\n\n\t// 1. 通常の関数名を渡す\n\tdoubled := mapInts(numbers, double)\n\tfmt.Println(\"2倍:\", doubled) // [2 4 6 8]\n\n\t// 2. 関数リテラル (無名関数) を直接渡す\n\tnegated := mapInts(numbers, func(n int) int {\n\t\treturn -n\n\t})\n\tfmt.Println(\"符号反転:\", negated) // [-1 -2 -3 -4]\n}"
+    },
+    {
+      "title": "関数: 関数を戻り値として返す (高階関数, クロージャ生成)",
+      "description": "Goでは関数を**他の関数の戻り値として返す**ことも可能です。\nこれも**高階関数**の一種であり、**クロージャ**を生成する\n一般的な方法です。\n\n**定義方法:**\n関数宣言の戻り値の型指定部分に、返したい関数の\n**関数型**を指定します。",
+      "code": "package main\n\nimport \"fmt\"\n\n// int を受け取り int を返す関数型\ntype IntUnaryOperator func(int) int\n\n// IntUnaryOperator 型の関数を返す高階関数\nfunc multiplier(factor int) IntUnaryOperator {\n\tfmt.Printf(\"multiplier(%d) 呼び出し\\n\", factor)\n\t// factor をキャプチャしたクロージャを返す\n\treturn func(n int) int {\n\t\treturn n * factor\n\t}\n}\n\nfunc main() {\n\t// 2倍する関数 (クロージャ) を取得\n\tdouble := multiplier(2)\n\n\t// 生成されたクロージャを使う\n\tfmt.Println(double(5))  // 10\n\tfmt.Println(double(10)) // 20\n\n\t// 3倍する関数も同様に生成可能\n\t// triple := multiplier(3)\n\t// fmt.Println(triple(5)) // 15\n\n\t// 直接呼び出しも可能\n\t// fmt.Println(multiplier(10)(5)) // 50\n}"
+    },
+    {
+      "title": "関数 vs メソッド: 基本的な違い",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct {\n\tX, Y float64\n}\n\n// Point 型に関連付けられた Distance メソッド\n// (p Point) がレシーバ\nfunc (p Point) Distance(q Point) float64 {\n\tdx := q.X - p.X // p.X はレシーバ p の X 座標\n\tdy := q.Y - p.Y // p.Y はレシーバ p の Y 座標\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp1 := Point{1, 2}\n\tp2 := Point{4, 6}\n\n\t// メソッド呼び出し: p1 に対して Distance メソッドを呼び出す\n\tdist := p1.Distance(p2)\n\tfmt.Printf(\"p1.Distance(p2) = %f\\n\", dist) // 5.000000\n}"
+    }
+  ]
+}
