@@ -1,0 +1,49 @@
+{
+  "title": "Generics (Go 1.18+)",
+  "codeExamples": [
+    {
+      "title": "Generic Function with Type Parameter",
+      "code": "// Go 1.18 で導入されたジェネリクスの構文\n\n// 型パラメータ T を持つジェネリック関数\nfunc Print[T any](value T) {\n  fmt.Println(value)\n}\n\n// 使用法\n// T は int\nPrint(42)\n// T は string\nPrint(\"hello\")\n// T は []float64\nPrint([]float64{1.1, 2.2})"
+    },
+    {
+      "title": "Generic Function with Multiple Type Parameters",
+      "code": "// 複数の型パラメータ\nfunc Map[T, U any](s []T, f func(T) U) []U {\n  result := make([]U, len(s))\n  for i, v := range s {\n    result[i] = f(v)\n  }\n  return result\n}\n\n// 使用法\nnums := []int{1, 2, 3}\nsquares := Map(nums, func(x int) int { return x * x })\nstrings := Map(nums, func(x int) string { return fmt.Sprintf(\"#%d\", x) })"
+    },
+    {
+      "title": "Type Constraints using Interfaces",
+      "code": "// 型制約は使用できる型を制限する\n\n// 型要素を持つインターフェースを使用した制約\ntype Numeric interface {\n  int | int8 | int16 | int32 | int64 |\n  uint | uint8 | uint16 | uint32 | uint64 |\n  float32 | float64\n}\n\n// 制約付きのジェネリック関数\nfunc Sum[T Numeric](values []T) T {\n  var sum T\n  for _, v := range values {\n    sum += v\n  }\n  return sum\n}\n\n// 使用法\n// 動作する: int は Numeric を満たす\nSum([]int{1, 2, 3})\n// 動作する: float64 は Numeric を満たす\nSum([]float64{1.1, 2.2, 3.3})\n// Sum([]string{\"a\", \"b\"})    // コンパイルエラー: string は Numeric を満たさない"
+    },
+    {
+      "title": "Predefined Constraints (constraints.Ordered)",
+      "code": "// golang.org/x/exp/constraints から事前定義された制約を使用する\nimport \"golang.org/x/exp/constraints\"\n\nfunc Max[T constraints.Ordered](a, b T) T {\n  if a > b {\n    return a\n  }\n  return b\n}\n\n// 使用法\n// int で動作する\nMax(5, 10)\n// string で動作する (文字列は順序付け可能)\nMax(\"a\", \"b\")"
+    },
+    {
+      "title": "Generic Stack",
+      "code": "// ジェネリックデータ構造\n\n// ジェネリックスタック\ntype Stack[T any] struct {\n  items []T\n}\n\nfunc (s *Stack[T]) Push(item T) {\n  s.items = append(s.items, item)\n}\n\nfunc (s *Stack[T]) Pop() (T, bool) {\n  var zero T\n  if len(s.items) == 0 {\n    return zero, false\n  }\n  \n  n := len(s.items) - 1\n  item := s.items[n]\n  s.items = s.items[:n]\n  return item, true\n}\n\n// 使用法\nintStack := Stack[int]{}\nintStack.Push(10)\nintStack.Push(20)\n// val=20, ok=true\nval, ok := intStack.Pop()\n\nstrStack := Stack[string]{}\nstrStack.Push(\"hello\")\n// val2=\"hello\", ok=true\nval2, ok := strStack.Pop()"
+    },
+    {
+      "title": "Generic Safe Map",
+      "code": "// 型安全なキーと値を持つジェネリックマップ\ntype SafeMap[K comparable, V any] struct {\n  data map[K]V\n  mu   sync.RWMutex\n}\n\nfunc NewSafeMap[K comparable, V any]() *SafeMap[K, V] {\n  return &SafeMap[K, V]{\n    data: make(map[K]V),\n  }\n}\n\nfunc (m *SafeMap[K, V]) Set(key K, value V) {\n  m.mu.Lock()\n  defer m.mu.Unlock()\n  m.data[key] = value\n}\n\nfunc (m *SafeMap[K, V]) Get(key K) (V, bool) {\n  m.mu.RLock()\n  defer m.mu.RUnlock()\n  val, ok := m.data[key]\n  return val, ok\n}"
+    },
+    {
+      "title": "Method Constraints (Stringer)",
+      "code": "// 型パラメータメソッドと型推論\n\n// メソッドを持つ型制約\ntype Stringer interface {\n  String() string\n}\n\nfunc Join[T Stringer](values []T, sep string) string {\n  result := \"\"\n  for i, v := range values {\n    if i > 0 {\n      result += sep\n    }\n    result += v.String()\n  }\n  return result\n}\n\n// Stringer を実装\ntype Person struct {\n  Name string\n  Age  int\n}\n\nfunc (p Person) String() string {\n  return fmt.Sprintf(\"%s (%d)\", p.Name, p.Age)\n}\n\n// 使用法\npeople := []Person{\n  {\"Alice\", 30},\n  {\"Bob\", 25},\n}\n// \"Alice (30), Bob (25)\"\nfmt.Println(Join(people, \", \"))"
+    },
+    {
+      "title": "Method Constraints (Comparable)",
+      "code": "// メソッドと型セットを持つ型制約\ntype Comparable[T any] interface {\n  CompareTo(T) int\n}\n\nfunc Sort[T Comparable[T]](items []T) {\n  for i := range items {\n    for j := i + 1; j < len(items); j++ {\n      if items[i].CompareTo(items[j]) > 0 {\n        items[i], items[j] = items[j], items[i]\n      }\n    }\n  }\n}\n\n// Comparable を実装\ntype Version struct {\n  Major, Minor, Patch int\n}\n\nfunc (v Version) CompareTo(other Version) int {\n  if v.Major != other.Major {\n    return v.Major - other.Major\n  }\n  if v.Minor != other.Minor {\n    return v.Minor - other.Minor\n  }\n  return v.Patch - other.Patch\n}"
+    },
+    {
+      "title": "Generic Optional/Maybe Type",
+      "code": "// 一般的なジェネリックパターンとイディオム\n\n// 1. ジェネリック Optional/Maybe 型\ntype Optional[T any] struct {\n  value T\n  valid bool\n}\n\nfunc Some[T any](value T) Optional[T] {\n  return Optional[T]{value: value, valid: true}\n}\n\nfunc None[T any]() Optional[T] {\n  return Optional[T]{valid: false}\n}\n\nfunc (o Optional[T]) IsPresent() bool {\n  return o.valid\n}\n\nfunc (o Optional[T]) Get() (T, bool) {\n  return o.value, o.valid\n}"
+    },
+    {
+      "title": "Generic Result Type",
+      "code": "// 2. エラー処理のためのジェネリック Result 型\ntype Result[T any] struct {\n  value T\n  err   error\n}\n\nfunc Success[T any](value T) Result[T] {\n  return Result[T]{value: value}\n}\n\nfunc Failure[T any](err error) Result[T] {\n  return Result[T]{err: err}\n}\n\nfunc (r Result[T]) IsOk() bool {\n  return r.err == nil\n}\n\nfunc (r Result[T]) Value() T {\n  return r.value\n}\n\nfunc (r Result[T]) Error() error {\n  return r.err\n}"
+    },
+    {
+      "title": "Generic Min/Max Functions",
+      "code": "// 3. ジェネリック Min/Max 関数\nfunc Min[T constraints.Ordered](a, b T) T {\n  if a < b {\n    return a\n  }\n  return b\n}\n\nfunc Max[T constraints.Ordered](a, b T) T {\n  if a > b {\n    return a\n  }\n  return b\n}"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "title": "Functions",
+  "codeExamples": [
+    {
+      "title": "Function Declaration",
+      "code": "// 関数宣言\nfunc add(a int, b int) int {\n  return a + b\n}"
+    },
+    {
+      "title": "Grouped Parameters",
+      "code": "// 同じ型のパラメータはグループ化できる\nfunc add(a, b int) int {\n  return a + b\n}"
+    },
+    {
+      "title": "Multiple Return Values",
+      "code": "// 複数の戻り値\nfunc divAndRemainder(a, b int) (int, int) {\n  return a / b, a % b\n}"
+    },
+    {
+      "title": "Named Return Values",
+      "code": "// 名前付き戻り値\nfunc split(sum int) (x, y int) {\n  x = sum * 4 / 9\n  y = sum - x\n// naked return は名前付き戻り値を使用する\n  return\n}"
+    },
+    {
+      "title": "Returning Errors",
+      "code": "// エラーを返す (一般的なパターン)\nfunc readConfig(path string) ([]byte, error) {\n  file, err := os.Open(path)\n  if err != nil {\n// ゼロ値とエラーを返す\n    return nil, err\n  }\n  defer file.Close()\n  \n// データと nil エラーを返す\n  return io.ReadAll(file)\n}"
+    },
+    {
+      "title": "Variadic Function Definition",
+      "code": "// 可変長引数関数 (可変数の引数を受け入れる)\nfunc sum(nums ...int) int {\n  total := 0\n  for _, num := range nums {\n    total += num\n  }\n  return total\n}"
+    },
+    {
+      "title": "Calling Variadic Functions",
+      "code": "// 可変長引数関数の呼び出し\n// 10\ntotal := sum(1, 2, 3, 4)"
+    },
+    {
+      "title": "Slicing Variadic Arguments",
+      "code": "// スライスの展開\nnumbers := []int{1, 2, 3, 4}\n// 10\ntotal = sum(numbers...)"
+    },
+    {
+      "title": "Variadic with Other Parameters",
+      "code": "// 他のパラメータを持つ可変長引数\nfunc appendValues(slice []int, values ...int) []int {\n  return append(slice, values...)\n}\n\nslice := []int{1, 2}\n// [1 2 3 4 5]\nslice = appendValues(slice, 3, 4, 5)"
+    },
+    {
+      "title": "Standard Library Variadic Examples",
+      "code": "// 便利な標準ライブラリの例:\n// fmt.Printf(format string, a ...interface{})\n// log.Printf(format string, a ...interface{})\n// errors.Join(errs ...error) error"
+    },
+    {
+      "title": "Closure Definition",
+      "code": "// 関数を返す関数 (クロージャ)\nfunc adder() func(int) int {\n// この変数は「キャプチャされる」\n  sum := 0\n  return func(x int) int {\n// キャプチャされた変数を変更する\n    sum += x\n    return sum\n  }\n}"
+    },
+    {
+      "title": "Using Closures",
+      "code": "// クロージャの使用\npos := adder()\n// 10\nresult := pos(10)\n// 30\nresult = pos(20)\n// 60\nresult = pos(30)"
+    },
+    {
+      "title": "Closure State",
+      "code": "// 異なるインスタンスは異なる状態を持つ\npos1 := adder()\npos2 := adder()\n// 10\nfmt.Println(pos1(10))\n// 20\nfmt.Println(pos2(20))\n// 50\nfmt.Println(pos1(40))"
+    },
+    {
+      "title": "Closures in Loops (Pitfall)",
+      "code": "// for ループでのクロージャの使用 (よくある落とし穴)\nfuncs := make([]func(), 3)\nfor i := 0; i < 3; i++ {\n// 間違い: すべて最後の i の値 (3) を出力する\n  funcs[i] = func() { fmt.Println(i) }\n}"
+    },
+    {
+      "title": "Closures in Loops (Correct)",
+      "code": "// 正しいアプローチ: 各反復で新しい変数を作成する\nfuncs := make([]func(), 3)\nfor i := 0; i < 3; i++ {\n// このスコープで新しい i を作成\n  i := i\n// 正しい: それぞれが自身の i を出力する\n  funcs[i] = func() { fmt.Println(i) }\n}"
+    },
+    {
+      "title": "Function Type Declaration",
+      "code": "// 関数は第一級の値\n// 変数に代入したり、引数として渡したり、関数から返したりできる\n\n// 関数型の宣言\ntype Handler func(string) error"
+    },
+    {
+      "title": "Function as Variable",
+      "code": "// 変数としての関数\nvar compute func(int, int) int\ncompute = func(a, b int) int {\n  return a + b\n}\n// 8\nresult := compute(5, 3)"
+    },
+    {
+      "title": "Function as Argument",
+      "code": "// 引数としての関数\nfunc process(apply func(int, int) int, a, b int) int {\n  return apply(a, b)\n}\n// 15\nresult := process(func(x, y int) int { return x * y }, 5, 3)"
+    },
+    {
+      "title": "Function as Return Value",
+      "code": "// 戻り値としての関数\nfunc multiplier(factor int) func(int) int {\n  return func(n int) int {\n    return n * factor\n  }\n}\ndouble := multiplier(2)\ntriple := multiplier(3)\n// 10\nfmt.Println(double(5))\n// 15\nfmt.Println(triple(5))"
+    },
+    {
+      "title": "Method vs Function",
+      "code": "// 関数は独立している\nfunc distance(p1, p2 Point) float64 {\n  return math.Sqrt(square(p2.X-p1.X) + square(p2.Y-p1.Y))\n}\n\n// メソッドは型にアタッチされる\ntype Point struct { X, Y float64 }\n\nfunc (p Point) Distance(q Point) float64 {\n  return math.Sqrt(square(q.X-p.X) + square(q.Y-p.Y))\n}\n\n// 使用法\np1 := Point{1, 2}\np2 := Point{4, 6}\n\n// 関数呼び出し\ndist1 := distance(p1, p2)\n\n// メソッド呼び出し\ndist2 := p1.Distance(p2)"
+    }
+  ]
+}

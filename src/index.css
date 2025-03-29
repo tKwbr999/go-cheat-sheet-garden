@@ -6,83 +6,67 @@
 
 @layer base {
   :root {
-    /* --- Light Mode: Twine Theme --- */
-    --background: #f8f4ee; /* twine-50 */
-    --foreground: #57322c; /* twine-900 */
+    /* --- Light Mode: Paper/Craft Theme --- */
+    --background: 40 33% 97%; /* Warm Off-White (Papaya Whip like) */
+    --foreground: 30 25% 25%; /* Dark Brown (Dark Liver like) */
 
-    --card: #eee3d3; /* twine-100 */
-    --card-foreground: #57322c; /* twine-900 */
+    --card: 35 30% 94%; /* Light Beige (Antique White like) */
+    --card-foreground: 30 25% 25%; /* Dark Brown */
 
-    --popover: #f8f4ee; /* twine-50 */
-    --popover-foreground: #57322c; /* twine-900 */
+    --popover: 40 33% 96%; /* Slightly lighter than background */
+    --popover-foreground: 30 25% 25%; /* Dark Brown */
 
-    /* Keep original colors for syntax highlighting */
-    --primary-syntax: 210 30% 45%;
-    --accent-syntax: 145 30% 40%;
-    --destructive-syntax: 0 70% 50%;
-    --secondary-syntax-fg: 30 20% 35%;
-    --muted-syntax-fg: 30 15% 55%;
+    --primary: 210 30% 45%; /* Muted Ink Blue (Steel Blue like) */
+    --primary-foreground: 40 33% 97%; /* Warm Off-White */
 
-    /* UI Colors (Twine Scale) */
-    --primary: #774431; /* twine-700 */
-    --primary-foreground: #f8f4ee; /* twine-50 */
+    --secondary: 40 20% 92%; /* Lighter Gray-Beige */
+    --secondary-foreground: 30 20% 35%; /* Slightly lighter Dark Brown */
 
-    --secondary: #dfc7a9; /* twine-200 */
-    --secondary-foreground: #65392e; /* twine-800 */
+    --muted: 40 20% 92%; /* Lighter Gray-Beige */
+    --muted-foreground: 30 15% 55%; /* Muted Brown */
 
-    --muted: #dfc7a9; /* twine-200 */
-    --muted-foreground: #945a3a; /* twine-600 */
+    --accent: 145 30% 40%; /* Deep Green (Dark Slate Gray like) */
+    --accent-foreground: 40 33% 97%; /* Warm Off-White */
 
-    --accent: #ad7345; /* twine-500 */
-    --accent-foreground: #f8f4ee; /* twine-50 */
+    --destructive: 0 70% 50%; /* Muted Red */
+    --destructive-foreground: 0 0% 100%; /* White */
 
-    --destructive: #945a3a; /* twine-600 */
-    --destructive-foreground: #f8f4ee; /* twine-50 */
-
-    --border: #cca378; /* twine-300 */
-    --input: #cca378; /* twine-300 */
-    --ring: #c39265; /* twine-400 */
+    --border: 30 15% 88%; /* Light Gray */
+    --input: 30 15% 88%; /* Light Gray */
+    --ring: 210 30% 55%; /* Slightly lighter Muted Ink Blue */
 
     --radius: 0.5rem;
   }
 
   .dark {
-    /* --- Dark Mode: Twine Theme --- */
-    --background: #321916; /* twine-950 */
-    --foreground: #eee3d3; /* twine-100 */
+    /* --- Dark Mode: Paper/Craft Theme --- */
+    --background: 30 15% 18%; /* Dark Brown */
+    --foreground: 40 20% 88%; /* Light Beige */
 
-    --card: #57322c; /* twine-900 */
-    --card-foreground: #eee3d3; /* twine-100 */
+    --card: 30 12% 22%; /* Slightly lighter Dark Brown */
+    --card-foreground: 40 20% 88%; /* Light Beige */
 
-    --popover: #321916; /* twine-950 */
-    --popover-foreground: #eee3d3; /* twine-100 */
+    --popover: 30 10% 15%; /* Very Dark Brown */
+    --popover-foreground: 40 20% 88%; /* Light Beige */
 
-    /* Keep original colors for syntax highlighting */
-    --primary-syntax: 210 30% 70%;
-    --accent-syntax: 145 30% 60%;
-    --destructive-syntax: 0 60% 55%;
-    --secondary-syntax-fg: 40 15% 80%;
-    --muted-syntax-fg: 40 10% 60%;
+    --primary: 210 30% 70%; /* Lighter Muted Ink Blue */
+    --primary-foreground: 30 15% 18%; /* Dark Brown */
 
-    /* UI Colors (Twine Scale) */
-    --primary: #cca378; /* twine-300 */
-    --primary-foreground: #321916; /* twine-950 */
+    --secondary: 30 10% 25%; /* Dark Gray-Brown */
+    --secondary-foreground: 40 15% 80%; /* Slightly muted Light Beige */
 
-    --secondary: #65392e; /* twine-800 */
-    --secondary-foreground: #dfc7a9; /* twine-200 */
+    --muted: 30 10% 25%; /* Dark Gray-Brown */
+    --muted-foreground: 40 10% 60%; /* Muted Beige */
 
-    --muted: #65392e; /* twine-800 */
-    --muted-foreground: #c39265; /* twine-400 */
+    --accent: 145 30% 60%; /* Lighter Deep Green */
+    --accent-foreground: 30 15% 18%; /* Dark Brown */
 
-    --accent: #ad7345; /* twine-500 */
-    --accent-foreground: #321916; /* twine-950 */
+    --destructive: 0 60% 55%; /* Muted Red (Dark) */
+    --destructive-foreground: 0 0% 100%; /* White */
 
-    --destructive: #c39265; /* twine-400 */
-    --destructive-foreground: #321916; /* twine-950 */
-
-    --border: #774431; /* twine-700 */
-    --input: #774431; /* twine-700 */
-    --ring: #945a3a; /* twine-600 */
+    --border: 30 10% 30%; /* Dark Gray */
+    --input: 30 10% 30%; /* Dark Gray */
+    --ring: 210 30% 60%; /* Slightly lighter Muted Ink Blue (Dark) */
     /* --radius is inherited from :root */
   }
 
@@ -118,42 +102,42 @@
   }
 
   .code-title {
-    /* Use primary background for header. See #35 */
-    @apply text-sm font-medium px-4 py-2 bg-primary text-primary-foreground border-b border-primary;
+    @apply text-sm font-medium px-4 py-2 bg-primary text-primary-foreground border-b border-primary; /* Use primary background for header */
   }
 
   .code-content {
     @apply p-4 font-mono text-sm overflow-x-auto bg-card; /* Use card background */
   }
 
-  /* Syntax Highlighting - Use dedicated variables to preserve colors */
+  /* Syntax Highlighting - Adjusted for better contrast in both modes */
   .keyword {
-    @apply text-[hsl(var(--primary-syntax))] dark:text-[hsl(var(--primary-syntax))] font-medium;
+    @apply text-primary font-medium;
   }
 
   .string {
-    @apply text-[hsl(var(--accent-syntax))] dark:text-[hsl(var(--accent-syntax))];
+    @apply text-accent;
   }
 
   .comment {
-    @apply text-[hsl(var(--muted-syntax-fg))] dark:text-[hsl(var(--muted-syntax-fg))] italic;
+    @apply text-muted-foreground italic;
   }
 
   .function {
-    @apply text-[hsl(var(--destructive-syntax))] dark:text-[hsl(var(--destructive-syntax))];
+    /* Use destructive color for functions */
+    @apply text-[hsl(var(--destructive))] dark:text-[hsl(var(--destructive))];
   }
 
   .number {
-    @apply text-[hsl(var(--secondary-syntax-fg))] dark:text-[hsl(var(--secondary-syntax-fg))];
+    /* Use secondary foreground for numbers */
+    @apply text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--secondary-foreground))];
   }
 
   .type {
-    /* Use a slightly muted foreground for types (remains black/white based) */
+    /* Use a slightly muted foreground for types */
     @apply text-foreground/90 dark:text-foreground/90;
   }
 
   .variable {
-     /* Use foreground color (remains black/white based) */
     @apply text-foreground/80;
   }
 
@@ -169,4 +153,3 @@
   .stagger-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
   .stagger-fade-in > *:nth-child(6) { animation-delay: 0.6s; }
 }
-

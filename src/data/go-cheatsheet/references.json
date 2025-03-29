@@ -1,0 +1,109 @@
+{
+  "title": "References",
+  "codeExamples": [
+    {
+      "title": "Go Documentation",
+      "code": "// 公式 Go ドキュメント\n// https://golang.org/doc/\n\n// Go 標準ライブラリ\n// https://golang.org/pkg/\n\n// Go Tour - インタラクティブチュートリアル\n// https://tour.golang.org/\n\n// Effective Go - ベストプラクティス\n// https://golang.org/doc/effective_go.html\n\n// Go by Example - 実用的な例\n// https://gobyexample.com/\n\n// Go 言語仕様\n// https://golang.org/ref/spec\n\n// Go ブログ\n// https://go.dev/blog/\n\n// パッケージドキュメント\n// https://pkg.go.dev/\n\n// Go Playground - オンラインでコードをテスト\n// https://play.golang.org/"
+    },
+    {
+      "title": "Go Command-Line Tools",
+      "code": "// Go コマンドラインツール\n// パッケージをコンパイル\ngo build\n// コンパイルして実行\ngo run\n// パッケージをテスト\ngo test\n// パッケージをダウンロードしてインストール\ngo get\n// パッケージをコンパイルしてインストール\ngo install\n// ソースコードをフォーマット\ngo fmt\n// よくある間違いを報告\ngo vet\n// モジュールメンテナンス\ngo mod\n// 新しいモジュールを初期化\ngo mod init\n// 不足しているモジュールを追加し、未使用のモジュールを削除\ngo mod tidy\n// vendor ディレクトリを作成\ngo mod vendor\n// パッケージまたはモジュールをリスト表示\ngo list\n// ワークスペースメンテナンス (Go 1.18+)\ngo work\n// ソースを処理して Go ファイルを生成\ngo generate\n// パッケージまたはシンボルのドキュメントを表示\ngo doc\n// Go のバージョンを表示\ngo version"
+    },
+    {
+      "title": "Go Environment Variables",
+      "code": "// 環境変数\n// モジュールサポートを制御\nGO111MODULE\n// ワークスペースディレクトリ (モジュールを使用しない場合)\nGOPATH\n// Go のインストールディレクトリ\nGOROOT\n// Go バイナリのインストールディレクトリ\nGOBIN\n// クロスコンパイルのためのターゲット OS/アーキテクチャ\nGOOS/GOARCH\n// 'go' コマンドのデフォルトフラグ\nGOFLAGS"
+    },
+    {
+      "title": "Code Style: Variables",
+      "code": "// 変数 - 短く、説明的な名前を使用\n// 読みやすさのために宣言をグループ化\nvar (\n  userCount int\n  maxRetries = 3\n// エラー変数: err + 説明\n  errNotFound = errors.New(\"not found\")\n)"
+    },
+    {
+      "title": "Code Style: Constants",
+      "code": "// 定数 - 定数には camelCase または ALL_CAPS を使用\nconst (\n  maxConnections = 100\n// 非常に重要な定数には ALL_CAPS\n  DEFAULT_TIMEOUT = 30 * time.Second\n)"
+    },
+    {
+      "title": "Code Style: Functions",
+      "code": "// 関数 - アンダースコアではなく MixedCaps を使用\nfunc ConnectToDatabase(config *DatabaseConfig) (*Connection, error) {\n  // ...\n}"
+    },
+    {
+      "title": "Code Style: Interfaces",
+      "code": "// インターフェース - 単一メソッドのインターフェースは -er で終わる\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}"
+    },
+    {
+      "title": "Code Style: Error Handling",
+      "code": "// エラー処理 - エラーをすぐにチェック\nresult, err := DoSomething()\nif err != nil {\n  return nil, fmt.Errorf(\"failed to do something: %w\", err)\n}"
+    },
+    {
+      "title": "Code Style: Comments",
+      "code": "// コメント - ドキュメント化するものの名前で始める\n// User はシステム内のユーザーを表す。\ntype User struct {\n  // ...\n}\n\n// GetByID は ID によってユーザーを取得する。\nfunc GetByID(id string) (*User, error) {\n  // ...\n}"
+    },
+    {
+      "title": "Code Style: Indentation",
+      "code": "// インデント - スペースではなくタブを使用\nfunc example() {\n\tif condition {\n\t\tfmt.Println(\"indented with tabs\")\n\t}\n}"
+    },
+    {
+      "title": "Best Practice: Handle Errors Explicitly",
+      "code": "// 1. エラーを明示的に処理する\nif err := doSomething(); err != nil {\n  // エラーを処理し、無視しない\n  log.Printf(\"error: %v\", err)\n  return err\n}"
+    },
+    {
+      "title": "Best Practice: Favor Composition",
+      "code": "// 2. 継承よりもコンポジションを優先する\ntype Logger struct {\n  // ...\n}\n\ntype Server struct {\n// 拡張する代わりに埋め込む\n  Logger\n  // ...\n}"
+    },
+    {
+      "title": "Best Practice: Use Interfaces for DI",
+      "code": "// 3. 依存性注入にインターフェースを使用する\ntype UserStore interface {\n  GetUser(id string) (*User, error)\n}\n\nfunc NewUserHandler(store UserStore) *UserHandler {\n  return &UserHandler{store: store}\n}"
+    },
+    {
+      "title": "Best Practice: Use Context",
+      "code": "// 4. キャンセルとデッドラインに context を使用する\nctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\ndefer cancel()\n\nresult, err := service.DoWork(ctx)"
+    },
+    {
+      "title": "Best Practice: Avoid Package State",
+      "code": "// 5. 可能な限りパッケージレベルの状態を避ける\n// 悪い例:\nvar db *sql.DB\n\n// より良い例:\ntype Service struct {\n  db *sql.DB\n}"
+    },
+    {
+      "title": "Best Practice: Use defer for Cleanup",
+      "code": "// 6. クリーンアップに defer を使用する\nf, err := os.Open(filename)\nif err != nil {\n  return err\n}\n// エラーパスでも常に閉じる\ndefer f.Close()"
+    },
+    {
+      "title": "Best Practice: Separate Interface Definitions",
+      "code": "// 7. インターフェース定義を実装から分離する\n// 実装レベルではなく、ユーザーレベルでインターフェースを定義する"
+    },
+    {
+      "title": "Best Practice: Use Go Tools",
+      "code": "// 8. gofmt, goimports, golint, go vet を使用する\n// コードを一貫してフォーマットし、一般的なエラーをキャッチする"
+    },
+    {
+      "title": "Basic Test Function",
+      "code": "// Go テストパターン\n// 別のテストパッケージ\npackage mypackage_test\n\nimport (\n  \"testing\"\n  \"example.com/mypackage\"\n)\n\n// 基本的なテスト関数\nfunc TestAdd(t *testing.T) {\n  got := mypackage.Add(2, 3)\n  want := 5\n  if got != want {\n    t.Errorf(\"Add(2, 3) = %d; want %d\", got, want)\n  }\n}"
+    },
+    {
+      "title": "Table-Driven Tests",
+      "code": "// テーブル駆動テスト\nfunc TestAdd_Table(t *testing.T) {\n  tests := []struct {\n    name string\n    a, b int\n    want int\n  }{\n    {\"positive\", 2, 3, 5},\n    {\"negative\", -1, -2, -3},\n    {\"mixed\", -1, 5, 4},\n  }\n\n  for _, tt := range tests {\n    t.Run(tt.name, func(t *testing.T) {\n      got := mypackage.Add(tt.a, tt.b)\n      if got != tt.want {\n        t.Errorf(\"Add(%d, %d) = %d; want %d\", tt.a, tt.b, got, tt.want)\n      }\n    })\n  }\n}"
+    },
+    {
+      "title": "Benchmark Functions",
+      "code": "// ベンチマーク\nfunc BenchmarkAdd(b *testing.B) {\n  for i := 0; i < b.N; i++ {\n    mypackage.Add(2, 3)\n  }\n}"
+    },
+    {
+      "title": "Running Tests (go test)",
+      "code": "// テストの実行:\n// $ go test\n// $ go test -v\n// $ go test -run=TestAdd\n// $ go test -bench=.\n// $ go test -cover"
+    },
+    {
+      "title": "Example Tests (godoc)",
+      "code": "// テスト可能な例 (ドキュメントとテスト)\nfunc ExampleAdd() {\n  sum := mypackage.Add(1, 2)\n  fmt.Println(sum)\n  // Output: 3\n}"
+    },
+    {
+      "title": "Mocking for Tests",
+      "code": "// モック\ntype mockUserStore struct {\n  users map[string]*User\n}\n\nfunc (m *mockUserStore) GetUser(id string) (*User, error) {\n  user, ok := m.users[id]\n  if !ok {\n    return nil, errors.New(\"user not found\")\n  }\n  return user, nil\n}\n\n// モックを使用したテスト\nfunc TestHandler_GetUser(t *testing.T) {\n  // モックを設定\n  store := &mockUserStore{\n    users: map[string]*User{\n      \"123\": {ID: \"123\", Name: \"Test User\"},\n    },\n  }\n  \n  // モックを注入\n  handler := NewUserHandler(store)\n  \n  // テスト\n  user, err := handler.GetUser(\"123\")\n  if err != nil {\n    t.Fatalf(\"expected no error, got %v\", err)\n  }\n  if user.Name != \"Test User\" {\n    t.Errorf(\"expected name 'Test User', got '%s'\", user.Name)\n  }\n}"
+    },
+    {
+      "title": "Function Options Pattern",
+      "code": "// 関数オプションパターン\ntype ServerOption func(*Server)\n\nfunc WithTimeout(timeout time.Duration) ServerOption {\n  return func(s *Server) {\n    s.timeout = timeout\n  }\n}\n\nfunc WithTLS(cert, key string) ServerOption {\n  return func(s *Server) {\n    s.useTLS = true\n    s.cert = cert\n    s.key = key\n  }\n}\n\nfunc NewServer(addr string, opts ...ServerOption) *Server {\n  // デフォルト設定\n  server := &Server{\n    addr:    addr,\n    timeout: 30 * time.Second,\n  }\n  \n  // オプションを適用\n  for _, opt := range opts {\n    opt(server)\n  }\n  \n  return server\n}\n\n// 使用法\nserver := NewServer(\":8080\",\n  WithTimeout(10*time.Second),\n  WithTLS(\"cert.pem\", \"key.pem\"),\n)"
+    },
+    {
+      "title": "Worker Pool Pattern",
+      "code": "// ワーカープールパターン\nfunc worker(id int, jobs <-chan Job, results chan<- Result) {\n  for job := range jobs {\n    results <- process(job)\n  }\n}\n\n// プールを作成\njobs := make(chan Job, 100)\nresults := make(chan Result, 100)\n\n// ワーカーを開始\nfor w := 1; w <= 3; w++ {\n  go worker(w, jobs, results)\n}\n\n// ジョブを送信し、結果を収集\nfor _, j := range allJobs {\n  jobs <- j\n}\nclose(jobs)\n\n// 結果を収集\nfor range allJobs {\n  result := <-results\n  // 結果を使用\n}"
+    }
+  ]
+}
