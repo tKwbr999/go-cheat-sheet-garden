@@ -118,7 +118,8 @@
   }
 
   .code-title {
-    @apply text-sm font-medium px-4 py-2 bg-primary text-primary-foreground border-b border-primary; /* Use primary background for header */
+    /* Use primary background for header. See #35 */
+    @apply text-sm font-medium px-4 py-2 bg-primary text-primary-foreground border-b border-primary;
   }
 
   .code-content {

@@ -1,92 +1,80 @@
 import { CheatSheetSection, CodeExample } from './types';
-// 生成されたJSONデータをインポート
-import generatedData from './generated/cheatsheet-data.json';
+// 生成されたインデックスファイルをインポート
+import sectionIndex from './generated/index.json';
 
-// --- 型定義 (必要に応じて調整) ---
-// Internal* 型は不要になる可能性がある
-interface InternalCheatSheetSection extends CheatSheetSection {
-  id: string; // 検索や隣接セクション取得のためにIDを付与
+// 型定義: インデックスファイルの型
+interface SectionIndexItem {
+  id: string;
+  title: string;
+  orderPrefix: string;
+  filePath: string; // 遅延読み込み用のファイルパス (例: './sections/basics.json')
 }
 
 // --- データ処理 ---
-// JSONデータを一度だけ処理して使いやすい形式にする
-let processedSections: InternalCheatSheetSection[] | null = null;
-let sectionMap: Record<string, InternalCheatSheetSection> | null = null;
-let sectionOrder: string[] | null = null;
+// インデックスデータは静的に読み込まれる
+const processedIndex: SectionIndexItem[] = sectionIndex as SectionIndexItem[];
+const sectionMapById: Record<string, SectionIndexItem> = {};
+const sectionMapByTitle: Record<string, SectionIndexItem> = {};
+const sectionOrder: string[] = [];
 
-function processGeneratedData(): {
-  sections: InternalCheatSheetSection[];
-  sectionMap: Record<string, InternalCheatSheetSection>;
-  sectionOrder: string[];
-} {
-  if (processedSections && sectionMap && sectionOrder) {
-    return { sections: processedSections, sectionMap, sectionOrder };
+// 一度だけインデックスを処理
+processedIndex.forEach(item => {
+  sectionMapById[item.id] = item;
+  sectionMapByTitle[item.title] = item; // タイトルでの検索用
+  sectionOrder.push(item.id);
+});
+
+// --- Public API (実装を修正) ---
+
+// 全セクションのメタ情報（IDとタイトル）を返すように変更
+// 注意: これは CheatSheetSection[] ではなくなるため、呼び出し元の修正が必要になる可能性がある
+// もしくは、初期表示に必要な最低限の情報（タイトルリストなど）だけを返すようにする
+export function getCheatSheetIndex(): SectionIndexItem[] {
+  return processedIndex;
+}
+
+// 特定のセクションデータを非同期で読み込む
+export async function getCheatSheetSection(sectionId: string): Promise<CheatSheetSection | undefined> {
+  const indexItem = sectionMapById[sectionId];
+  if (!indexItem) {
+    return undefined;
   }
-
-  // generatedData を InternalCheatSheetSection[] に変換 (IDを付与)
-  // 注意: generatedData は CheatSheetSection[] 型のはず
-  const sectionsWithId: InternalCheatSheetSection[] = (generatedData as CheatSheetSection[]).map(section => ({
-    ...section,
-    // IDをタイトルから生成（または別の方法で保持） - ここでは単純化のためタイトルをIDとする
-    // もし元の orderPrefix や chapterId が必要なら、生成スクリプトでJSONに含める必要がある
-    id: section.title.toLowerCase().replace(/\s+/g, '-'), // 例: "Basic Types" -> "basic-types"
-  }));
-
-  const map: Record<string, InternalCheatSheetSection> = {};
-  const order: string[] = [];
-  for (const section of sectionsWithId) {
-    map[section.id] = section;
-    order.push(section.id);
+  try {
+    // 動的インポートを使用して対応するJSONファイルを読み込む
+    // Vite/Webpackなどはこれをコード分割の対象とする
+    // IMPORTANT: Adjust the import path based on the final structure.
+    // Assuming the loader is in src/data/ and generated files are in src/data/generated/
+    const sectionDataModule = await import(/* @vite-ignore */ `./generated/${indexItem.filePath.replace('./', '')}`);
+    // デフォルトエクスポートされたデータを返す (JSON.parseは不要)
+    return sectionDataModule.default as CheatSheetSection;
+  } catch (error) {
+    console.error(`Error loading section ${sectionId} from ${indexItem.filePath}:`, error);
+    return undefined;
   }
-
-  processedSections = sectionsWithId;
-  sectionMap = map;
-  sectionOrder = order;
-
-  return { sections: processedSections, sectionMap, sectionOrder };
 }
 
-
-// --- Public API (インターフェースは変更なし、実装を修正) ---
-
-export function getCheatSheetData(): CheatSheetSection[] {
-  // JSONデータを直接返す (IDを除外)
-  return (generatedData as CheatSheetSection[]);
-}
-
-export function getCheatSheetSection(sectionId: string): CheatSheetSection | undefined {
-  const { sectionMap } = processGeneratedData();
-  const section = sectionMap[sectionId];
-  // IDを除外して返す
-  if (!section) return undefined;
-  const { id, ...rest } = section;
-  return rest;
-}
-
-export function findSectionById(sectionId: string): CheatSheetSection | undefined {
+// findSectionById は getCheatSheetSection を使う (非同期になる)
+export async function findSectionById(sectionId: string): Promise<CheatSheetSection | undefined> {
   return getCheatSheetSection(sectionId);
 }
 
+// 全セクションのタイトルリストを返す (同期)
 export function getAllSectionTitles(): string[] {
-  const { sections } = processGeneratedData();
-  return sections.map((section) => section.title);
+  return processedIndex.map((item) => item.title);
 }
 
+// セクションIDからタイトルを取得 (同期)
 export function getSectionTitle(sectionId: string): string | undefined {
-  const { sectionMap } = processGeneratedData();
-  return sectionMap[sectionId]?.title;
+  return sectionMapById[sectionId]?.title;
 }
 
+// タイトルからセクションIDを取得 (同期)
 export function getSectionIdByTitle(title: string): string | undefined {
-  const { sections } = processGeneratedData();
-  // ID生成ロジックに合わせて検索
-  const targetId = title.toLowerCase().replace(/\s+/g, '-');
-  const section = sections.find((s) => s.id === targetId);
-  return section?.id;
+  return sectionMapByTitle[title]?.id;
 }
 
+// 隣接セクションのIDを取得 (同期)
 export function getAdjacentSections(sectionId: string): { prev?: string; next?: string } {
-  const { sectionOrder } = processGeneratedData();
   const index = sectionOrder.indexOf(sectionId);
   if (index === -1) return {};
   const result: { prev?: string; next?: string } = {};
@@ -95,27 +83,53 @@ export function getAdjacentSections(sectionId: string): { prev?: string; next?: 
   return result;
 }
 
-export function searchSections(keyword: string): CheatSheetSection[] {
-  const { sections } = processGeneratedData(); // InternalCheatSheetSection[] を取得
+// 検索機能: インデックス情報（タイトル）のみで検索する (同期)
+// 注意: コンテンツ全体を検索する場合は、全JSONを読み込む非同期処理が必要
+export function searchSections(keyword: string): SectionIndexItem[] {
   const normalizedKeyword = keyword.toLowerCase();
-  if (!normalizedKeyword) return getCheatSheetData(); // 元のデータを返す
+  if (!normalizedKeyword) return getCheatSheetIndex(); // キーワードがなければ全インデックスを返す
 
-  const results = sections.filter((section) => {
-    // section.id も検索対象に含めるか検討
-    if (section.title.toLowerCase().includes(normalizedKeyword)) return true;
-    for (const example of section.codeExamples) {
-      if (example.title.toLowerCase().includes(normalizedKeyword)) return true;
-      if (example.description?.toLowerCase().includes(normalizedKeyword)) return true;
-      if (example.code.toLowerCase().includes(normalizedKeyword)) return true;
-      // タグ情報が必要な場合は、生成スクリプトでJSONに含める必要がある
-      // if (example.tags.some((tag) => tag.toLowerCase().includes(normalizedKeyword))) return true;
-    }
+  return processedIndex.filter((item) => {
+    if (item.title.toLowerCase().includes(normalizedKeyword)) return true;
+    // IDでの検索も追加する場合
+    // if (item.id.toLowerCase().includes(normalizedKeyword)) return true;
     return false;
   });
-
-  // 結果を CheatSheetSection[] 形式に戻す (IDを除外)
-  return results.map(({ id, ...rest }) => rest);
 }
 
-// キャッシュクリア関数は不要になるため削除
-// export function clearCache(): void { ... }
+// 非同期で全セクションデータを読み込んで検索する関数の例 (必要に応じて実装)
+/*
+export async function searchSectionsDeep(keyword: string): Promise<CheatSheetSection[]> {
+  const normalizedKeyword = keyword.toLowerCase();
+  if (!normalizedKeyword) {
+    // 全データを読み込む必要がある
+    const allSections = await Promise.all(processedIndex.map(item => getCheatSheetSection(item.id)));
+    return allSections.filter(s => s !== undefined) as CheatSheetSection[];
+  }
+
+  const results: CheatSheetSection[] = [];
+  for (const item of processedIndex) {
+    // まずタイトルでフィルタリング
+    if (item.title.toLowerCase().includes(normalizedKeyword)) {
+      const section = await getCheatSheetSection(item.id);
+      if (section) results.push(section);
+      continue; // タイトルが一致したらコンテンツは見ない（重複を避ける）
+    }
+
+    // コンテンツを検索するために読み込む
+    const section = await getCheatSheetSection(item.id);
+    if (!section) continue;
+
+    let foundInContent = false;
+    for (const example of section.codeExamples) {
+      if (example.title.toLowerCase().includes(normalizedKeyword)) { foundInContent = true; break; }
+      if (example.description?.toLowerCase().includes(normalizedKeyword)) { foundInContent = true; break; }
+      if (example.code.toLowerCase().includes(normalizedKeyword)) { foundInContent = true; break; }
+    }
+    if (foundInContent) {
+      results.push(section);
+    }
+  }
+  return results;
+}
+*/
