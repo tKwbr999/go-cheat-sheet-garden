@@ -4,9 +4,6 @@ import type { CheatSheetSection as SectionData, CodeExample } from "@/data/types
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface CheatSheetSectionProps {
-  // title と sectionId は sectionData から取得できるため Props から削除可能
-  // title: string;
-  // sectionId: string;
   sectionData: SectionData & { id: string }; // 完全なデータを受け取る
   className?: string;
 }
