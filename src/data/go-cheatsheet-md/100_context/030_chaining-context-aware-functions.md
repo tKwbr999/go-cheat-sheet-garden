@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: Context の伝播"
+## タグ
 tags: ["context", "concurrency", "関数呼び出し", "伝播"]
----
-
 `context.Context` を受け取る関数が、内部でさらに別の `context.Context` を受け取る関数を呼び出す場合、**受け取った Context をそのまま下位の関数に渡す**のが基本です。
 
 この規約については、**「Context の受け渡し規約」** (`100_context/020_passing-context-convention.md`) でも触れました。

@@ -1,8 +1,7 @@
----
+## タイトル
 title: "コードスタイル: インターフェース (Interfaces)"
+## タグ
 tags: ["references", "code style", "interfaces", "naming", "er suffix", "interface segregation"]
----
-
 インターフェースは Go のポリモーフィズム（多態性）を実現する中心的な機能であり、柔軟で疎結合なコードを書くために不可欠です。インターフェースの設計と使い方に関する Go の慣習とスタイルは以下の通りです。
 
 ## インターフェース名

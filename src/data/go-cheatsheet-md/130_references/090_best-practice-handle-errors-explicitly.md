@@ -1,8 +1,7 @@
----
+## タイトル
 title: "ベストプラクティス: エラーを明示的に処理する"
+## タグ
 tags: ["references", "best practice", "error handling", "error", "if err != nil"]
----
-
 Goの設計思想における最も重要な原則の一つは、**エラーを無視せず、明示的に処理する**ことです。
 
 エラー処理の基本的なスタイルについては、**「コードスタイル: エラーハンドリング」** (`130_references/060_code-style-error-handling.md`) で説明しました。

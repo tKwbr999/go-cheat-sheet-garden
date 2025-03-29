@@ -1,8 +1,7 @@
----
+## タイトル
 title: "コードスタイル: 定数 (Constants)"
+## タグ
 tags: ["references", "code style", "constants", "const", "naming", "iota"]
----
-
 **定数 (Constant)** は、プログラム実行中に値が変わらない識別子です。Goでは `const` キーワードを使って宣言します。
 
 ## 定数名

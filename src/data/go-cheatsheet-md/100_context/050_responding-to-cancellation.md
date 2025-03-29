@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: キャンセルへの応答 (`ctx.Done()`)"
+## タグ
 tags: ["context", "concurrency", "goroutine", "Done", "select", "キャンセル"]
----
-
 `context.Context` を受け取る関数や Goroutine は、その Context がキャンセルされたかどうかを**定期的にチェック**し、キャンセルされていれば**速やかに処理を中断**する必要があります。
 
 キャンセルを検知する基本的な方法は、`ctx.Done()` が返すチャネルを `select` 文で使うことです。この方法については、**「並行処理」**セクションの**「Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)」** (`090_concurrency/210_using-context-in-functions-checking-done.md`) で既に説明しました。

@@ -1,8 +1,7 @@
----
+## タイトル
 title: "デザインパターン: ワーカープールパターン (Worker Pool)"
+## タグ
 tags: ["references", "design pattern", "concurrency", "goroutine", "channel", "worker pool"]
----
-
 ワーカープールは、Goで並行処理を実装する際の一般的なデザインパターンの一つです。限られた数のワーカー Goroutine を使って、多数のタスク（ジョブ）を効率的に処理します。
 
 ワーカープールの詳細な説明と実装例については、**「並行処理」**セクションの**「ワーカープール (Worker Pool) パターン」** (`090_concurrency/060_worker-pool-pattern.md`) を参照してください。

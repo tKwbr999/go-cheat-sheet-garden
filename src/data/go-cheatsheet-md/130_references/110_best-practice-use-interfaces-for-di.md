@@ -1,8 +1,7 @@
----
+## タイトル
 title: "ベストプラクティス: 依存性注入 (DI) にインターフェースを使う"
+## タグ
 tags: ["references", "best practice", "dependency injection", "di", "interfaces", "疎結合", "テスト容易性"]
----
-
 **依存性注入 (Dependency Injection, DI)** は、あるコンポーネント（例: `UserService`）が依存する別のコンポーネント（例: `UserRepository`）を、自身で生成するのではなく、**外部から与えられる（注入される）**ように設計する手法です。
 
 Goでは、この依存関係を表現するために**インターフェース**を使うことが非常に効果的であり、ベストプラクティスとされています。

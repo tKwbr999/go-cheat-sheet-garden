@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: ミドルウェアでの Context 利用"
+## タグ
 tags: ["context", "concurrency", "http", "middleware", "WithValue", "WithContext"]
----
-
 HTTPサーバーにおけるミドルウェアは、リクエスト固有の情報（リクエストID、認証情報、トレース情報など）を Context に追加し、後続のハンドラや関数で利用できるようにするための一般的な場所です。
 
 ミドルウェアで `context.WithValue` を使って Context に値を追加し、`r.WithContext()` で更新された Context を持つリクエストを次に渡す方法については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に説明しました。
