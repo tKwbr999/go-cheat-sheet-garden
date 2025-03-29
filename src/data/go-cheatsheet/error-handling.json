@@ -1,0 +1,81 @@
+{
+  "title": "Error handling",
+  "codeExamples": [
+    {
+      "title": "The error Interface",
+      "code": "// Error インターフェース\ntype error interface {\n  Error() string\n}"
+    },
+    {
+      "title": "Creating Errors (errors.New)",
+      "code": "// エラーの作成\n// テキスト付きの単純なエラー\nerr1 := errors.New(\"something went wrong\")"
+    },
+    {
+      "title": "Creating Errors (fmt.Errorf)",
+      "code": "// フォーマットされたエラー (より一般的)\nerr2 := fmt.Errorf(\"process failed: %s\", detail)"
+    },
+    {
+      "title": "Functions Returning Errors",
+      "code": "// エラーを返す関数\nfunc divide(a, b int) (int, error) {\n  if b == 0 {\n    return 0, errors.New(\"division by zero\")\n  }\n// nil はエラーがないことを示す\n  return a / b, nil\n}"
+    },
+    {
+      "title": "Basic Error Handling",
+      "code": "// エラー処理\nresult, err := divide(10, 2)\nif err != nil {\n  // エラーパス\n  fmt.Println(\"Error:\", err)\n// エラー時の早期リターンは慣用的\n  return\n}\n// 正常系パス\nfmt.Println(\"Result:\", result)"
+    },
+    {
+      "title": "Wrapping Errors (%w)",
+      "code": "// エラーのラップ (Go 1.13+) でコンテキストを追加\nif err := loadConfig(filename); err != nil {\n  return fmt.Errorf(\"config processing failed: %w\", err)\n}"
+    },
+    {
+      "title": "Errors as Values (errors.Is)",
+      "code": "// エラーは値である\n// 他の値と同様に、保存、返却、チェックが可能\nvar ErrNotFound = errors.New(\"not found\")\n\nfunc findItem(id string) (*Item, error) {\n  // ...\n  if itemNotFound {\n    return nil, ErrNotFound\n  }\n  return &item, nil\n}\n\nitem, err := findItem(\"some-id\")\nif errors.Is(err, ErrNotFound) {\n  // not found ケースを処理\n  fmt.Println(\"Item not found\")\n}"
+    },
+    {
+      "title": "Defining Custom Error Types",
+      "code": "// カスタムエラー型を定義\ntype MyError struct {\n  Code    int\n  Message string\n}\n\n// Error インターフェースを実装\nfunc (e *MyError) Error() string {\n  return fmt.Sprintf(\"error %d: %s\", e.Code, e.Message)\n}"
+    },
+    {
+      "title": "Returning Custom Errors",
+      "code": "// カスタムエラーを返す\nfunc doSomething() error {\n  // 何らかの条件でエラー発生\n  return &MyError{\n    Code:    500,\n    Message: \"something went wrong\",\n  }\n}"
+    },
+    {
+      "title": "Checking Custom Errors (Type Assertion)",
+      "code": "// 型アサーションでカスタムエラーフィールドにアクセス\nif err := doSomething(); err != nil {\n  if myErr, ok := err.(*MyError); ok {\n    fmt.Println(\"Code:\", myErr.Code)\n  }\n}"
+    },
+    {
+      "title": "Checking Custom Errors (errors.As)",
+      "code": "// errors.As (Go 1.13+) を使用した型チェック\nerr := doSomething()\nvar myErr *MyError\nif errors.As(err, &myErr) {\n  fmt.Println(\"Code:\", myErr.Code)\n}"
+    },
+    {
+      "title": "Checking Wrapped Errors (errors.Is)",
+      "code": "// ラップによる階層的なエラーの作成\nvar ErrConnRefused = errors.New(\"connection refused\")\n\nfunc connect() error {\n  // 接続試行...\n  return ErrConnRefused\n}\n\nfunc request() error {\n  err := connect()\n  if err != nil {\n    return fmt.Errorf(\"request failed: %w\", err)\n  }\n  // ...\n  return nil\n}\n\n// ラップされたエラーのチェック\nerr := request()\nif errors.Is(err, ErrConnRefused) {\n  // connection refused エラーを処理\n  fmt.Println(\"Could not connect\")\n}"
+    },
+    {
+      "title": "Sentinel Errors",
+      "code": "// センチネルエラー (事前定義されたエラー)\nvar (\n  ErrNotFound     = errors.New(\"not found\")\n  ErrUnauthorized = errors.New(\"unauthorized\")\n  ErrTimeout      = errors.New(\"timeout\")\n)\n\n// エラーチェック\nerr := someOperation()\nif errors.Is(err, ErrNotFound) {\n  // not found ケースを処理\n}"
+    },
+    {
+      "title": "Early Return Pattern",
+      "code": "// 早期リターンによる反復的なチェックの回避\nfunc process() error {\n  err := step1()\n  if err != nil {\n    return fmt.Errorf(\"step1 failed: %w\", err)\n  }\n  \n  err = step2()\n  if err != nil {\n    return fmt.Errorf(\"step2 failed: %w\", err)\n  }\n  \n  return step3()\n}"
+    },
+    {
+      "title": "Error Handling Middleware (HTTP)",
+      "code": "// エラー処理ミドルウェア (HTTP サーバー用)\nfunc errorHandler(next http.Handler) http.Handler {\n  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n    defer func() {\n      if r := recover(); r != nil {\n        log.Printf(\"panic: %v\", r)\n        http.Error(w, \"internal server error\", http.StatusInternalServerError)\n      }\n    }()\n    // ここでハンドラからのエラーをキャッチすることもできる\n    // err := next.ServeHTTP(w, r) // ServeHTTP はエラーを返さないが、カスタムハンドラは返すかもしれない\n    next.ServeHTTP(w, r)\n  })\n}"
+    },
+    {
+      "title": "Structured Errors",
+      "code": "// 構造化エラー (異なるフィールドを持つ)\ntype FieldError struct {\n  Field string\n  Value interface{}\n  Msg   string\n}\n\nfunc (f *FieldError) Error() string {\n  return fmt.Sprintf(\"invalid value %v for field %s: %s\", f.Value, f.Field, f.Msg)\n}\n\nfunc validateInput(input string) error {\n  if len(input) < 5 {\n    return &FieldError{Field: \"input\", Value: input, Msg: \"must be at least 5 chars\"}\n  }\n  return nil\n}"
+    },
+    {
+      "title": "Joining Multiple Errors (errors.Join, Go 1.20+)",
+      "code": "// 複数のエラーの結合 (Go 1.20+)\nimport \"errors\"\n\n// Join は複数のエラーを単一のエラーに結合する\nfunc validateForm(data Form) error {\n  var errs []error\n  \n  if data.Name == \"\" {\n    errs = append(errs, errors.New(\"name is required\"))\n  }\n  \n  if data.Email == \"\" {\n    errs = append(errs, errors.New(\"email is required\"))\n  }\n  \n  if len(errs) > 0 {\n// 単一のエラーを返す\n    return errors.Join(errs...)\n  }\n  return nil\n}"
+    },
+    {
+      "title": "Unwrapping Multiple Errors (Go 1.20+)",
+      "code": "// 複数のエラーのアンラップ\nerr := validateForm(form)\n\n// 特定のエラータイプをチェック\nvar nameErr *NameError // カスタムエラータイプと仮定\nif errors.As(err, &nameErr) {\n  // name エラーを処理\n}\n\n// 結合されたエラーの反復処理 (Go 1.20 では errors.Unwrap はこの目的には使用しない)\n// 代わりに、errors.Join によって返されたエラーの Error() メソッドを確認する\nif err != nil {\n  fmt.Println(\"Validation errors:\")\n  // errors.Join は改行でエラーを結合する\n  for _, line := range strings.Split(err.Error(), \"\\n\") {\n    fmt.Println(\"-\", line)\n  }\n}"
+    },
+    {
+      "title": "Error Handling with defer",
+      "code": "// defer を使用したエラー処理 (リソースクリーンアップ)\nfunc processFile(filename string) (err error) {\n  f, err := os.Open(filename)\n  if err != nil {\n    return fmt.Errorf(\"failed to open file: %w\", err)\n  }\n  \n  defer func() {\n    closeErr := f.Close()\n    if err == nil && closeErr != nil {\n// 他にエラーがない場合、close エラーを呼び出し元に渡す\n      err = fmt.Errorf(\"failed to close file: %w\", closeErr)\n    }\n    // 既にエラーがある場合は、元のエラーを保持する\n  }()\n  \n  // ファイルを処理...\n  // _, err = io.Copy(dst, f)\n  // if err != nil {\n  //   return fmt.Errorf(\"failed to process file: %w\", err)\n  // }\n  \n  return nil // 正常終了\n}"
+    }
+  ]
+}

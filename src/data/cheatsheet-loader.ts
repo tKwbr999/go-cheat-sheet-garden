@@ -1,94 +1,84 @@
-import { CheatSheetSection } from "./types";
-import basicsData from "./go-cheatsheet/sections/basics.json";
-import basicTypesData from "./go-cheatsheet/sections/basic-types.json";
-import flowControlData from "./go-cheatsheet/sections/flow-control.json";
-import functionsData from "./go-cheatsheet/sections/functions.json";
-import dataStructuresData from "./go-cheatsheet/sections/data-structures.json";
-import packagesData from "./go-cheatsheet/sections/packages.json";
-import concurrencyData from "./go-cheatsheet/sections/concurrency.json";
-import errorHandlingData from "./go-cheatsheet/sections/error-handling.json";
-import methodsData from "./go-cheatsheet/sections/methods.json";
-import interfacesData from "./go-cheatsheet/sections/interfaces.json";
-import contextData from "./go-cheatsheet/sections/context.json";
-import ioOperationsData from "./go-cheatsheet/sections/io-operations.json";
-import genericsData from "./go-cheatsheet/sections/generics.json";
-import referencesData from "./go-cheatsheet/sections/references.json";
+import { CheatSheetSection } from './types';
+import basicsData from './go-cheatsheet/basics.json';
+import basicTypesData from './go-cheatsheet/basic-types.json';
+import flowControlData from './go-cheatsheet/flow-control.json';
+import functionsData from './go-cheatsheet/functions.json';
+import dataStructuresData from './go-cheatsheet/data-structures.json';
+import packagesData from './go-cheatsheet/packages.json';
+import concurrencyData from './go-cheatsheet/concurrency.json';
+import errorHandlingData from './go-cheatsheet/error-handling.json';
+import methodsData from './go-cheatsheet/methods.json';
+import interfacesData from './go-cheatsheet/interfaces.json';
+import contextData from './go-cheatsheet/context.json';
+import ioOperationsData from './go-cheatsheet/io-operations.json';
+import genericsData from './go-cheatsheet/generics.json';
+import referencesData from './go-cheatsheet/references.json';
 
 // データセクションの順序を定義
 export const cheatSheetSectionOrder = [
-  "basics",
-  "basic-types",
-  "flow-control",
-  "functions",
-  "data-structures",
-  "methods",
-  "interfaces",
-  "packages",
-  "error-handling",
-  "concurrency",
-  "context",
-  "io-operations",
-  "generics",
-  "references",
+  'basics',
+  'basic-types',
+  'flow-control',
+  'functions',
+  'data-structures',
+  'methods',
+  'interfaces',
+  'packages',
+  'error-handling',
+  'concurrency',
+  'context',
+  'io-operations',
+  'generics',
+  'references'
 ];
 
 // セクション名とデータのマッピング
 // コードがコメントのみか判定するヘルパー関数
 function isCommentBlock(code: string): boolean {
   const trimmedCode = code.trim();
-  if (trimmedCode === "") {
+  if (trimmedCode === '') {
     return true; // 空文字列はコメントのみとみなす
   }
-  return trimmedCode.split("\n").every((line) => {
+  return trimmedCode.split('\n').every(line => {
     const trimmedLine = line.trim();
     // コメント行または空行かチェック
-    return trimmedLine.startsWith("//") || trimmedLine === "";
+    return trimmedLine.startsWith('//') || trimmedLine === '';
   });
 }
 
 // コメント内容を整形するヘルパー関数
 function formatCommentBlock(commentCode: string): string {
   return commentCode
-    .split("\n")
-    .map((line) => line.trim().replace(/^\/\/\s*/, "")) // Remove '// ' or '//'
-    .filter((line) => line.trim() !== "") // Remove empty lines
-    .join("\n");
+    .split('\n')
+    .map(line => line.trim().replace(/^\/\/\s*/, '')) // Remove '// ' or '//'
+    .filter(line => line.trim() !== '') // Remove empty lines
+    .join('\n');
 }
 
+
 // 元のデータを一時的に保持
-const importedData: Record<
-  string,
-  { title: string; codeExamples: { title: string; code: string }[] }
-> = {
-  basics: basicsData,
-  "basic-types": basicTypesData,
-  "flow-control": flowControlData,
-  functions: functionsData,
-  "data-structures": dataStructuresData,
-  packages: packagesData,
-  concurrency: concurrencyData,
-  context: contextData,
-  "error-handling": errorHandlingData,
-  methods: methodsData,
-  interfaces: interfacesData,
-  "io-operations": ioOperationsData,
-  generics: genericsData,
-  references: referencesData,
+const importedData: Record<string, { title: string; codeExamples: { title: string; code: string }[] }> = {
+  'basics': basicsData,
+  'basic-types': basicTypesData,
+  'flow-control': flowControlData,
+  'functions': functionsData,
+  'data-structures': dataStructuresData,
+  'packages': packagesData,
+  'concurrency': concurrencyData,
+  'context': contextData,
+  'error-handling': errorHandlingData,
+  'methods': methodsData,
+  'interfaces': interfacesData,
+  'io-operations': ioOperationsData,
+  'generics': genericsData,
+  'references': referencesData
 };
 
 // description プロパティを追加し、コメントのみのブロックを処理して新しいマップを作成
 const sectionDataMap: Record<string, CheatSheetSection> = {};
 for (const [sectionId, sectionData] of Object.entries(importedData)) {
-  const processedExamples: {
-    title: string;
-    code: string;
-    description?: string;
-  }[] = [];
-  let previousExample: {
-    title: string;
-    code: string;
-    description?: string;
-  } | null = null;
+  const processedExamples: { title: string; code: string; description?: string }[] = [];
+  let previousExample: { title: string; code: string; description?: string } | null = null;
 
   for (const currentExample of sectionData.codeExamples) {
     if (isCommentBlock(currentExample.code)) {
@@ -111,33 +101,24 @@ for (const [sectionId, sectionData] of Object.entries(importedData)) {
   };
 }
 
-// チートシートの全データを順序通りに取得 (id を追加)
-export function getCheatSheetData(): (CheatSheetSection & { id: string })[] {
-  return cheatSheetSectionOrder.map((sectionId) => ({
-    id: sectionId, // id を追加
-    ...sectionDataMap[sectionId],
-  }));
+// チートシートの全データを順序通りに取得
+export function getCheatSheetData(): CheatSheetSection[] {
+  return cheatSheetSectionOrder.map(sectionId => sectionDataMap[sectionId]);
 }
 
 // 特定のセクションのデータを取得
-export function getCheatSheetSection(
-  sectionId: string
-): CheatSheetSection | undefined {
+export function getCheatSheetSection(sectionId: string): CheatSheetSection | undefined {
   return sectionDataMap[sectionId];
 }
 
 // IDによるセクションの検索
-export function findSectionById(
-  sectionId: string
-): CheatSheetSection | undefined {
+export function findSectionById(sectionId: string): CheatSheetSection | undefined {
   return sectionDataMap[sectionId];
 }
 
 // チートシートの全セクションタイトルを取得
 export function getAllSectionTitles(): string[] {
-  return cheatSheetSectionOrder.map(
-    (sectionId) => sectionDataMap[sectionId].title
-  );
+  return cheatSheetSectionOrder.map(sectionId => sectionDataMap[sectionId].title);
 }
 
 // セクションIDからタイトルを取得
@@ -157,50 +138,47 @@ export function getSectionIdByTitle(title: string): string | undefined {
 }
 
 // 特定のセクションの前後のセクションを取得
-export function getAdjacentSections(sectionId: string): {
-  prev?: string;
-  next?: string;
-} {
+export function getAdjacentSections(sectionId: string): { prev?: string; next?: string } {
   const index = cheatSheetSectionOrder.indexOf(sectionId);
   if (index === -1) {
     return {};
   }
 
   const result: { prev?: string; next?: string } = {};
-
+  
   if (index > 0) {
     result.prev = cheatSheetSectionOrder[index - 1];
   }
-
+  
   if (index < cheatSheetSectionOrder.length - 1) {
     result.next = cheatSheetSectionOrder[index + 1];
   }
-
+  
   return result;
 }
 
 // キーワードによるセクション検索
 export function searchSections(keyword: string): CheatSheetSection[] {
   const normalizedKeyword = keyword.toLowerCase();
-
-  return getCheatSheetData().filter((section) => {
+  
+  return getCheatSheetData().filter(section => {
     // タイトルで検索
     if (section.title.toLowerCase().includes(normalizedKeyword)) {
       return true;
     }
-
+    
     // 例のタイトルで検索
     for (const example of section.codeExamples) {
       if (example.title.toLowerCase().includes(normalizedKeyword)) {
         return true;
       }
-
+      
       // コードの内容で検索
       if (example.code.toLowerCase().includes(normalizedKeyword)) {
         return true;
       }
     }
-
+    
     return false;
   });
 }

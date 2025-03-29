@@ -1,0 +1,57 @@
+{
+  "title": "Methods",
+  "codeExamples": [
+    {
+      "title": "Method Definition (Struct)",
+      "code": "// 型を定義\ntype Rectangle struct {\n  Width, Height float64\n}\n\n// 値レシーバを持つメソッド\nfunc (r Rectangle) Area() float64 {\n  return r.Width * r.Height\n}\n\n// 変更のためのポインタレシーバ\nfunc (r *Rectangle) Scale(factor float64) {\n  r.Width *= factor\n  r.Height *= factor\n}\n\n// メソッドの使用\nrect := Rectangle{10, 5}\n// 50\narea := rect.Area()\n// Width=20, Height=10\nrect.Scale(2)"
+    },
+    {
+      "title": "Method Definition (Non-Struct)",
+      "code": "// 構造体以外の型に対するメソッド\ntype MyInt int\n\nfunc (m MyInt) IsEven() bool {\n  return m%2 == 0\n}\n\nfunc (m *MyInt) Add(n MyInt) {\n  *m += n\n}\n\nvar num MyInt = 10\n// true\nfmt.Println(num.IsEven())\nnum.Add(5)\n// 15\nfmt.Println(num)"
+    },
+    {
+      "title": "Value Receivers",
+      "code": "// 値レシーバ (コピー、不変操作)\nfunc (r Rectangle) Double() Rectangle {\n  return Rectangle{\n    Width:  r.Width * 2,\n    Height: r.Height * 2,\n  }\n}\n\n// 値レシーバを使用する場合:\n// - メソッドがレシーバを変更しない\n// - レシーバが小さな値 (int, float64 など)\n// - レシーバが慣例的に不変である\n// - \"nil\" レシーバの処理が不要である"
+    },
+    {
+      "title": "Pointer Receivers",
+      "code": "// ポインタレシーバ (元を変更)\nfunc (r *Rectangle) Resize(w, h float64) {\n  r.Width = w\n  r.Height = h\n}\n\n// ポインタレシーバを使用する場合:\n// - メソッドがレシーバを変更する\n// - レシーバが大きい (コピーを避けるため)\n// - 型の他のメソッドとの一貫性\n// - レシーバが nil である可能性がある"
+    },
+    {
+      "title": "Receiver Type Conversion (Automatic)",
+      "code": "// Go は自動的に変換を処理する:\nrect := Rectangle{5, 10}\n// 値に対してメソッドを呼び出す\narea := rect.Area()\n\nprect := &Rectangle{5, 10}\n// Go は値メソッドを呼び出すためにポインタを自動的に逆参照する\narea = prect.Area()\n\n// しかし、ポインタレシーバを必要とするメソッドはアドレス可能な値に対してのみ機能する\n// Go は自動的に rect へのポインタを取得する\nrect.Resize(20, 30)\n// エラー: 一時的な値のアドレスを取得できない\n// Rectangle{5, 10}.Resize(20, 30)"
+    },
+    {
+      "title": "Method Expression",
+      "code": "// メソッド式はメソッドを通常の関数に変換する\ntype Point struct{ X, Y float64 }\n\nfunc (p Point) Distance(q Point) float64 {\n  return math.Hypot(q.X-p.X, q.Y-p.Y)\n}\n\n// メソッド式 - 最初のパラメータとして明示的なレシーバ\n// func(Point, Point) float64\ndistance := Point.Distance\np := Point{1, 2}\nq := Point{4, 6}\n// p.Distance(q) と同じ\nfmt.Println(distance(p, q))"
+    },
+    {
+      "title": "Method Expression (Pointer Receiver)",
+      "code": "// ポインタレシーバのメソッド式\ntype Counter int\n\nfunc (c *Counter) Increment() { *c++ }\n\n// func(*Counter)\nincrement := (*Counter).Increment\nc := Counter(0)\n// (&c).Increment() と同じ\nincrement(&c)"
+    },
+    {
+      "title": "Method Value",
+      "code": "// メソッド値 (レシーバがバインドされる)\np := Point{1, 2}\n// func(Point) float64\ndistanceFromP := p.Distance\n// p.Distance(Point{4, 6}) と同じ\nfmt.Println(distanceFromP(Point{4, 6}))"
+    },
+    {
+      "title": "Basic Method Chaining",
+      "code": "// 流暢なインターフェースのためのメソッドチェーン\ntype Builder struct {\n  str string\n}\n\n// 各メソッドはチェーンのためにレシーバを返す\nfunc (b *Builder) Add(s string) *Builder {\n  b.str += s\n  return b\n}\n\nfunc (b *Builder) AddSpace() *Builder {\n  b.str += \" \"\n  return b\n}\n\nfunc (b *Builder) ToString() string {\n  return b.str\n}\n\n// 使用法\nb := &Builder{}\nresult := b.Add(\"Hello\").AddSpace().Add(\"World\").ToString()\n// \"Hello World\"\nfmt.Println(result)"
+    },
+    {
+      "title": "Method Chaining (Builder Pattern)",
+      "code": "// メソッドを使用したビルダーパターン\ntype RequestBuilder struct {\n  method  string\n  url     string\n  headers map[string]string\n}\n\nfunc NewRequestBuilder() *RequestBuilder {\n  return &RequestBuilder{\n    headers: make(map[string]string),\n  }\n}\n\nfunc (rb *RequestBuilder) Method(method string) *RequestBuilder {\n  rb.method = method\n  return rb\n}\n\nfunc (rb *RequestBuilder) URL(url string) *RequestBuilder {\n  rb.url = url\n  return rb\n}\n\nfunc (rb *RequestBuilder) Header(key, value string) *RequestBuilder {\n  rb.headers[key] = value\n  return rb\n}\n\nfunc (rb *RequestBuilder) Build() (*http.Request, error) {\n  req, err := http.NewRequest(rb.method, rb.url, nil)\n  if err != nil {\n    return nil, err\n  }\n  \n  for k, v := range rb.headers {\n    req.Header.Add(k, v)\n  }\n  \n  return req, nil\n}\n\n// 使用法\nreq, err := NewRequestBuilder().\n  Method(\"GET\").\n//example.com\").\n  URL(\"https:\n  Header(\"User-Agent\", \"MyClient/1.0\").\n  Build()"
+    },
+    {
+      "title": "Methods vs Functions Comparison",
+      "code": "// メソッドは特定の型にバインドされた関数\n\n// 関数アプローチ\nfunc AreaOf(r Rectangle) float64 {\n  return r.Width * r.Height\n}\n\n// メソッドアプローチ\nfunc (r Rectangle) Area() float64 {\n  return r.Width * r.Height\n}\n\n// 使用法の比較\nr := Rectangle{5, 10}\n// パラメータ付きの関数呼び出し\na1 := AreaOf(r)\n// インスタンスに対するメソッド呼び出し\na2 := r.Area()"
+    },
+    {
+      "title": "Advantages of Methods",
+      "code": "// メソッドの利点:\n// 1. 名前空間管理 - r.Area() vs AreaOf(r)\n// 2. パッケージ内の任意の型 (構造体だけでなく) にメソッドを定義できる\n// 3. インターフェースを実装できる"
+    },
+    {
+      "title": "Method Set",
+      "code": "// メソッドテーブル - メソッドは型ごとにグループ化される\n// type Rectangle\n//   - Area\n//   - Perimeter\n//   - Scale\n\n// メソッド型\n// 値に対するメソッド - func (v  Type) Method()\n// ポインタに対するメソッド - func (p *Type) Method()\n\n// メソッドセット\n// 型 T の値は、レシーバ型 T で宣言されたメソッドを持つ\n// T へのポインタは、*T で宣言されたメソッドと T のメソッドを持つ"
+    }
+  ]
+}

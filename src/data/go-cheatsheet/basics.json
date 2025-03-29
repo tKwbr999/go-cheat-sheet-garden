@@ -1,0 +1,77 @@
+{
+  "title": "Basics",
+  "codeExamples": [
+    {
+      "title": "Hello World",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  fmt.Println(\"Hello, World!\")\n}"
+    },
+    {
+      "title": "Variable Declaration",
+      "code": "// 変数宣言\nvar name string = \"Go\""
+    },
+    {
+      "title": "Short Variable Declaration",
+      "code": "// 短い変数宣言\nage := 10"
+    },
+    {
+      "title": "Multiple Variables",
+      "code": "// 複数の変数\nvar (\n  a, b int\n  c    string\n)"
+    },
+    {
+      "title": "Variable Initialization",
+      "code": "// 変数の初期化\nvar (\n  home = os.Getenv(\"HOME\")\n  user = os.Getenv(\"USER\")\n)"
+    },
+    {
+      "title": "Blank Identifier (_)",
+      "code": "// 未使用の変数はエラーを引き起こす\n// 値を無視するには _ (ブランク識別子) を使用する\n_, err := fmt.Println(\"Hello\")"
+    },
+    {
+      "title": "Constant Declaration",
+      "code": "// 定数宣言\nconst Pi = 3.14"
+    },
+    {
+      "title": "Multiple Constants",
+      "code": "// 複数の定数\nconst (\n  StatusOK    = 200\n  StatusError = 500\n)"
+    },
+    {
+      "title": "iota for Enumeration",
+      "code": "// iota - 列挙型ジェネレータ\nconst (\n// 1\n  Monday = iota + 1\n// 2\n  Tuesday\n// 3\n  Wednesday\n)"
+    },
+    {
+      "title": "iota for Bit Flags",
+      "code": "// iota は新しい const ブロックでリセットされる\nconst (\n// 1 (1 << 0)\n  Readable = 1 << iota\n// 2 (1 << 1)\n  Writable\n// 4 (1 << 2)\n  Executable\n  \n  // パーミッションの組み合わせ\n// 3\n  ReadWrite = Readable | Writable\n)"
+    },
+    {
+      "title": "Package Naming",
+      "code": "// パッケージ名は小文字の単一単語\npackage http"
+    },
+    {
+      "title": "Exported Identifiers (CamelCase)",
+      "code": "// エクスポートされる識別子には CamelCase (パッケージ外から見える)\ntype Customer struct{}\nfunc WriteFile() {}\nvar MaxLength int"
+    },
+    {
+      "title": "Unexported Identifiers (camelCase)",
+      "code": "// エクスポートされない識別子には camelCase (パッケージ内プライベート)\ntype httpClient struct{}\nfunc writeLog() {}\nvar maxRetries int"
+    },
+    {
+      "title": "Acronyms in Identifiers",
+      "code": "// 頭字語は識別子内ですべて大文字\n// e.g., HTTP, URL, ID\nvar userID string\nfunc parseHTTPResponse() {}"
+    },
+    {
+      "title": "Interface Naming (-er Suffix)",
+      "code": "// 単一メソッドのインターフェースは -er で終わる\ntype Reader interface {\n  Read(p []byte) (n int, err error)\n}"
+    },
+    {
+      "title": "Packages and Directories",
+      "code": "// Go のコードはパッケージに整理される\n// 各ディレクトリはパッケージ\n// main パッケージは実行可能ファイルの入口\npackage main"
+    },
+    {
+      "title": "Import Statements",
+      "code": "// インポートはグループ化され、ファクタリングできる\nimport (\n  \"fmt\"\n  \"io\"\n  \n// サードパーティパッケージ\n  \"golang.org/x/net/html\"\n// ローカルパッケージ\n  \"myproject/mypackage\"\n)"
+    },
+    {
+      "title": "General Go File Structure",
+      "code": "// 一般的な Go ファイルの構造:\n// 1. パッケージ宣言\n// 2. インポート\n// 3. 定数\n// 4. 変数\n// 5. 型\n// 6. 関数"
+    }
+  ]
+}
