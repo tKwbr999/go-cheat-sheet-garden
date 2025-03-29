@@ -1,11 +1,53 @@
----
-title: "Raw String Literals" # タイトル内のダブルクォートをエスケープ
-tags: ["basic-types"]
----
+## タイトル
+title: 生文字列リテラル (Raw String Literal)
 
+## タグ
+tags: ["basic-types", "文字列", "string", "リテラル", "バッククォート"]
+
+## コード
 ```go
-// 生文字列リテラル (改行を保持、エスケープなし)
-multiline := `This is a
-multiline string
-with "quotes" intact`
+package main
+
+import "fmt"
+
+func main() {
+	normalString := "通常文字列:\n改行と C:\\Path"
+	fmt.Println("--- 通常の文字列 ---")
+	fmt.Println(normalString)
+
+	rawString := `生文字列リテラル:
+改行と C:\Path (エスケープ不要)
+ダブルクォート " もそのまま書ける。`
+	fmt.Println("\n--- 生文字列 ---")
+	fmt.Println(rawString)
+}
 ```
+
+## 解説
+```text
+通常の文字列リテラル (`"..."`) では、
+改行 (`\n`) や特殊文字 (`\\`, `\"`) に
+エスケープシーケンスが必要です。
+
+**生文字列リテラル (Raw String Literal)** は
+**バッククォート `` ` ``** で囲み、
+書いた内容がそのまま文字列になります。
+
+**特徴:**
+*   **改行がそのまま反映される:** `\n` 不要。
+*   **エスケープシーケンスが無効:** `\` は単なる文字。
+*   **ダブルクォート `"` をそのまま書ける:** `\"` 不要。
+*   **バッククォート `` ` `` 自体は含められない。**
+
+**通常の文字列との比較:**
+コード例の `normalString` では `\n` や `\\` が
+必要ですが、`rawString` では不要です。
+
+**便利な利用シーン:**
+*   複数行のテキスト (HTML, SQL, 設定など)
+*   正規表現パターン (`\` を多用するため)
+*   Windowsのファイルパス (`\` をエスケープ不要)
+*   JSONやXML (`"` を多用するため)
+
+生文字列リテラルは、特定の種類の文字列を
+扱う際にコードをシンプルで読みやすくします。

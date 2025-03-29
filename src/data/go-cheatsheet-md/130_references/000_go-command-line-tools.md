@@ -1,59 +1,101 @@
 ---
-title: "Go Command-Line Tools" # タイトル内のダブルクォートをエスケープ
-tags: ["references"]
+title: "リファレンス: Go コマンドラインツール"
+tags: ["references", "go command", "cli", "build", "run", "test", "get", "install", "fmt", "vet", "mod", "list", "doc", "version"]
 ---
 
-公式 Go ドキュメント
-https://golang.org/doc/
-Go 標準ライブラリ
-https://golang.org/pkg/
-Go Tour - インタラクティブチュートリアル
-https://tour.golang.org/
-Effective Go - ベストプラクティス
-https://golang.org/doc/effective_go.html
-Go by Example - 実用的な例
-https://gobyexample.com/
-Go 言語仕様
-https://golang.org/ref/spec
-Go ブログ
-https://go.dev/blog/
-パッケージドキュメント
-https://pkg.go.dev/
-Go Playground - オンラインでコードをテスト
-https://play.golang.org/
+Go言語には、開発プロセスをサポートするための強力なコマンドラインツール群が標準で付属しています。ターミナル（コマンドプロンプト）で `go` コマンドに続けてサブコマンドを指定することで、コンパイル、実行、テスト、フォーマット、依存関係管理など、様々な操作を行うことができます。
 
-```go
-// Go コマンドラインツール
-// パッケージをコンパイル
-go build
-// コンパイルして実行
-go run
-// パッケージをテスト
-go test
-// パッケージをダウンロードしてインストール
-go get
-// パッケージをコンパイルしてインストール
-go install
-// ソースコードをフォーマット
-go fmt
-// よくある間違いを報告
-go vet
-// モジュールメンテナンス
-go mod
-// 新しいモジュールを初期化
-go mod init
-// 不足しているモジュールを追加し、未使用のモジュールを削除
-go mod tidy
-// vendor ディレクトリを作成
-go mod vendor
-// パッケージまたはモジュールをリスト表示
-go list
-// ワークスペースメンテナンス (Go 1.18+)
-go work
-// ソースを処理して Go ファイルを生成
-go generate
-// パッケージまたはシンボルのドキュメントを表示
-go doc
-// Go のバージョンを表示
-go version
-```
+ここでは、特によく使われる `go` コマンドのサブコマンドを紹介します。詳細については、`go help <サブコマンド>` で確認できます。
+
+## 主要な `go` サブコマンド
+
+*   **`go build [パッケージ]`**:
+    *   指定されたパッケージ（とその依存関係）をコンパイルします。
+    *   `main` パッケージを指定した場合、カレントディレクトリに実行可能ファイルを生成します。
+    *   パッケージ名を省略した場合、カレントディレクトリのパッケージをビルドします。
+    *   例: `go build .` (カレントディレクトリの `main` パッケージをビルド)
+    *   例: `go build myapp/cmd/server` (特定のパッケージをビルド)
+    *   例: `go build -o myprogram main.go` (`-o` で出力ファイル名を指定)
+
+*   **`go run [Goファイル...]`**:
+    *   指定された `.go` ファイル（通常は `main` パッケージのファイル）をコンパイルし、生成された実行可能ファイルを**直接実行**します。
+    *   ビルド成果物を残さずに、ちょっとしたプログラムをすぐに試したい場合に便利です。
+    *   例: `go run main.go`
+    *   例: `go run cmd/app/main.go cmd/app/utils.go` (複数のファイルを指定)
+
+*   **`go test [パッケージ]`**:
+    *   指定されたパッケージ内のテストコード (`_test.go` ファイル) を実行します。
+    *   パッケージ名を省略した場合、カレントディレクトリのパッケージをテストします。
+    *   例: `go test .` (カレントディレクトリのテストを実行)
+    *   例: `go test ./...` (カレントディレクトリ以下のすべてのパッケージをテスト)
+    *   例: `go test -v` (`-v` で詳細なログを出力)
+    *   例: `go test -run TestMyFunction` (`-run` で実行するテスト関数名を正規表現で指定)
+    *   例: `go test -cover` (`-cover` でテストカバレッジを表示)
+    *   例: `go test -race` (`-race` で競合状態検出器を有効にしてテスト)
+
+*   **`go get [パッケージ@バージョン]`**:
+    *   指定されたパッケージ（モジュール）をダウンロードし、`go.mod` ファイルに追加または更新します。
+    *   バージョンを指定しない場合は最新の安定バージョンが取得されます。
+    *   例: `go get github.com/gin-gonic/gin` (最新バージョンを追加/更新)
+    *   例: `go get github.com/google/uuid@v1.3.0` (特定のバージョンを指定)
+    *   例: `go get -u ./...` (`-u` で既存の依存関係を更新)
+
+*   **`go install [パッケージ@バージョン]`**:
+    *   指定されたパッケージをコンパイルし、生成された実行可能ファイルを `$GOPATH/bin` または `$GOBIN` ディレクトリにインストールします。
+    *   Go製のツールをインストールする際によく使われます。
+    *   例: `go install golang.org/x/tools/cmd/goimports@latest` (goimports ツールをインストール)
+
+*   **`go fmt [パッケージ]`**:
+    *   指定されたパッケージの Go ソースコードを、Go の標準スタイル (`gofmt` と同じルール) に従ってフォーマットします。
+    *   コードの見た目を統一し、可読性を高めるために非常に重要です。
+    *   例: `go fmt ./...` (カレントディレクトリ以下のすべてのパッケージをフォーマット)
+
+*   **`go vet [パッケージ]`**:
+    *   指定されたパッケージのソースコードを静的に解析し、`Printf` の引数間違い、到達不能コード、不審なロック操作など、コンパイルエラーにはならないが問題を引き起こす可能性のあるコード（"suspicious constructs"）を検出して報告します。
+    *   ビルドやテストの前に実行することが推奨されます。
+    *   例: `go vet ./...` (カレントディレクトリ以下のすべてのパッケージを検査)
+
+*   **`go mod <サブコマンド>`**:
+    *   Go Modules の操作を行うためのサブコマンド群です。
+    *   `go mod init [モジュールパス]`: 新しいモジュールを初期化し `go.mod` を作成します。
+    *   `go mod tidy`: `go.mod` ファイルを整理し、必要な依存関係を追加し、不要なものを削除します。
+    *   `go mod download`: `go.mod` に記載されている依存関係をダウンロードします。
+    *   `go mod vendor`: 依存関係のソースコードを `vendor` ディレクトリにコピーします。
+    *   `go mod why [パッケージパス]`: なぜそのパッケージが依存関係に含まれているのかを表示します。
+    *   `go mod edit ...`: `go.mod` ファイルをプログラム的に編集します。
+    *   `go mod graph`: モジュールの依存関係グラフを表示します。
+
+*   **`go list [オプション] [パッケージ]`**:
+    *   指定されたパッケージに関する情報を表示します。
+    *   例: `go list .` (カレントディレクトリのパッケージ情報を表示)
+    *   例: `go list -m all` (現在のモジュールとそのすべての依存関係を表示)
+    *   例: `go list -f '{{.Dir}}' fmt` (`fmt` パッケージのディレクトリパスを表示)
+
+*   **`go work <サブコマンド>` (Go 1.18+)**:
+    *   複数のモジュールを同時に扱うためのワークスペース機能を提供します。
+    *   `go work init [モジュールディレクトリ...]`: ワークスペースファイル (`go.work`) を初期化します。
+    *   `go work use [モジュールディレクトリ]`: ワークスペースにモジュールを追加します。
+
+*   **`go generate [Goファイル]`**:
+    *   ソースコード中の特別なコメント `//go:generate コマンド 引数...` を探し、指定されたコマンドを実行します。
+    *   コード生成ツール（例: `stringer`, モック生成ツール）を実行するためによく使われます。
+
+*   **`go doc [パッケージ] [シンボル]`**:
+    *   指定されたパッケージや、パッケージ内のシンボル（関数、型、変数など）のドキュメンテーションコメントを表示します。
+    *   例: `go doc fmt`
+    *   例: `go doc fmt.Println`
+    *   例: `go doc -all fmt` (`-all` で非公開メンバーも含めて表示)
+
+*   **`go version`**:
+    *   インストールされている Go のバージョンを表示します。
+
+## 公式リファレンス
+
+より詳細な情報や最新の情報については、以下の公式ドキュメントを参照してください。
+
+*   **Command go:** [https://pkg.go.dev/cmd/go](https://pkg.go.dev/cmd/go)
+*   **Go Documentation:** [https://go.dev/doc/](https://go.dev/doc/)
+*   **Effective Go:** [https://go.dev/doc/effective_go](https://go.dev/doc/effective_go)
+*   **Go Modules Reference:** [https://go.dev/ref/mod](https://go.dev/ref/mod)
+
+これらの `go` コマンドを使いこなすことで、Goでの開発を効率的に進めることができます。

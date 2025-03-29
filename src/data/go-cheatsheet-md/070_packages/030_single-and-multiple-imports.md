@@ -1,16 +1,27 @@
 ---
-title: "Single and Multiple Imports" # タイトル内のダブルクォートをエスケープ
-tags: ["packages"]
+title: "パッケージ: 単一および複数のインポート"
+tags: ["packages", "package", "import"]
 ---
 
-```go
-// 単一インポート
-import "fmt"
+Goのプログラムで他のパッケージの機能を利用するには `import` 文を使います。パッケージを一つだけインポートする場合と、複数まとめてインポートする場合があります。
 
-// 複数インポート
-import (
-	"fmt"
-	"math"
-	"strings"
-)
-```
+これらの基本的な使い方については、**「基本」**セクションの**「パッケージのインポート `import`」** (`000_basics/160_import-statements.md`) を参照してください。
+
+**基本的な構文:**
+
+*   **単一インポート:**
+    ```go
+    import "fmt"
+    ```
+
+*   **複数インポート (推奨):**
+    ```go
+    import (
+        "fmt"
+        "math"
+        "strings"
+        // ... 他のパッケージ
+    )
+    ```
+
+Goでは、複数のパッケージをインポートする場合は、`import (...)` の形式でまとめるのが一般的です。

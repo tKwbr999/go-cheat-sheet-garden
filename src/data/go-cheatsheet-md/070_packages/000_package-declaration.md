@@ -1,9 +1,54 @@
----
-title: "Package Declaration" # タイトル内のダブルクォートをエスケープ
-tags: ["packages"]
----
+## タイトル
+title: パッケージ: コードの構成単位 `package` 宣言
 
+## タグ
+tags: ["packages", "package", "main"]
+
+## コード
 ```go
-// ファイル: math.go
-package math
+// ファイルの先頭で package main を宣言
+package main
+
+import "fmt"
+// import "myutils" // 他のパッケージもインポート可
+
+// main 関数 (プログラムのエントリーポイント)
+func main() {
+	fmt.Println("This is the main package.")
+	// msg := myutils.GetMessage() // ライブラリ関数呼び出し例
+	// fmt.Println(msg)
+}
+
+// このファイルは go run や go build で実行可能
 ```
+
+## 解説
+```text
+Goプログラムは**パッケージ (Package)** という単位で構成されます。
+パッケージは関連するコード（変数、関数、型など）のまとまりです。
+
+**`package` 宣言:**
+すべての `.go` ファイルは、**ファイルの先頭**で
+自身が属するパッケージを `package` キーワードで宣言必須です。
+**構文:** `package パッケージ名`
+(パッケージ名は通常、短く小文字の単一単語)
+
+**パッケージの種類:**
+1.  **`main` パッケージ:**
+    *   `package main` と宣言。
+    *   プログラムの**実行開始点**となる特別なパッケージ。
+    *   必ず `main` 関数を含む必要がある。
+    *   コンパイルすると実行可能バイナリが生成される。
+    *   コード例はこの `main` パッケージの例です。
+
+2.  **ライブラリパッケージ (非 `main`):**
+    *   `package myutils` など `main` 以外の名前で宣言。
+    *   再利用可能なコードを提供し、他のパッケージから
+        `import` して利用される。
+    *   通常、直接実行はできない。
+
+**1ディレクトリ = 1パッケージ:**
+原則として、同じディレクトリ内の `.go` ファイル
+(テスト除く) は、すべて同じ `package` 宣言を持ちます。
+
+パッケージはGoのコードを整理し、モジュール化する基本です。

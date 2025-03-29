@@ -1,22 +1,78 @@
----
-title: "Closure Definition" # タイトル内のダブルクォートをエスケープ
-tags: ["functions"]
----
+## タイトル
+title: 関数: クロージャ (Closure) の定義
 
-便利な標準ライブラリの例:
-fmt.Printf(format string, a ...interface{})
-log.Printf(format string, a ...interface{})
-errors.Join(errs ...error) error
+## タグ
+tags: ["functions", "func", "クロージャ", "関数リテラル", "スコープ", "状態"]
 
+## コード
 ```go
-// 関数を返す関数 (クロージャ)
+package main
+
+import "fmt"
+
+// `func(int) int` 型の関数を返す関数
 func adder() func(int) int {
-	// この変数は「キャプチャされる」
-	sum := 0
+	sum := 0 // この sum は返される関数にキャプチャされる
+	fmt.Println("adder 呼び出し, sum 初期値:", sum)
+
+	// 関数リテラル (無名関数) を返す -> これがクロージャ
 	return func(x int) int {
-		// キャプチャされた変数を変更する
-		sum += x
+		sum += x // キャプチャした sum を更新
+		fmt.Printf("  内部関数: x=%d 加算, 現在 sum=%d\n", x, sum)
 		return sum
 	}
 }
+
+func main() {
+	// adder() が返すクロージャを pos に代入
+	// pos は専用の sum 変数 (初期値 0) を持つ
+	pos := adder()
+
+	fmt.Println(pos(1))  // sum = 1
+	fmt.Println(pos(10)) // sum = 11
+	fmt.Println(pos(5))  // sum = 16
+
+	// neg := adder() // 再度呼ぶと別の sum を持つクロージャが作られる
+	// fmt.Println(neg(-1)) // neg の sum = -1
+	// fmt.Println(pos(100)) // pos の sum = 116 (neg とは独立)
+}
+
 ```
+
+## 解説
+```text
+Goの関数は「第一級オブジェクト」であり、
+変数への代入、引数、**戻り値**として扱えます。
+
+関数を返す関数を作る際、返される関数が、
+それが定義された環境（スコープ）にある変数（自由変数）
+への参照を保持している場合、その返された関数を
+**クロージャ (Closure)** と呼びます。
+
+**定義方法:**
+**関数リテラル（無名関数）** を使います。
+関数リテラルが外側の変数を参照すると、
+その変数はクロージャに「キャプチャ」され、
+後で実行される際もアクセス・変更可能になります。
+
+コード例の `adder` 関数は、内部で `sum` 変数を持ち、
+`sum` を参照・変更する関数リテラルを返します。
+この返された関数がクロージャです。
+
+`main` 関数で `pos := adder()` とすると、
+`pos` には `sum` 変数 (初期値0) をキャプチャした
+クロージャが代入されます。
+`pos(1)`, `pos(10)` と呼び出すたびに、`pos` が持つ
+`sum` が更新されていきます。
+
+`neg := adder()` のように再度 `adder()` を呼び出すと、
+**別の** `sum` 変数を持つ**別の**クロージャが生成され、
+`pos` の `sum` とは独立して動作します。
+
+**クロージャのポイント:**
+*   定義元のスコープの変数への参照を保持する。
+*   環境を「閉じ込める (close over)」。
+*   関数が状態（例: `sum`）を持つことを可能にする。
+*   通常、呼び出すたびに独立した状態を持つクロージャが生成される。
+
+クロージャは状態を持つ関数やコールバック等で使われる強力な機能です。

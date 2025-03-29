@@ -1,14 +1,30 @@
----
-title: "Hello World" # タイトル内のダブルクォートをエスケープ
-tags: ["basics"]
----
+## タイトル
+title: Hello World: Goプログラムの第一歩
 
+## タグ
+tags: ["basics", "入門"]
+
+## コード
 ```go
-package main
+package main // 実行可能なプログラムは main パッケージに属する
 
-import "fmt"
+import "fmt" // フォーマット済み I/O を提供する fmt パッケージをインポート
 
+// main 関数: プログラムの実行開始地点 (エントリーポイント)
 func main() {
+	// fmt.Println: 引数を標準出力に書き出し、改行を追加する
 	fmt.Println("Hello, World!")
 }
+
 ```
+
+## 解説
+```text
+Go言語でのプログラミングの第一歩は、画面にメッセージを表示する "Hello, World!" プログラムです。
+
+*   `package main`: Goプログラムは**パッケージ**で構成されます。`main` パッケージはプログラム実行に必要な特別なパッケージです。`main` 関数はこのパッケージ内に定義します。
+*   `import "fmt"`: 文字列フォーマットや画面出力などの機能を提供する標準パッケージ `fmt` をインポートします。
+*   `func main()`: プログラム実行時に最初に呼び出される特別な関数（**エントリーポイント**）です。実行可能なプログラムには必ず `main` パッケージ内に `main` 関数が必要です。
+*   `fmt.Println("Hello, World!")`: `fmt` パッケージの `Println` 関数を呼び出し、引数の文字列を画面（標準出力）に表示して改行します。パッケージ内の機能は `パッケージ名.関数名` の形式で呼び出します。
+
+このコードを `hello.go` 等のファイルに保存し、ターミナルで `go run hello.go` を実行すると "Hello, World!" と表示されます。

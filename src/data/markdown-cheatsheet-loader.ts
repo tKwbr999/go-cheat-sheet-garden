@@ -1,6 +1,5 @@
 // gray-matter の依存を削除
 // import matter from 'gray-matter';
-import { marked } from 'marked';
 import { CheatSheetSection, CodeExample } from './types';
 
 // 型定義 (変更なし)
@@ -16,7 +15,11 @@ interface InternalCheatSheetSection extends Omit<CheatSheetSection, 'codeExample
 }
 
 // Viteの import.meta.glob (変更なし)
-const modules = import.meta.glob('/src/data/go-cheatsheet-md/**/*.md', { query: '?raw', import: 'default', eager: true }); // eager: true を追加 (重要)
+const modules = import.meta.glob('/src/data/go-cheatsheet-md/**/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}); // eager: true を追加 (重要)
 
 // キャッシュ変数 (変更なし)
 let cachedSections: InternalCheatSheetSection[] | null = null;
@@ -24,7 +27,9 @@ let cachedSectionMap: Record<string, InternalCheatSheetSection> | null = null;
 let cachedSectionOrder: string[] | null = null;
 
 // ファイルパスからの情報抽出 (変更なし)
-function extractInfoFromPath(filePath: string): { chapterId: string; chapterPrefix: string; examplePrefix: string; exampleSlug: string } | null {
+function extractInfoFromPath(
+  filePath: string
+): { chapterId: string; chapterPrefix: string; examplePrefix: string; exampleSlug: string } | null {
   const match = filePath.match(/\/(\d{3})_([^/]+)\/(\d{3})_([^/]+)\.md$/);
   if (!match) {
     console.warn(`Could not parse path: ${filePath}`);
@@ -45,63 +50,67 @@ interface ParsedFrontMatter {
 }
 
 function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: string } {
-  const frontMatterRegex = /^---\s*([\s\S]*?)\s*---/;
-  const match = content.match(frontMatterRegex);
-
   const data: ParsedFrontMatter = {};
   let markdownContent = content;
 
-  if (match) {
-    markdownContent = content.slice(match[0].length).trim();
-    const yamlLines = match[1].trim().split('\n');
-    yamlLines.forEach(line => {
-      const separatorIndex = line.indexOf(':');
-      if (separatorIndex > 0) {
-        const key = line.slice(0, separatorIndex).trim();
-        const value = line.slice(separatorIndex + 1).split('#')[0].trim(); // 行末コメントを除去
-        if (key === 'title') {
-          data.title = value.replace(/^['"]|['"]$/g, '');
-        } else if (key === 'tags') {
-          try {
-            const parsedTags = JSON.parse(value.replace(/'/g, '"'));
-            if (Array.isArray(parsedTags)) {
-              data.tags = parsedTags.map(String);
-            }
-          } catch (e) {
-            console.warn(`Could not parse tags: ${value}`, e);
-          }
-        }
+  // タイトルを抽出
+  const titleMatch = content.match(/## タイトル\s*title:\s*(.+?)(?=\n|$)/);
+  if (titleMatch) {
+    data.title = titleMatch[1].trim();
+  }
+
+  // タグを抽出
+  const tagsMatch = content.match(/## タグ\s*tags:\s*(\[.+?\])/);
+  if (tagsMatch) {
+    try {
+      const parsedTags = JSON.parse(tagsMatch[1].replace(/'/g, '"'));
+      if (Array.isArray(parsedTags)) {
+        data.tags = parsedTags.map(String);
       }
-    });
+    } catch (e) {
+      console.warn(`Could not parse tags: ${tagsMatch[1]}`, e);
+    }
   }
 
   return { data, content: markdownContent };
 }
 // --- ここまで自前パーサー ---
 
-
-// Markdownコンテンツからの説明とコード抽出 (変更なし)
-function extractDescriptionAndCode(markdownContent: string): { description?: string; code: string } {
-  const tokens = marked.lexer(markdownContent);
-  let description = '';
+// Markdownコンテンツからの説明とコード抽出
+function extractDescriptionAndCode(markdownContent: string): {
+  description?: string;
+  code: string;
+} {
   let code = '';
-  let codeBlockFound = false;
-  for (const token of tokens) {
-    if (token.type === 'code' && token.lang === 'go') {
-      code = token.text;
-      codeBlockFound = true;
-      break;
-    } else if (!codeBlockFound && token.type === 'paragraph') {
-      description += (description ? '\n' : '') + token.text;
-    }
+  let description = '';
+
+  // コードを抽出
+  const codeMatch = markdownContent.match(/## コード\s*```go\s*([\s\S]*?)```/);
+  if (codeMatch) {
+    code = codeMatch[1].trim();
   }
-  return { description: description.trim() || undefined, code };
+
+  // 解説を抽出
+  const descMatch = markdownContent.match(/## 解説\s*```text\s*([\s\S]*?)```/);
+  if (descMatch) {
+    description = descMatch[1].trim();
+  }
+
+  return { description: description || undefined, code };
 }
 
 // Markdownファイルを解析し、データを構築する関数 (型チェックを追加)
-function loadAndParseCheatSheet(): { sections: InternalCheatSheetSection[]; sectionMap: Record<string, InternalCheatSheetSection>; sectionOrder: string[] } {
+function loadAndParseCheatSheet(): {
+  sections: InternalCheatSheetSection[];
+  sectionMap: Record<string, InternalCheatSheetSection>;
+  sectionOrder: string[];
+} {
   if (cachedSections && cachedSectionMap && cachedSectionOrder) {
-    return { sections: cachedSections, sectionMap: cachedSectionMap, sectionOrder: cachedSectionOrder };
+    return {
+      sections: cachedSections,
+      sectionMap: cachedSectionMap,
+      sectionOrder: cachedSectionOrder,
+    };
   }
 
   const tempSections: Record<string, InternalCheatSheetSection> = {};
@@ -152,7 +161,7 @@ function loadAndParseCheatSheet(): { sections: InternalCheatSheetSection[]; sect
     if (!tempSections[chapterId]) {
       const sectionTitle = chapterId
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
       tempSections[chapterId] = {
         id: chapterId,
@@ -187,7 +196,11 @@ function loadAndParseCheatSheet(): { sections: InternalCheatSheetSection[]; sect
   cachedSectionMap = sectionMap;
   cachedSectionOrder = sectionOrder;
 
-  return { sections: cachedSections, sectionMap: cachedSectionMap, sectionOrder: cachedSectionOrder };
+  return {
+    sections: cachedSections,
+    sectionMap: cachedSectionMap,
+    sectionOrder: cachedSectionOrder,
+  };
 }
 
 // --- Public API (インターフェースは変更なし) ---
@@ -196,17 +209,19 @@ export function getCheatSheetData(): CheatSheetSection[] {
   const { sections } = loadAndParseCheatSheet();
   return sections.map(({ id, orderPrefix, codeExamples, ...rest }) => ({
     ...rest,
-    codeExamples: codeExamples.map(({ filePath, ...exRest }) => exRest)
+    codeExamples: codeExamples.map(({ filePath, ...exRest }) => exRest),
   }));
 }
 
 export function getCheatSheetSection(sectionId: string): CheatSheetSection | undefined {
   const { sectionMap } = loadAndParseCheatSheet();
   const section = sectionMap[sectionId];
-  return section ? {
-    title: section.title,
-    codeExamples: section.codeExamples.map(({ filePath, ...exRest }) => exRest)
-   } : undefined;
+  return section
+    ? {
+        title: section.title,
+        codeExamples: section.codeExamples.map(({ filePath, ...exRest }) => exRest),
+      }
+    : undefined;
 }
 
 export function findSectionById(sectionId: string): CheatSheetSection | undefined {
@@ -215,7 +230,7 @@ export function findSectionById(sectionId: string): CheatSheetSection | undefine
 
 export function getAllSectionTitles(): string[] {
   const { sections } = loadAndParseCheatSheet();
-  return sections.map(section => section.title);
+  return sections.map((section) => section.title);
 }
 
 export function getSectionTitle(sectionId: string): string | undefined {
@@ -225,7 +240,7 @@ export function getSectionTitle(sectionId: string): string | undefined {
 
 export function getSectionIdByTitle(title: string): string | undefined {
   const { sections } = loadAndParseCheatSheet();
-  const section = sections.find(s => s.title === title);
+  const section = sections.find((s) => s.title === title);
   return section?.id;
 }
 
@@ -243,19 +258,19 @@ export function searchSections(keyword: string): CheatSheetSection[] {
   const { sections } = loadAndParseCheatSheet();
   const normalizedKeyword = keyword.toLowerCase();
   if (!normalizedKeyword) return getCheatSheetData();
-  const results = sections.filter(section => {
+  const results = sections.filter((section) => {
     if (section.title.toLowerCase().includes(normalizedKeyword)) return true;
     for (const example of section.codeExamples) {
       if (example.title.toLowerCase().includes(normalizedKeyword)) return true;
       if (example.description?.toLowerCase().includes(normalizedKeyword)) return true;
       if (example.code.toLowerCase().includes(normalizedKeyword)) return true;
-      if (example.tags.some(tag => tag.toLowerCase().includes(normalizedKeyword))) return true;
+      if (example.tags.some((tag) => tag.toLowerCase().includes(normalizedKeyword))) return true;
     }
     return false;
   });
   return results.map(({ id, orderPrefix, codeExamples, ...rest }) => ({
     ...rest,
-    codeExamples: codeExamples.map(({ filePath, ...exRest }) => exRest)
+    codeExamples: codeExamples.map(({ filePath, ...exRest }) => exRest),
   }));
 }
 
