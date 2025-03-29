@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ファイルを開く/作成する (`os.Open`, `os.Create`, `os.OpenFile`)
+title: ファイルを開く/作成する (`os.Open`, `os.Create`, `os.OpenFile`)
 
 ## タグ
 tags: ["io-operations", "io", "os", "file", "open", "create", "OpenFile", "ファイル操作", "defer", "Close"]

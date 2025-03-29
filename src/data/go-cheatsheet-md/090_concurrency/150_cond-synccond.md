@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: 条件変数 (`sync.Cond`)
+title: 条件変数 (`sync.Cond`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "Cond", "Mutex", "条件変数", "待機", "通知", "Wait", "Signal", "Broadcast"]

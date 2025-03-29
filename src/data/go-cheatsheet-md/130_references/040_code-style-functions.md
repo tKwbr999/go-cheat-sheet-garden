@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: 関数とメソッド (Functions and Methods)"
+title: 関数とメソッド (Functions and Methods)
 
 ## タグ
 tags: ["references", "code style", "functions", "methods", "naming", "camel case", "error handling", "return values", "documentation"]

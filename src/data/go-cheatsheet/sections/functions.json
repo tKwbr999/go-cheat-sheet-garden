@@ -92,7 +92,7 @@
       "code": "package main\n\nimport \"fmt\"\n\n// int を受け取り int を返す関数型\ntype IntUnaryOperator func(int) int\n\n// IntUnaryOperator 型の関数を返す高階関数\nfunc multiplier(factor int) IntUnaryOperator {\n\tfmt.Printf(\"multiplier(%d) 呼び出し\\n\", factor)\n\t// factor をキャプチャしたクロージャを返す\n\treturn func(n int) int {\n\t\treturn n * factor\n\t}\n}\n\nfunc main() {\n\t// 2倍する関数 (クロージャ) を取得\n\tdouble := multiplier(2)\n\n\t// 生成されたクロージャを使う\n\tfmt.Println(double(5))  // 10\n\tfmt.Println(double(10)) // 20\n\n\t// 3倍する関数も同様に生成可能\n\t// triple := multiplier(3)\n\t// fmt.Println(triple(5)) // 15\n\n\t// 直接呼び出しも可能\n\t// fmt.Println(multiplier(10)(5)) // 50\n}"
     },
     {
-      "title": "関数 vs メソッド: 基本的な違い",
+      "title": "関数 vs 基本的な違い",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct {\n\tX, Y float64\n}\n\n// Point 型に関連付けられた Distance メソッド\n// (p Point) がレシーバ\nfunc (p Point) Distance(q Point) float64 {\n\tdx := q.X - p.X // p.X はレシーバ p の X 座標\n\tdy := q.Y - p.Y // p.Y はレシーバ p の Y 座標\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp1 := Point{1, 2}\n\tp2 := Point{4, 6}\n\n\t// メソッド呼び出し: p1 に対して Distance メソッドを呼び出す\n\tdist := p1.Distance(p2)\n\tfmt.Printf(\"p1.Distance(p2) = %f\\n\", dist) // 5.000000\n}"
     }

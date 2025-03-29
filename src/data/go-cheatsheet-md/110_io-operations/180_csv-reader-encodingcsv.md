@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: CSV データの読み込み (`encoding/csv`)
+title: CSV データの読み込み (`encoding/csv`)
 
 ## タグ
 tags: ["io-operations", "encoding/csv", "csv", "Reader", "ReadAll", "Read", "ファイル読み込み", "データ解析"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: "ベストプラクティス: 継承よりコンポジションを優先する"
+title: 継承よりコンポジションを優先する
 
 ## タグ
 tags: ["references", "best practice", "composition", "embedding", "struct", "継承", "コンポジション", "埋め込み"]

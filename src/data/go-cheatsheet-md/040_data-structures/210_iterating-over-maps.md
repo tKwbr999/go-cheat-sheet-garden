@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: マップ (Map) の反復処理 `for range`
+title: マップ (Map) の反復処理 `for range`
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "for range", "ループ", "繰り返し", "順序不定"]

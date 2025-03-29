@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: `make` 関数によるスライス (Slice) の作成
+title: `make` 関数によるスライス (Slice) の作成
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "make", "長さ", "容量", "ゼロ値"]

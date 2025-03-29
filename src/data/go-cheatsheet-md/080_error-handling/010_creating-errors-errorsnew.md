@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: 簡単なエラーの作成 `errors.New`
+title: 簡単なエラーの作成 `errors.New`
 
 ## タグ
 tags: ["error-handling", "error", "errors", "errors.New"]

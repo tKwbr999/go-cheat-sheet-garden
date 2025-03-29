@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: 条件分岐 `if`, `else if`, `else`
+title: 条件分岐 `if`, `else if`, `else`
 
 ## タグ
 tags: ["flow-control", "if", "else if", "else", "条件分岐"]

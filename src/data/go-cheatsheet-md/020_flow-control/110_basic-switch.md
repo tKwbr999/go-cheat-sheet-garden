@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: 条件分岐 `switch` (基本形)
+title: 条件分岐 `switch` (基本形)
 
 ## タグ
 tags: ["flow-control", "switch", "case", "default", "条件分岐"]

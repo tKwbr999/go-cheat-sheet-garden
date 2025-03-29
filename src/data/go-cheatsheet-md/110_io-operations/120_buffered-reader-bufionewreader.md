@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: バッファ付きリーダー (`bufio.NewReader`)
+title: バッファ付きリーダー (`bufio.NewReader`)
 
 ## タグ
 tags: ["io-operations", "io", "bufio", "Reader", "NewReader", "バッファリング", "効率化", "ReadString", "ReadByte"]

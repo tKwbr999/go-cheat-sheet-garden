@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: キャンセル Context を使ったテスト
+title: キャンセル Context を使ったテスト
 
 ## タグ
 tags: ["context", "concurrency", "testing", "cancel", "WithCancel", "errors.Is", "Canceled"]

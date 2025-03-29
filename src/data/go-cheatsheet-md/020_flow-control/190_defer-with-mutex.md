@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `defer` とミューテックス (`sync.Mutex`)
+title: `defer` とミューテックス (`sync.Mutex`)
 
 ## タグ
 tags: ["flow-control", "defer", "mutex", "sync", "並行処理", "ロック", "アンロック", "リソース解放"]

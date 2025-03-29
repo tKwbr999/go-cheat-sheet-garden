@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `panic` と `recover` の適切な使い方
+title: `panic` と `recover` の適切な使い方
 
 ## タグ
 tags: ["flow-control", "panic", "recover", "error", "エラー処理", "ベストプラクティス"]

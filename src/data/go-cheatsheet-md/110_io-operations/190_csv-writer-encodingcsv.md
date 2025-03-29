@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: CSV データの書き込み (`encoding/csv`)
+title: CSV データの書き込み (`encoding/csv`)
 
 ## タグ
 tags: ["io-operations", "encoding/csv", "csv", "Writer", "NewWriter", "Write", "WriteAll", "Flush", "ファイル書き込み"]

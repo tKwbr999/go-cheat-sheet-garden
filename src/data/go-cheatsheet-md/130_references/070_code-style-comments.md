@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: コメント (Comments)"
+title: コメント (Comments)
 
 ## タグ
 tags: ["references", "code style", "comments", "documentation", "godoc"]

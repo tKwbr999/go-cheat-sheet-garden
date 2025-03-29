@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: インターフェースによる型制約
+title: インターフェースによる型制約
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型パラメータ", "type parameter", "型制約", "type constraint", "interface", "any", "Union"]

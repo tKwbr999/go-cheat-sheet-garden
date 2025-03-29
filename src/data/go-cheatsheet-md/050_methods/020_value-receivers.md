@@ -1,5 +1,5 @@
 ## タイトル
-title: メソッド: 値レシーバ (Value Receiver)
+title: 値レシーバ (Value Receiver)
 
 ## タグ
 tags: ["methods", "レシーバ", "値レシーバ", "値渡し", "コピー", "不変"]

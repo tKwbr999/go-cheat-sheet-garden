@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: Context の伝播"
+title: "Context の伝播"
 
 ## タグ
 tags: ["context", "concurrency", "関数呼び出し", "伝播"]

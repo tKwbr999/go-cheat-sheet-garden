@@ -1,5 +1,5 @@
 ## タイトル
-title: 関数: 名前付き戻り値 (Named Return Values)
+title: 名前付き戻り値 (Named Return Values)
 
 ## タグ
 tags: ["functions", "func", "戻り値", "return", "naked return"]

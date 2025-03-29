@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: エラーを返す関数
+title: エラーを返す関数
 
 ## タグ
 tags: ["error-handling", "error", "functions", "return", "nil"]

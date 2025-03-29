@@ -1,5 +1,5 @@
 ## タイトル
-title: メソッド: メソッド値 (Method Value)
+title: メソッド値 (Method Value)
 
 ## タグ
 tags: ["methods", "メソッド値", "関数型", "レシーバ", "クロージャ"]

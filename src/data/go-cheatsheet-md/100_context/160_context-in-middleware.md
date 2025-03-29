@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: ミドルウェアでの Context 利用"
+title: "ミドルウェアでの Context 利用"
 
 ## タグ
 tags: ["context", "concurrency", "http", "middleware", "WithValue", "WithContext"]

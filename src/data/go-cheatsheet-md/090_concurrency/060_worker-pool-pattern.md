@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: ワーカープール (Worker Pool) パターン
+title: ワーカープール (Worker Pool) パターン
 
 ## タグ
 tags: ["concurrency", "goroutine", "channel", "worker pool", "並行処理パターン", "sync", "WaitGroup"]

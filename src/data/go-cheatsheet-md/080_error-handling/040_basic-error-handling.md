@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: 基本的なエラーハンドリング (`if err != nil`)
+title: 基本的なエラーハンドリング (`if err != nil`)
 
 ## タグ
 tags: ["error-handling", "error", "if", "nil", "早期リターン"]
@@ -56,7 +56,7 @@ Goでは、エラーを返す可能性のある関数を呼び出した後、
 **パターン:**
 1. 関数呼び出し: `result, err := functionThatMightFail()`
 2. エラーチェック: 直後に `if err != nil { ... }` で確認。
-3. エラー処理: `if` ブロック内でエラーに対応する。
+3. `if` ブロック内でエラーに対応する。
    *   ログ出力: `log.Printf("エラー: %v", err)`
    *   エラーをラップして返す: `return fmt.Errorf("追加情報: %w", err)`
    *   デフォルト値設定: `result = defaultValue`

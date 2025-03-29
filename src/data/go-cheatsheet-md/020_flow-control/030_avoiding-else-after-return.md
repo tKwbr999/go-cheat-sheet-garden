@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `return` 後の `else` を避けるスタイル (早期リターン)
+title: `return` 後の `else` を避けるスタイル (早期リターン)
 
 ## タグ
 tags: ["flow-control", "if", "else", "return", "エラー処理", "コーディングスタイル", "早期リターン", "ガード節"]

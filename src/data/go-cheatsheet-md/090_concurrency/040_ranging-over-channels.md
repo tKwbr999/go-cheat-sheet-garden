@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: `for range` によるチャネルからの受信
+title: `for range` によるチャネルからの受信
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "for range", "close", "ループ"]

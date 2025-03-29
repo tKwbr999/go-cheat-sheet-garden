@@ -1,5 +1,5 @@
 ## タイトル
-title: "デザインパターン: ワーカープールパターン (Worker Pool)"
+title: ワーカープールパターン (Worker Pool)
 
 ## タグ
 tags: ["references", "design pattern", "concurrency", "goroutine", "channel", "worker pool"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: `go.mod` ファイルの構造 (Go Modules)
+title: `go.mod` ファイルの構造 (Go Modules)
 
 ## タグ
 tags: ["packages", "package", "go modules", "go.mod", "依存関係管理", "module", "go", "require", "replace", "exclude", "retract"]

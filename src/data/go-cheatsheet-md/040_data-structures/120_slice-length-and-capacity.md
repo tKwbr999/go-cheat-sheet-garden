@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス (Slice) の長さ (Length) と容量 (Capacity)
+title: スライス (Slice) の長さ (Length) と容量 (Capacity)
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "長さ", "len", "容量", "cap", "内部配列", "append"]

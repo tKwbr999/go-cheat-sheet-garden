@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: インポートパスと Go Modules
+title: インポートパスと Go Modules
 
 ## タグ
 tags: ["packages", "package", "import", "go modules", "モジュールパス", "相対パス"]

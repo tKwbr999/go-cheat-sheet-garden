@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: コードの構成単位 `package` 宣言
+title: コードの構成単位 `package` 宣言
 
 ## タグ
 tags: ["packages", "package", "main"]

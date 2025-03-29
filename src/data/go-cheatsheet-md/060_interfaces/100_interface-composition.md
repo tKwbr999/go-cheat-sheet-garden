@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: インターフェースの組み合わせ (コンポジション)
+title: インターフェースの組み合わせ (コンポジション)
 
 ## タグ
 tags: ["interfaces", "interface", "埋め込み", "コンポジション", "io.Reader", "io.Writer", "io.ReadWriter"]

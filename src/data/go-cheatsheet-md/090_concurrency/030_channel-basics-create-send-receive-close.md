@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: チャネル (Channel) の基本
+title: チャネル (Channel) の基本
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "make", "<-", "close", "同期", "通信", "バッファ"]

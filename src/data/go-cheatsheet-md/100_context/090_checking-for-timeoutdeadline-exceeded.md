@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: タイムアウト/デッドライン超過の確認
+title: タイムアウト/デッドライン超過の確認
 
 ## タグ
 tags: ["context", "concurrency", "Err", "DeadlineExceeded", "Canceled", "errors.Is", "タイムアウト", "デッドライン"]

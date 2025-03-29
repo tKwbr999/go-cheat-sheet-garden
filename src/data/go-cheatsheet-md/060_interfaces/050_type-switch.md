@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 型スイッチ (Type Switch)
+title: 型スイッチ (Type Switch)
 
 ## タグ
 tags: ["interfaces", "interface", "型スイッチ", "type switch", "switch"]

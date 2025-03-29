@@ -1,5 +1,5 @@
 ## タイトル
-title: "ジェネリクス: ジェネリックな Min/Max 関数"
+title: "ジェネリックな Min/Max 関数"
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型制約", "type constraint", "cmp", "Ordered", "Min", "Max"]

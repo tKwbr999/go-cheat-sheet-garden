@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: 概要
+title: 概要
 
 ## タグ
 tags: ["context", "concurrency", "キャンセル", "タイムアウト", "デッドライン", "値伝達", "リクエストスコープ"]

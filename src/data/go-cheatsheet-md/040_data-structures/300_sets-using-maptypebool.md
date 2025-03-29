@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: マップを使ったセット (Set) の実装 (map[T]bool)
+title: マップを使ったセット (Set) の実装 (map[T]bool)
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "セット", "set", "集合"]

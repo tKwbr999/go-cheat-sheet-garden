@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: Context による値の伝達 (`context.WithValue`)
+title: Context による値の伝達 (`context.WithValue`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "context", "WithValue", "Value", "リクエストスコープ", "値伝達"]

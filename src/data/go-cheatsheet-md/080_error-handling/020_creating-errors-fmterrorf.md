@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: フォーマットされたエラーの作成 `fmt.Errorf`
+title: フォーマットされたエラーの作成 `fmt.Errorf`
 
 ## タグ
 tags: ["error-handling", "error", "fmt", "fmt.Errorf", "エラーラッピング", "%w"]

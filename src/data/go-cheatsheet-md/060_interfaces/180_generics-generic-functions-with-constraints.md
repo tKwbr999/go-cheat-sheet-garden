@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 制約付きジェネリック関数
+title: 制約付きジェネリック関数
 
 ## タグ
 tags: ["interfaces", "interface", "ジェネリクス", "generics", "型パラメータ", "型制約", "constraint", "関数"]
@@ -10,7 +10,7 @@ package main
 
 import "fmt"
 
-// 型制約インターフェース: int または float64
+// 型制約int または float64
 type Number interface {
 	int | float64
 }

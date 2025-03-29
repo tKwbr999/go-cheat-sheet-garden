@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: 一度だけの実行 (`sync.Once`)
+title: 一度だけの実行 (`sync.Once`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "Once", "初期化", "シングルトン", "Do"]

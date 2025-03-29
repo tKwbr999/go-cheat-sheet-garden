@@ -336,7 +336,7 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
         "code": "package main\n\nimport \"fmt\"\n\n// int を受け取り int を返す関数型\ntype IntUnaryOperator func(int) int\n\n// IntUnaryOperator 型の関数を返す高階関数\nfunc multiplier(factor int) IntUnaryOperator {\n\tfmt.Printf(\"multiplier(%d) 呼び出し\\n\", factor)\n\t// factor をキャプチャしたクロージャを返す\n\treturn func(n int) int {\n\t\treturn n * factor\n\t}\n}\n\nfunc main() {\n\t// 2倍する関数 (クロージャ) を取得\n\tdouble := multiplier(2)\n\n\t// 生成されたクロージャを使う\n\tfmt.Println(double(5))  // 10\n\tfmt.Println(double(10)) // 20\n\n\t// 3倍する関数も同様に生成可能\n\t// triple := multiplier(3)\n\t// fmt.Println(triple(5)) // 15\n\n\t// 直接呼び出しも可能\n\t// fmt.Println(multiplier(10)(5)) // 50\n}"
       },
       {
-        "title": "関数 vs メソッド: 基本的な違い",
+        "title": "関数 vs 基本的な違い",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct {\n\tX, Y float64\n}\n\n// Point 型に関連付けられた Distance メソッド\n// (p Point) がレシーバ\nfunc (p Point) Distance(q Point) float64 {\n\tdx := q.X - p.X // p.X はレシーバ p の X 座標\n\tdy := q.Y - p.Y // p.Y はレシーバ p の Y 座標\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp1 := Point{1, 2}\n\tp2 := Point{4, 6}\n\n\t// メソッド呼び出し: p1 に対して Distance メソッドを呼び出す\n\tdist := p1.Distance(p2)\n\tfmt.Printf(\"p1.Distance(p2) = %f\\n\", dist) // 5.000000\n}"
       }
     ]
@@ -346,143 +346,143 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Data Structures",
     "codeExamples": [
       {
-        "title": "データ構造: 配列 (Array) の宣言",
+        "title": "配列 (Array) の宣言",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// サイズ 5 の int 配列 (ゼロ値 0 で初期化)\n\tvar numbers [5]int\n\n\t// サイズ 3 の string 配列 (ゼロ値 \"\" で初期化)\n\tvar names [3]string\n\n\t// サイズ 2 の bool 配列 (ゼロ値 false で初期化)\n\tvar flags [2]bool\n\n\tfmt.Printf(\"numbers: %v (%T, len=%d)\\n\", numbers, numbers, len(numbers))\n\tfmt.Printf(\"names:   %q (%T, len=%d)\\n\", names, names, len(names))\n\tfmt.Printf(\"flags:   %v (%T, len=%d)\\n\", flags, flags, len(flags))\n\n\t// var a [5]int\n\t// var b [10]int\n\t// a = b // コンパイルエラー: 型が違う ([5]int と [10]int)\n}"
       },
       {
-        "title": "データ構造: 配列 (Array) の初期化",
+        "title": "配列 (Array) の初期化",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// サイズ 3 の int 配列を初期化\n\tnumbers := [3]int{10, 20, 30}\n\tfmt.Printf(\"numbers: %v (%T)\\n\", numbers, numbers)\n\n\t// サイズ 4 の string 配列を初期化\n\tfruits := [4]string{\"Apple\", \"Banana\", \"Cherry\", \"Date\"}\n\tfmt.Printf(\"fruits: %q (%T)\\n\", fruits, fruits)\n\n\t// 要素数がサイズと一致しないとコンパイルエラー\n\t// error1 := [3]int{1, 2} // エラー\n\t// error2 := [3]int{1, 2, 3, 4} // エラー\n}"
       },
       {
-        "title": "データ構造: 配列 (Array) のサイズ推論 `...`",
+        "title": "配列 (Array) のサイズ推論 `...`",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// [...] で初期値の数からサイズを推論 (サイズ 4)\n\tnumbers := [...]int{10, 20, 30, 40}\n\tfmt.Printf(\"numbers: %v (%T, len=%d)\\n\", numbers, numbers, len(numbers))\n\n\t// サイズ 3 の配列になる\n\tweekdays := [...]string{\"Mon\", \"Tue\", \"Wed\"}\n\tfmt.Printf(\"weekdays: %q (%T, len=%d)\\n\", weekdays, weekdays, len(weekdays))\n\n\t// サイズ 1 の配列\n\tsingle := [...]bool{true}\n\tfmt.Printf(\"single: %v (%T, len=%d)\\n\", single, single, len(single))\n\n\t// サイズ 0 の配列\n\tempty := [...]float64{}\n\tfmt.Printf(\"empty: %v (%T, len=%d)\\n\", empty, empty, len(empty))\n}"
       },
       {
-        "title": "データ構造: 配列 (Array) の要素へのアクセス",
+        "title": "配列 (Array) の要素へのアクセス",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar numbers [5]int // ゼロ値 [0 0 0 0 0]\n\tfmt.Printf(\"初期状態: %v\\n\", numbers)\n\n\t// 要素への書き込み (代入)\n\tnumbers[0] = 10\n\tnumbers[1] = 20\n\tnumbers[4] = 50\n\tfmt.Printf(\"代入後:   %v\\n\", numbers)\n\n\t// 要素の読み取り\n\tfirst := numbers[0]\n\tlast := numbers[4]\n\tfmt.Printf(\"最初:%d, 最後:%d, インデックス2:%d\\n\", first, last, numbers[2])\n\n\t// ループを使ったアクセス\n\tfmt.Println(\"--- ループ ---\")\n\tfor i := 0; i < len(numbers); i++ {\n\t\tfmt.Printf(\" %d: %d\\n\", i, numbers[i])\n\t\t// numbers[i] = numbers[i] * 2 // 値の変更も可能\n\t}\n\n\t// 範囲外アクセスは panic を引き起こす\n\t// fmt.Println(numbers[5]) // panic: runtime error: index out of range\n}"
       },
       {
-        "title": "データ構造: 多次元配列 (Multi-dimensional Array)",
+        "title": "多次元配列 (Multi-dimensional Array)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 2行3列の配列をリテラルで初期化\n\tmatrix := [2][3]int{\n\t\t{10, 20, 30}, // 行 0\n\t\t{40, 50, 60}, // 行 1\n\t}\n\n\t// 要素の読み取り (行インデックス, 列インデックス)\n\tval1 := matrix[0][1] // 1行目(0), 2列目(1) -> 20\n\tval2 := matrix[1][2] // 2行目(1), 3列目(2) -> 60\n\tfmt.Printf(\"matrix[0][1]=%d, matrix[1][2]=%d\\n\", val1, val2)\n\n\t// 要素への書き込み (代入)\n\tmatrix[0][0] = 11\n\tfmt.Println(\"変更後:\", matrix) // [[11 20 30] [40 50 60]]\n\n\t// ネストしたループで全要素アクセス\n\tfmt.Println(\"--- 全要素 ---\")\n\tfor i := 0; i < len(matrix); i++ { // 行ループ (len=2)\n\t\tfor j := 0; j < len(matrix[i]); j++ { // 列ループ (len=3)\n\t\t\tfmt.Printf(\" matrix[%d][%d]=%d\\n\", i, j, matrix[i][j])\n\t\t}\n\t}\n\t// 範囲外アクセスは panic (例: matrix[2][0])\n}"
       },
       {
-        "title": "データ構造: 配列は値型 (コピーされる)",
+        "title": "配列は値型 (コピーされる)",
         "code": "package main\n\nimport \"fmt\"\n\n// 配列を受け取る関数 (値渡し)\nfunc modifyArray(arr [3]int) {\n\tfmt.Printf(\"  modifyArray 内 (変更前): %v\\n\", arr)\n\tarr[0] = 999 // 関数内のコピーを変更\n\tfmt.Printf(\"  modifyArray 内 (変更後): %v\\n\", arr)\n}\n\nfunc main() {\n\t// 配列の代入 (コピーが発生)\n\toriginal := [3]int{1, 2, 3}\n\tcopied := original // 全要素がコピーされる\n\tcopied[0] = 100    // コピー先を変更\n\n\tfmt.Printf(\"original: %v\\n\", original) // 元は不変 [1 2 3]\n\tfmt.Printf(\"copied:   %v\\n\", copied)   // コピーが変更 [100 2 3]\n\n\t// 関数への配列の引き渡し (コピーが発生)\n\tarrForFunc := [3]int{10, 20, 30}\n\tfmt.Printf(\"\\n関数呼び出し前: %v\\n\", arrForFunc)\n\tmodifyArray(arrForFunc) // 値のコピーが渡される\n\tfmt.Printf(\"関数呼び出し後: %v\\n\", arrForFunc) // 元は不変 [10 20 30]\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) の宣言",
+        "title": "スライス (Slice) の宣言",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// スライスの宣言 (初期値なし)\n\tvar numbers []int\n\tvar names []string\n\n\t// ゼロ値は nil\n\tfmt.Printf(\"numbers: %v (%T)\\n\", numbers, numbers)\n\tfmt.Printf(\"names:   %q (%T)\\n\", names, names)\n\n\tif numbers == nil {\n\t\tfmt.Println(\"numbers は nil スライスです。\")\n\t}\n\n\t// nil スライスの長さと容量は 0\n\tfmt.Printf(\"len=%d, cap=%d\\n\", len(numbers), cap(numbers))\n\n\t// nil スライスへの append は可能\n\tnumbers = append(numbers, 10)\n\tfmt.Printf(\"append 後: %v (len=%d, cap=%d)\\n\", numbers, len(numbers), cap(numbers))\n}"
       },
       {
-        "title": "データ構造: `make` 関数によるスライス (Slice) の作成",
+        "title": "`make` 関数によるスライス (Slice) の作成",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 長さのみ指定: make([]要素型, 長さ)\n\t// 長さ 5、容量 5 の int スライス (要素は 0)\n\ts1 := make([]int, 5)\n\tfmt.Printf(\"s1: %v (len=%d, cap=%d)\\n\", s1, len(s1), cap(s1))\n\ts1[0] = 10 // アクセス・代入可能\n\tfmt.Printf(\"s1変更後: %v\\n\", s1)\n\n\t// 長さと容量を指定: make([]要素型, 長さ, 容量)\n\t// 長さ 3、容量 10 の string スライス (要素は \"\")\n\ts2 := make([]string, 3, 10)\n\tfmt.Printf(\"s2: %q (len=%d, cap=%d)\\n\", s2, len(s2), cap(s2))\n\ts2[0] = \"A\"\n\t// s2[3] = \"B\" // エラー: 長さ(3)を超えるインデックスはアクセス不可\n\n\t// 長さ 0、容量 5 のスライス\n\ts3 := make([]int, 0, 5)\n\tfmt.Printf(\"s3: %v (len=%d, cap=%d)\\n\", s3, len(s3), cap(s3))\n}"
       },
       {
-        "title": "データ構造: スライスリテラルによる作成と初期化",
+        "title": "スライスリテラルによる作成と初期化",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// int スライスリテラル\n\tnumbers := []int{10, 20, 30, 40, 50}\n\tfmt.Printf(\"numbers: %v (len=%d, cap=%d)\\n\", numbers, len(numbers), cap(numbers))\n\n\t// string スライスリテラル\n\tnames := []string{\"Alice\", \"Bob\", \"Charlie\"}\n\tfmt.Printf(\"names: %q (len=%d, cap=%d)\\n\", names, len(names), cap(names))\n\n\t// bool スライスリテラル\n\tflags := []bool{true, false, true}\n\tfmt.Printf(\"flags: %v (len=%d, cap=%d)\\n\", flags, len(flags), cap(flags))\n\n\t// 空のスライスリテラル (nil ではない)\n\temptySlice := []float64{}\n\tfmt.Printf(\"emptySlice: %v (len=%d, cap=%d)\\n\", emptySlice, len(emptySlice), cap(emptySlice))\n\tif emptySlice != nil {\n\t\tfmt.Println(\"emptySlice は nil ではありません\")\n\t}\n}"
       },
       {
-        "title": "データ構造: スライス操作 (Slicing) - 配列やスライスから作る",
+        "title": "スライス操作 (Slicing) - 配列やスライスから作る",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tprimes := [6]int{2, 3, 5, 7, 11, 13}\n\tfmt.Printf(\"元の配列: %v\\n\", primes)\n\n\t// 配列からスライスを作成: primes[1:4]\n\t// インデックス 1 から 4-1=3 まで (要素 3, 5, 7)\n\ts1 := primes[1:4]\n\tfmt.Printf(\"s1 = primes[1:4]: %v (len=%d, cap=%d)\\n\", s1, len(s1), cap(s1))\n\n\t// s1 からさらにスライスを作成: s1[:2]\n\t// s1 のインデックス 0 から 2-1=1 まで (要素 3, 5)\n\ts4 := s1[:2]\n\tfmt.Printf(\"s4 = s1[:2]: %v (len=%d, cap=%d)\\n\", s4, len(s4), cap(s4))\n\n\t// 内部配列の共有と変更の影響\n\tfmt.Printf(\"変更前: s4=%v, primes=%v\\n\", s4, primes)\n\ts4[1] = 99 // s4[1] は primes[2] と同じ場所を指す\n\tfmt.Printf(\"変更後: s4=%v, primes=%v\\n\", s4, primes) // primes も変更される!\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) の要素へのアクセス",
+        "title": "スライス (Slice) の要素へのアクセス",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfruits := []string{\"Apple\", \"Banana\", \"Cherry\"}\n\tfmt.Printf(\"初期状態: %q (len=%d)\\n\", fruits, len(fruits))\n\n\t// 要素の読み取り\n\tfirst := fruits[0]\n\tsecond := fruits[1]\n\tfmt.Printf(\"最初:%s, 2番目:%s, Index2:%s\\n\", first, second, fruits[2])\n\n\t// 要素への書き込み (代入)\n\tfruits[1] = \"Blueberry\" // スライスは変更可能\n\tfmt.Printf(\"変更後: %q\\n\", fruits)\n\n\t// ループを使ったアクセス (for i)\n\tfmt.Println(\"--- for i ---\")\n\tfor i := 0; i < len(fruits); i++ {\n\t\tfmt.Printf(\" %d: %s\\n\", i, fruits[i])\n\t}\n\n\t// ループを使ったアクセス (for range)\n\tfmt.Println(\"--- for range ---\")\n\tfor index, value := range fruits {\n\t\tfmt.Printf(\" %d: %s\\n\", index, value)\n\t}\n\n\t// 範囲外アクセスは panic\n\t// fmt.Println(fruits[3]) // panic: runtime error: index out of range\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) への要素の追加 `append`",
+        "title": "スライス (Slice) への要素の追加 `append`",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s []int // nil スライス\n\tfmt.Printf(\"初期: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// 要素を1つ追加\n\ts = append(s, 0)\n\tfmt.Printf(\"append 0: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// さらに要素を1つ追加\n\ts = append(s, 1)\n\tfmt.Printf(\"append 1: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// 複数の要素を一度に追加\n\ts = append(s, 2, 3, 4)\n\tfmt.Printf(\"append 2,3,4: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// 別のスライスの全要素を追加 (sB...)\n\tsA := []int{100, 200}\n\tsB := []int{300, 400}\n\tsA = append(sA, sB...)\n\tfmt.Printf(\"sA + sB...: %v (len=%d, cap=%d)\\n\", sA, len(sA), cap(sA))\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) の長さ (Length) と容量 (Capacity)",
+        "title": "スライス (Slice) の長さ (Length) と容量 (Capacity)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts0 := []int{0, 1, 2, 3, 4} // len=5, cap=5\n\tfmt.Printf(\"s0: %v (len=%d, cap=%d)\\n\", s0, len(s0), cap(s0))\n\n\t// スライス操作 s0[1:3]\n\ts1 := s0[1:3] // 要素 {1, 2} を参照\n\t// len = 3 - 1 = 2\n\t// cap = 5 - 1 = 4 (元の配列の index 1 から最後まで)\n\tfmt.Printf(\"s1 = s0[1:3]: %v (len=%d, cap=%d)\\n\", s1, len(s1), cap(s1))\n\n\t// s1 からさらにスライス s3 = s1[:1]\n\ts3 := s1[:1] // 要素 {1} を参照\n\t// len = 1 - 0 = 1\n\t// cap = 4 (s1 と同じ内部配列、同じ開始位置)\n\tfmt.Printf(\"s3 = s1[:1]: %v (len=%d, cap=%d)\\n\", s3, len(s3), cap(s3))\n\n\t// append による変化 (容量内)\n\ts3 = append(s3, 99) // s3 は [1, 99] になる (len=2, cap=4)\n\tfmt.Printf(\"s3 append後: %v (len=%d, cap=%d)\\n\", s3, len(s3), cap(s3))\n\n\t// 内部配列共有の影響: s0 も変更される！\n\tfmt.Printf(\"s0 影響確認: %v\\n\", s0) // [0 1 99 3 4]\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) のコピー `copy`",
+        "title": "スライス (Slice) のコピー `copy`",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tsrc := []int{1, 2, 3, 4, 5}\n\tfmt.Printf(\"src: %v (len=%d)\\n\", src, len(src))\n\n\t// コピー先を適切なサイズで確保\n\tdst1 := make([]int, len(src))\n\n\t// src から dst1 へコピー\n\tnumCopied := copy(dst1, src)\n\tfmt.Printf(\"dst1: %v (len=%d)\\n\", dst1, len(dst1))\n\tfmt.Printf(\"コピー要素数: %d\\n\", numCopied)\n\n\t// dst1 を変更しても src には影響しない (独立したコピー)\n\tdst1[0] = 99\n\tfmt.Printf(\"dst1変更後: %v\\n\", dst1)\n\tfmt.Printf(\"src影響なし: %v\\n\", src)\n\n\t// append を使ったコピー (簡潔な方法)\n\tdst2 := append([]int(nil), src...)\n\tfmt.Printf(\"dst2 (append): %v (len=%d)\\n\", dst2, len(dst2))\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) からの要素の削除",
+        "title": "スライス (Slice) からの要素の削除",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfruits := []string{\"Apple\", \"Banana\", \"Cherry\", \"Date\", \"Elderberry\"}\n\tfmt.Printf(\"元: %q (len=%d)\\n\", fruits, len(fruits))\n\n\t// インデックス 2 (\"Cherry\") を削除\n\ti := 2\n\tfruits = append(fruits[:i], fruits[i+1:]...)\n\tfmt.Printf(\"削除後(idx %d): %q (len=%d)\\n\", i, fruits, len(fruits))\n\n\t// 先頭要素 (\"Apple\" 相当) を削除\n\tif len(fruits) > 0 {\n\t\tfruits = fruits[1:] // 簡単な方法\n\t\t// または fruits = append(fruits[:0], fruits[1:]...)\n\t}\n\tfmt.Printf(\"先頭削除後: %q (len=%d)\\n\", fruits, len(fruits))\n\n\t// 末尾要素 (\"Elderberry\" 相当) を削除\n\tif len(fruits) > 0 {\n\t\tfruits = fruits[:len(fruits)-1] // 簡単な方法\n\t}\n\tfmt.Printf(\"末尾削除後: %q (len=%d)\\n\", fruits, len(fruits))\n}"
       },
       {
-        "title": "データ構造: スライス (Slice) への要素の挿入",
+        "title": "スライス (Slice) への要素の挿入",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts := []int{10, 20, 40, 50}\n\tfmt.Printf(\"元: %v (len=%d)\\n\", s, len(s))\n\n\ti := 2 // 挿入位置インデックス\n\tx := 30 // 挿入する要素\n\n\t// 方法1: append を2回使うイディオム\n\t// s[:i] に、 {x} と s[i:] を連結したものを append する\n\ts = append(s[:i], append([]int{x}, s[i:]...)...)\n\n\tfmt.Printf(\"挿入後: %v (len=%d)\\n\", s, len(s))\n}"
       },
       {
-        "title": "データ構造: マップ (Map) の宣言",
+        "title": "マップ (Map) の宣言",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// マップの宣言 (初期値なし)\n\tvar scores map[string]int\n\tvar isPrime map[int]bool\n\n\t// ゼロ値は nil\n\tfmt.Printf(\"scores: %v (%T)\\n\", scores, scores)\n\tfmt.Printf(\"isPrime: %v (%T)\\n\", isPrime, isPrime)\n\n\tif scores == nil {\n\t\tfmt.Println(\"scores は nil マップです。\")\n\t}\n\n\t// nil マップの len は 0\n\tfmt.Printf(\"len(scores): %d\\n\", len(scores))\n\n\t// nil マップからの読み取りはゼロ値が返る (panic しない)\n\tfmt.Printf(\"scores[\\\"Alice\\\"]: %d\\n\", scores[\"Alice\"])\n\n\t// nil マップへの書き込みは panic する！\n\t// scores[\"Bob\"] = 90 // panic: assignment to entry in nil map\n}"
       },
       {
-        "title": "データ構造: `make` 関数によるマップ (Map) の作成",
+        "title": "`make` 関数によるマップ (Map) の作成",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// make で空のマップを作成\n\tscores := make(map[string]int)\n\tfmt.Printf(\"scores (make): %v (len=%d)\\n\", scores, len(scores))\n\n\t// make で作成したマップは nil ではない\n\tif scores != nil {\n\t\tfmt.Println(\"scores は nil ではありません\")\n\t}\n\n\t// 要素を追加できる\n\tscores[\"Alice\"] = 95\n\tscores[\"Bob\"] = 88\n\tfmt.Printf(\"追加後 scores: %v (len=%d)\\n\", scores, len(scores))\n\n\t// 初期容量を指定して作成 (パフォーマンス最適化のヒント)\n\tages := make(map[string]int, 10)\n\tfmt.Printf(\"\\nages (cap hint): %v (len=%d)\\n\", ages, len(ages))\n\tages[\"Charlie\"] = 30\n\tfmt.Printf(\"追加後 ages: %v (len=%d)\\n\", ages, len(ages))\n}"
       },
       {
-        "title": "データ構造: マップリテラルによる作成と初期化",
+        "title": "マップリテラルによる作成と初期化",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// マップリテラルで初期化\n\tages := map[string]int{\n\t\t\"Alice\":   30,\n\t\t\"Bob\":     25,\n\t\t\"Charlie\": 35, // 最後のカンマ推奨\n\t}\n\tfmt.Printf(\"ages: %v (len=%d)\\n\", ages, len(ages))\n\n\t// 空のマップリテラル (nil ではない)\n\temptyMap := map[string]bool{}\n\tfmt.Printf(\"emptyMap: %v (len=%d)\\n\", emptyMap, len(emptyMap))\n\tif emptyMap != nil {\n\t\tfmt.Println(\"emptyMap は nil ではありません\")\n\t}\n\temptyMap[\"active\"] = true // 要素を追加できる\n\tfmt.Printf(\"追加後 emptyMap: %v\\n\", emptyMap)\n\n\t// var nilMap map[string]int // これは nil\n\t// nilMap[\"key\"] = 1 // panic\n}"
       },
       {
-        "title": "データ構造: マップ (Map) の基本操作",
+        "title": "マップ (Map) の基本操作",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tscores := make(map[string]int)\n\n\t// 1. 要素の追加/更新: map[key] = value\n\tscores[\"Alice\"] = 95 // 追加\n\tscores[\"Bob\"] = 88   // 追加\n\tscores[\"Alice\"] = 98 // 更新\n\tfmt.Println(\"追加/更新後:\", scores)\n\n\t// 2. 要素の取得: value := map[key]\n\taliceScore := scores[\"Alice\"]\n\tfmt.Printf(\"Aliceの点数: %d\\n\", aliceScore)\n\t// charlieScore := scores[\"Charlie\"] // 存在しないキー -> 0 (intのゼロ値)\n\n\t// 3. キーの存在確認 (カンマOKイディオム)\n\tvalue, ok := scores[\"Bob\"] // ok に存在有無 (bool) が入る\n\tif ok {\n\t\tfmt.Printf(\"Bobは存在: %d\\n\", value)\n\t}\n\tvalue, ok = scores[\"David\"]\n\tif !ok {\n\t\tfmt.Printf(\"Davidは不在 (ok=%t, value=%d)\\n\", ok, value)\n\t}\n\n\t// 4. 要素の削除: delete(map, key)\n\tdelete(scores, \"Bob\")\n\tfmt.Println(\"Bob削除後:\", scores)\n\tdelete(scores, \"David\") // 存在しなくてもエラーにならない\n\tfmt.Println(\"David削除試行後:\", scores)\n\n\tfmt.Printf(\"現在の要素数: %d\\n\", len(scores))\n}"
       },
       {
-        "title": "データ構造: マップ (Map) のキー存在確認 (カンマOKイディオム)",
+        "title": "マップ (Map) のキー存在確認 (カンマOKイディオム)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tscores := map[string]int{\n\t\t\"Alice\": 95,\n\t\t\"Bob\":   0, // 値が 0\n\t}\n\n\t// カンマOKイディオムで存在確認\n\tscoreBob, okBob := scores[\"Bob\"] // Bob は存在する\n\tif okBob {\n\t\tfmt.Printf(\"Bob は存在: %d\\n\", scoreBob) // 存在する (値 0)\n\t}\n\n\tscoreCharlie, okCharlie := scores[\"Charlie\"] // Charlie は存在しない\n\tif !okCharlie {\n\t\tfmt.Printf(\"Charlie は不在 (ok=%t, value=%d)\\n\", okCharlie, scoreCharlie) // ok=false, value=0\n\t}\n\n\t// if の初期化ステートメントと組み合わせるのが一般的\n\tif score, ok := scores[\"Alice\"]; ok {\n\t\tfmt.Printf(\"Alice の点数: %d\\n\", score)\n\t} else {\n\t\tfmt.Println(\"Alice は不在\")\n\t}\n\n\tif _, ok := scores[\"David\"]; !ok { // 値は不要な場合 _ で無視\n\t\tfmt.Println(\"David は不在\")\n\t}\n}"
       },
       {
-        "title": "データ構造: マップ (Map) の反復処理 `for range`",
+        "title": "マップ (Map) の反復処理 `for range`",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tstock := map[string]int{\n\t\t\"apple\":  10,\n\t\t\"banana\": 25,\n\t\t\"orange\": 0,\n\t\t\"grape\":  15,\n\t}\n\n\tfmt.Println(\"--- 在庫一覧 (キーと値) ---\")\n\t// キー(fruit)と値(count)を取得\n\tfor fruit, count := range stock {\n\t\tfmt.Printf(\"%s: %d個\\n\", fruit, count)\n\t}\n\t// ★ 順序は保証されない！実行ごとに変わる可能性あり\n\n\tfmt.Println(\"\\n--- 在庫のあるフルーツ名 (キーのみ) ---\")\n\t// キー(fruit)のみを取得 (値の変数を省略)\n\tfor fruit := range stock {\n\t\tif stock[fruit] > 0 { // 値が必要なら別途アクセス\n\t\t\tfmt.Println(\"-\", fruit)\n\t\t}\n\t}\n\n\t// 値のみを取得する場合\n\t// for _, count := range stock { ... }\n}"
       },
       {
-        "title": "データ構造: マップ (Map) をキーでソートして反復処理",
+        "title": "マップ (Map) をキーでソートして反復処理",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\" // ソート用パッケージ\n)\n\nfunc main() {\n\tstock := map[string]int{\n\t\t\"orange\": 0, \"grape\": 15, \"apple\": 10, \"banana\": 25,\n\t}\n\n\t// 1. キーの抽出\n\tkeys := make([]string, 0, len(stock))\n\tfor k := range stock {\n\t\tkeys = append(keys, k)\n\t}\n\tfmt.Printf(\"キー (ソート前): %q\\n\", keys)\n\n\t// 2. キーのソート (文字列)\n\tsort.Strings(keys)\n\tfmt.Printf(\"キー (ソート後): %q\\n\", keys)\n\n\t// 3. ソート済みキーで反復処理\n\tfmt.Println(\"\\n--- キー順で表示 ---\")\n\tfor _, fruit := range keys {\n\t\tfmt.Printf(\"%s: %d\\n\", fruit, stock[fruit]) // キーを使ってマップの値を取得\n\t}\n}"
       },
       {
-        "title": "データ構造: マップ (Map) は参照型",
+        "title": "マップ (Map) は参照型",
         "code": "package main\n\nimport \"fmt\"\n\n// マップを受け取り変更する関数 (参照渡し)\nfunc modifyMap(m map[string]int) {\n\tfmt.Printf(\"  modifyMap 内 (変更前): %v\\n\", m)\n\tm[\"Carol\"] = 75 // 関数内でマップを変更\n\tdelete(m, \"Bob\")\n\tfmt.Printf(\"  modifyMap 内 (変更後): %v\\n\", m)\n}\n\nfunc main() {\n\t// マップの代入 (参照がコピーされる)\n\toriginalMap := map[string]int{\"Alice\": 85, \"Bob\": 92}\n\tcopiedMap := originalMap // 同じマップデータを指す\n\tcopiedMap[\"Bob\"] = 90    // copiedMap 経由で変更\n\n\tfmt.Printf(\"originalMap: %v\\n\", originalMap) // 元のマップも変更されている\n\tfmt.Printf(\"copiedMap:   %v\\n\", copiedMap)\n\n\t// 関数へのマップの引き渡し (参照が渡される)\n\tmapForFunc := map[string]int{\"Alice\": 100, \"Bob\": 200}\n\tfmt.Printf(\"\\n関数呼び出し前: %v\\n\", mapForFunc)\n\tmodifyMap(mapForFunc) // 関数内で mapForFunc が変更される\n\tfmt.Printf(\"関数呼び出し後: %v\\n\", mapForFunc)\n}"
       },
       {
-        "title": "データ構造: 構造体 (Struct) の定義",
+        "title": "構造体 (Struct) の定義",
         "code": "package main\n\nimport \"fmt\"\n\n// Address 構造体\ntype Address struct {\n\tStreet string // 公開フィールド\n\tCity   string // 公開フィールド\n\tzip    string // 非公開フィールド\n}\n\n// Person 構造体\ntype Person struct {\n\tName    string\n\tAge     int\n\tEmail   string\n\taddress *Address // ポインタ型フィールド (非公開)\n\thobbies []string // スライス型フィールド (非公開)\n}\n\nfunc main() {\n\t// Person 型変数をゼロ値で宣言\n\tvar p1 Person\n\tfmt.Printf(\"p1 (ゼロ値): %+v\\n\", p1)\n\t// 出力例: {Name: Age:0 Email: address:<nil> hobbies:[]}\n\n\t// Address 型変数をゼロ値で宣言\n\tvar addr Address\n\tfmt.Printf(\"addr (ゼロ値): %+v\\n\", addr)\n\t// 出力例: {Street: City: zip:}\n}"
       },
       {
-        "title": "データ構造: 構造体 (Struct) の値（インスタンス）の作成",
+        "title": "構造体 (Struct) の値（インスタンス）の作成",
         "code": "package main\n\nimport \"fmt\"\n\ntype Point struct{ X, Y int }\n\ntype Circle struct {\n\tCenter Point\n\tRadius int\n\tLabel  string\n}\n\nfunc main() {\n\t// フィールド名を指定して初期化 (推奨)\n\tp1 := Point{X: 10, Y: 20}\n\tfmt.Printf(\"p1: %+v\\n\", p1)\n\n\t// 順序は任意\n\tp2 := Point{Y: 50, X: 30}\n\tfmt.Printf(\"p2: %+v\\n\", p2)\n\n\t// 一部フィールドのみ初期化 (Y はゼロ値 0)\n\tp3 := Point{X: 100}\n\tfmt.Printf(\"p3: %+v\\n\", p3)\n\n\t// ネストした構造体の初期化\n\tc1 := Circle{\n\t\tCenter: Point{X: 5, Y: 5},\n\t\tRadius: 10,\n\t\tLabel:  \"My Circle\", // 最後のカンマ推奨\n\t}\n\tfmt.Printf(\"c1: %+v\\n\", c1)\n}"
       },
       {
-        "title": "データ構造: 構造体 (Struct) のフィールドへのアクセス",
+        "title": "構造体 (Struct) のフィールドへのアクセス",
         "code": "package main\n\nimport \"fmt\"\n\ntype User struct {\n\tID       int\n\tUsername string\n\tIsActive bool\n\tprofile  string // 非公開フィールド\n}\n\nfunc main() {\n\tu1 := User{ID: 1, Username: \"gopher\", IsActive: true, profile: \"Go dev\"}\n\tfmt.Printf(\"初期状態 u1: %+v\\n\", u1)\n\n\t// フィールド値の読み取り\n\tuserID := u1.ID\n\tusername := u1.Username\n\tfmt.Printf(\"ID: %d, Username: %s\\n\", userID, username)\n\t// fmt.Println(u1.profile) // 同パッケージ内ならアクセス可\n\n\t// フィールド値の書き込み (代入)\n\tu1.Username = \"gopher_new\"\n\tu1.IsActive = false\n\tfmt.Printf(\"変更後 u1: %+v\\n\", u1)\n\n\t// ゼロ値の構造体へのアクセス\n\tvar u2 User\n\tfmt.Printf(\"\\nゼロ値 u2.ID: %d\\n\", u2.ID) // 0\n\tu2.ID = 2\n\tfmt.Printf(\"変更後 u2: %+v\\n\", u2)\n}"
       },
       {
-        "title": "データ構造: ネストした構造体 (Nested Structs)",
+        "title": "ネストした構造体 (Nested Structs)",
         "code": "package main\n\nimport \"fmt\"\n\ntype Department struct {\n\tID   int\n\tName string\n}\n\ntype Employee struct {\n\tEmployeeID int\n\tFullName   string\n\tDept       Department // Department 構造体をフィールドとして持つ\n\tManager    *Employee  // Employee へのポインタ\n}\n\nfunc main() {\n\tmanager := Employee{\n\t\tEmployeeID: 101, FullName: \"Alice Smith\",\n\t\tDept: Department{ID: 10, Name: \"開発部\"},\n\t}\n\n\temp1 := Employee{\n\t\tEmployeeID: 205, FullName: \"Bob Johnson\",\n\t\tDept: Department{ID: 10, Name: \"開発部\"},\n\t\tManager: &manager, // manager のポインタを設定\n\t}\n\n\tfmt.Printf(\"従業員1: %+v\\n\", emp1)\n\n\t// ネストしたフィールドへのアクセス\n\tdepartmentName := emp1.Dept.Name\n\tfmt.Printf(\"部署名: %s\\n\", departmentName)\n\n\tif emp1.Manager != nil {\n\t\tmanagerName := emp1.Manager.FullName // ポインタでも . でアクセス\n\t\tfmt.Printf(\"マネージャー名: %s\\n\", managerName)\n\t}\n}"
       },
       {
-        "title": "データ構造: 匿名構造体 (Anonymous Struct)",
+        "title": "匿名構造体 (Anonymous Struct)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 匿名構造体の作成と初期化\n\tpoint := struct {\n\t\tX int\n\t\tY int\n\t}{\n\t\tX: 10,\n\t\tY: 20,\n\t}\n\tfmt.Printf(\"point: %+v (%T)\\n\", point, point)\n\tfmt.Printf(\"point.X = %d\\n\", point.X)\n\n\t// 匿名構造体のスライス\n\tusers := []struct {\n\t\tID   int\n\t\tRole string\n\t}{\n\t\t{1, \"Admin\"},\n\t\t{2, \"Editor\"},\n\t}\n\tfmt.Println(\"\\n--- 匿名構造体スライス ---\")\n\tfor _, user := range users {\n\t\tfmt.Printf(\" ID:%d, Role:%s\\n\", user.ID, user.Role)\n\t}\n}"
       },
       {
-        "title": "データ構造: 構造体の埋め込み (Embedding / Anonymous Fields)",
+        "title": "構造体の埋め込み (Embedding / Anonymous Fields)",
         "code": "package main\n\nimport \"fmt\"\n\ntype Point struct {\n\tX, Y int\n}\n\nfunc (p Point) Display() {\n\tfmt.Printf(\"[%d, %d]\", p.X, p.Y)\n}\n\ntype Circle struct {\n\tPoint  // Point 型を匿名フィールドとして埋め込む\n\tRadius int\n}\n\nfunc (c Circle) Area() float64 {\n\treturn 3.14 * float64(c.Radius*c.Radius) // 簡略化\n}\n\nfunc main() {\n\tc1 := Circle{\n\t\tPoint:  Point{X: 10, Y: 20}, // 型名をフィールド名のように使う\n\t\tRadius: 5,\n\t}\n\tfmt.Printf(\"c1: %+v\\n\", c1)\n\n\t// 昇格したフィールドへのアクセス\n\tfmt.Printf(\"X座標 (c1.X): %d\\n\", c1.X) // c1.Point.X と書かずに済む\n\tfmt.Printf(\"半径 (c1.Radius): %d\\n\", c1.Radius)\n\n\t// 昇格したメソッドの呼び出し\n\tfmt.Print(\"座標表示 (c1.Display): \")\n\tc1.Display() // c1.Point.Display() と書かずに済む\n\tfmt.Println()\n\n\t// Circle 自身のメソッド\n\tfmt.Printf(\"面積 (c1.Area): %f\\n\", c1.Area())\n}"
       },
       {
-        "title": "データ構造: マップを使ったセット (Set) の実装 (map[T]bool)",
+        "title": "マップを使ったセット (Set) の実装 (map[T]bool)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// セットを作成 (map[string]bool を使用)\n\tfruitSet := make(map[string]bool)\n\n\t// 要素の追加 (キーに要素、値に true)\n\tfruitSet[\"apple\"] = true\n\tfruitSet[\"banana\"] = true\n\tfruitSet[\"orange\"] = true\n\tfruitSet[\"apple\"] = true // 重複は無視される (上書き)\n\tfmt.Printf(\"追加後: %v (len=%d)\\n\", fruitSet, len(fruitSet))\n\n\t// 要素の存在確認 (カンマOKイディオム)\n\tkey := \"banana\"\n\t_, exists := fruitSet[key]\n\tif exists { fmt.Printf(\"'%s' は存在する\\n\", key) }\n\n\tkey = \"grape\"\n\t_, exists = fruitSet[key]\n\tif !exists { fmt.Printf(\"'%s' は存在しない\\n\", key) }\n\n\t// 要素の削除\n\tdelete(fruitSet, \"orange\")\n\tfmt.Printf(\"削除後: %v (len=%d)\\n\", fruitSet, len(fruitSet))\n\n\t// セットの反復処理 (for range でキーを取得)\n\t// for element := range fruitSet { fmt.Println(element) }\n}"
       },
       {
-        "title": "データ構造: マップを使ったセットの実装 (map[T]struct{})",
+        "title": "マップを使ったセットの実装 (map[T]struct{})",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// セットを作成 (map[int]struct{} を使用)\n\tnumberSet := make(map[int]struct{})\n\n\t// 要素の追加 (値は空の構造体リテラル)\n\tnumberSet[1] = struct{}{}\n\tnumberSet[3] = struct{}{}\n\tnumberSet[5] = struct{}{}\n\tfmt.Printf(\"追加後: %v (len=%d)\\n\", numberSet, len(numberSet))\n\n\t// 要素の存在確認 (カンマOKイディオム)\n\tkey := 3\n\t_, exists := numberSet[key]\n\tif exists { fmt.Printf(\"'%d' は存在する\\n\", key) }\n\n\tkey = 4\n\t_, exists = numberSet[key]\n\tif !exists { fmt.Printf(\"'%d' は存在しない\\n\", key) }\n\n\t// 要素の削除\n\tdelete(numberSet, 5)\n\tfmt.Printf(\"削除後: %v (len=%d)\\n\", numberSet, len(numberSet))\n\n\t// 反復処理 (キーのみ取得)\n\t// for element := range numberSet { fmt.Println(element) }\n}"
       },
       {
-        "title": "データ構造: マップを使ったセットの集合演算",
+        "title": "マップを使ったセットの集合演算",
         "code": "package main\n\nimport \"fmt\"\n\n// セットの型定義 (map[string]struct{})\ntype StringSet map[string]struct{}\n\n// 和集合 (A ∪ B)\nfunc union(set1, set2 StringSet) StringSet {\n\tresult := make(StringSet)\n\tfor element := range set1 { // set1 の要素を追加\n\t\tresult[element] = struct{}{}\n\t}\n\tfor element := range set2 { // set2 の要素を追加 (重複は無視される)\n\t\tresult[element] = struct{}{}\n\t}\n\treturn result\n}\n\n// (積集合、差集合の実装は解説参照)\n\nfunc main() {\n\tsetA := StringSet{\"apple\": {}, \"banana\": {}, \"cherry\": {}}\n\tsetB := StringSet{\"banana\": {}, \"cherry\": {}, \"date\": {}}\n\n\tfmt.Printf(\"Set A: %v\\n\", setA)\n\tfmt.Printf(\"Set B: %v\\n\", setB)\n\n\t// 和集合の実行例\n\tunionSet := union(setA, setB)\n\tfmt.Printf(\"A ∪ B: %v\\n\", unionSet)\n}"
       },
       {
-        "title": "データ構造: 連結リスト (Linked List) - `container/list`",
+        "title": "連結リスト (Linked List) - `container/list`",
         "code": "package main\n\nimport (\n\t\"container/list\" // list パッケージ\n\t\"fmt\"\n)\n\nfunc main() {\n\t// 新しい空のリストを作成\n\tl := list.New()\n\n\t// 要素の追加\n\tl.PushBack(\"Banana\") // 末尾に追加\n\tl.PushBack(123)\n\tl.PushFront(\"Apple\") // 先頭に追加\n\n\t// リストの走査 (先頭から)\n\tfmt.Println(\"--- リスト要素 ---\")\n\tfor e := l.Front(); e != nil; e = e.Next() {\n\t\t// e.Value で値を取得 (any 型)\n\t\tfmt.Printf(\"値: %v (型: %T)\\n\", e.Value, e.Value)\n\t}\n\n\t// リストの長さ\n\tfmt.Printf(\"\\n長さ: %d\\n\", l.Len())\n}"
       },
       {
-        "title": "データ構造: 連結リスト (Linked List) の自作",
+        "title": "連結リスト (Linked List) の自作",
         "code": "package main\n\nimport \"fmt\"\n\n// 連結リストのノード\ntype Node struct {\n\tValue int\n\tNext  *Node // 次のノードへのポインタ\n}\n\nfunc main() {\n\t// リストの構築: 10 -> 20 -> 30\n\tnode1 := &Node{Value: 10}\n\tnode2 := &Node{Value: 20}\n\tnode3 := &Node{Value: 30}\n\tnode1.Next = node2\n\tnode2.Next = node3\n\thead := node1 // 先頭ノード\n\n\t// リストの走査と表示\n\tfmt.Print(\"List: [ \")\n\tsum := 0\n\tfor current := head; current != nil; current = current.Next {\n\t\tfmt.Printf(\"%d \", current.Value)\n\t\tsum += current.Value\n\t}\n\tfmt.Println(\"]\")\n\tfmt.Printf(\"合計: %d\\n\", sum)\n}"
       }
     ]
@@ -492,43 +492,43 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Methods",
     "codeExamples": [
       {
-        "title": "メソッド: 構造体 (Struct) に振る舞いを追加する",
+        "title": "構造体 (Struct) に振る舞いを追加する",
         "code": "package main\n\nimport \"fmt\"\n\ntype Rectangle struct {\n\tWidth, Height float64\n}\n\n// Area メソッド (値レシーバ)\nfunc (r Rectangle) Area() float64 {\n\treturn r.Width * r.Height\n}\n\n// Scale メソッド (ポインタレシーバ)\nfunc (r *Rectangle) Scale(factor float64) {\n\tif r == nil { return }\n\tr.Width *= factor  // 元の値を変更\n\tr.Height *= factor // 元の値を変更\n\tfmt.Printf(\"  (Scale内: W=%.1f, H=%.1f)\\n\", r.Width, r.Height)\n}\n\nfunc main() {\n\trect := Rectangle{Width: 10, Height: 5}\n\tfmt.Printf(\"初期状態: %+v\\n\", rect)\n\n\t// メソッド呼び出し (変数.メソッド名())\n\tarea := rect.Area() // rect がレシーバ (値渡し)\n\tfmt.Printf(\"面積: %.1f\\n\", area)\n\n\tfmt.Println(\"Scale(2) 呼び出し...\")\n\trect.Scale(2) // rect のアドレスがレシーバに渡される\n\tfmt.Printf(\"Scale後: %+v\\n\", rect) // rect の値が変更されている\n}"
       },
       {
-        "title": "メソッド: 構造体以外の型へのメソッド定義",
+        "title": "構造体以外の型へのメソッド定義",
         "code": "package main\n\nimport \"fmt\"\n\n// int を基にした新しい型 MyInt\ntype MyInt int\n\n// MyInt 型に対する IsEven メソッド (値レシーバ)\nfunc (m MyInt) IsEven() bool {\n\treturn m%2 == 0\n}\n\n// MyInt 型に対する Add メソッド (ポインタレシーバ)\nfunc (m *MyInt) Add(n MyInt) {\n\tif m == nil { return }\n\t*m += n // 元の値を変更\n}\n\nfunc main() {\n\tvar num1 MyInt = 10\n\tnum2 := MyInt(25)\n\n\t// IsEven メソッド呼び出し\n\tfmt.Printf(\"%d は偶数か？ %t\\n\", num1, num1.IsEven())\n\tfmt.Printf(\"%d は偶数か？ %t\\n\", num2, num2.IsEven())\n\n\t// Add メソッド呼び出し (ポインタレシーバ)\n\tfmt.Printf(\"Add(5) 前: %d\\n\", num1)\n\t(&num1).Add(5) // アドレスを渡して呼び出す\n\tfmt.Printf(\"Add(5) 後: %d\\n\", num1) // num1 の値が変更される\n\n\t// numPtr := &num2\n\t// numPtr.Add(10) // ポインタ変数経由でも呼び出せる\n}"
       },
       {
-        "title": "メソッド: 値レシーバ (Value Receiver)",
+        "title": "値レシーバ (Value Receiver)",
         "code": "package main\n\nimport \"fmt\"\n\ntype Point struct{ X, Y int }\n\n// Display メソッド (値レシーバ)\nfunc (p Point) Display() {\n\tfmt.Printf(\"[%d, %d]\", p.X, p.Y)\n\t// p.X = 999 // ここで変更しても呼び出し元には影響しない\n}\n\n// Shift メソッド (値レシーバ) - 呼び出し元の値は変更できない\nfunc (p Point) Shift(dx, dy int) {\n\tfmt.Printf(\"  (Shift内 変更前: %+v)\\n\", p)\n\tp.X += dx // コピーを変更\n\tp.Y += dy // コピーを変更\n\tfmt.Printf(\"  (Shift内 変更後: %+v)\\n\", p)\n}\n\nfunc main() {\n\tpt := Point{X: 10, Y: 20}\n\tfmt.Printf(\"初期状態: %+v\\n\", pt)\n\n\tfmt.Print(\"Display() 呼び出し: \")\n\tpt.Display() // pt のコピーが渡される\n\tfmt.Println()\n\tfmt.Printf(\"Display() 後: %+v (変更なし)\\n\", pt)\n\n\tfmt.Println(\"\\nShift(5, 5) 呼び出し...\")\n\tpt.Shift(5, 5) // pt のコピーが渡される\n\tfmt.Printf(\"Shift() 後: %+v (変更なし！)\\n\", pt)\n}"
       },
       {
-        "title": "メソッド: ポインタレシーバ (Pointer Receiver)",
+        "title": "ポインタレシーバ (Pointer Receiver)",
         "code": "package main\n\nimport \"fmt\"\n\ntype Point struct{ X, Y int }\n\n// Shift メソッド (ポインタレシーバ *Point)\nfunc (p *Point) Shift(dx, dy int) {\n\tif p == nil { // nil チェック推奨\n\t\tfmt.Println(\"nil レシーバです\")\n\t\treturn\n\t}\n\tfmt.Printf(\"  (Shift内 変更前: %+v)\\n\", *p)\n\tp.X += dx // ポインタ経由で元の値を変更\n\tp.Y += dy\n\tfmt.Printf(\"  (Shift内 変更後: %+v)\\n\", *p)\n}\n\nfunc main() {\n\tpt1 := Point{X: 10, Y: 20}\n\tfmt.Printf(\"初期状態 pt1: %+v\\n\", pt1)\n\n\tfmt.Println(\"\\nShift(5, 5) 呼び出し...\")\n\t// 値変数 pt1 でポインタレシーバメソッドを呼ぶ\n\t// Go が暗黙的にアドレス (&pt1) を渡す\n\tpt1.Shift(5, 5)\n\tfmt.Printf(\"Shift() 後の pt1: %+v (変更された！)\\n\", pt1)\n\n\t// var nilPtr *Point = nil\n\t// nilPtr.Shift(1, 1) // メソッド内で nil チェックがあれば panic しない\n}"
       },
       {
-        "title": "メソッド: レシーバ型の自動変換",
+        "title": "レシーバ型の自動変換",
         "code": "package main\n\nimport \"fmt\"\n\ntype Counter struct{ count int }\n\n// 値レシーバメソッド\nfunc (c Counter) Value() int {\n\tfmt.Println(\"  (Value() called)\")\n\treturn c.count\n}\n\n// ポインタレシーバメソッド\nfunc (c *Counter) Increment() {\n\tfmt.Println(\"  (Increment() called)\")\n\tif c == nil { return }\n\tc.count++\n}\n\nfunc main() {\n\tvar c1 Counter        // 値変数\n\tc2 := &Counter{count: 10} // ポインタ変数\n\n\tfmt.Println(\"--- 値変数 c1 で呼び出し ---\")\n\tfmt.Printf(\"c1.Value(): %d\\n\", c1.Value())     // 値 -> 値レシーバ (OK)\n\tc1.Increment()                             // 値 -> ポインタレシーバ (OK: &c1 が渡る)\n\tfmt.Printf(\"Increment() 後 c1.count: %d\\n\", c1.count)\n\n\tfmt.Println(\"\\n--- ポインタ変数 c2 で呼び出し ---\")\n\tfmt.Printf(\"c2.Value(): %d\\n\", c2.Value())     // ポインタ -> 値レシーバ (OK: *c2 が渡る)\n\tc2.Increment()                             // ポインタ -> ポインタレシーバ (OK)\n\tfmt.Printf(\"Increment() 後の c2.count: %d\\n\", c2.count)\n}"
       },
       {
-        "title": "メソッド: メソッド式 (Method Expression)",
+        "title": "メソッド式 (Method Expression)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct{ X, Y float64 }\n\n// Distance メソッド (値レシーバ)\nfunc (p Point) Distance(q Point) float64 {\n\tfmt.Printf(\"  (Distance: p=%+v, q=%+v)\\n\", p, q)\n\tdx := q.X - p.X\n\tdy := q.Y - p.Y\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp := Point{1, 2}\n\tq := Point{4, 6}\n\n\t// メソッド式: 型名.メソッド名\n\t// Point.Distance は func(Point, Point) float64 型の関数値\n\tdistanceFunc := Point.Distance\n\tfmt.Printf(\"メソッド式の型: %T\\n\", distanceFunc)\n\n\t// メソッド式を関数として呼び出す\n\t// 第1引数にレシーバ (p)、第2引数以降にメソッド引数 (q)\n\tdist := distanceFunc(p, q)\n\tfmt.Printf(\"distanceFunc(p, q) = %f\\n\", dist) // 5.0\n\n\t// 通常のメソッド呼び出し: p.Distance(q)\n}"
       },
       {
-        "title": "メソッド: メソッド式 (ポインタレシーバ)",
+        "title": "メソッド式 (ポインタレシーバ)",
         "code": "package main\n\nimport \"fmt\"\n\ntype Counter struct{ count int }\n\n// ポインタレシーバメソッド\nfunc (c *Counter) Increment() {\n\tif c == nil { return }\n\tc.count++\n}\n\nfunc main() {\n\tc := Counter{count: 5}\n\tcPtr := &c\n\n\t// ポインタレシーバメソッドのメソッド式を取得\n\t// (*Counter).Increment または Counter.Increment\n\tincrementFunc := (*Counter).Increment\n\tfmt.Printf(\"メソッド式の型: %T\\n\", incrementFunc) // func(*main.Counter)\n\n\t// メソッド式を関数として呼び出す\n\t// 第1引数にはレシーバのポインタ (*Counter) を渡す\n\tincrementFunc(&c) // 値 c のアドレスを渡す\n\tfmt.Printf(\"incrementFunc(&c) 後: c.count = %d\\n\", c.count) // 6\n\n\tincrementFunc(cPtr) // ポインタ変数 cPtr を渡す\n\tfmt.Printf(\"incrementFunc(cPtr) 後: c.count = %d\\n\", c.count) // 7\n\n\t// incrementFunc(c) // コンパイルエラー: 型が違う\n}"
       },
       {
-        "title": "メソッド: メソッド値 (Method Value)",
+        "title": "メソッド値 (Method Value)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct{ X, Y float64 }\n\n// Distance メソッド (値レシーバ)\nfunc (p Point) Distance(q Point) float64 {\n\tdx := q.X - p.X\n\tdy := q.Y - p.Y\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp := Point{1, 2}\n\tq := Point{4, 6}\n\n\t// メソッド値: 変数 p にバインドされた Distance メソッド\n\t// 型は func(Point) float64 (レシーバ引数なし)\n\tdistanceFromP := p.Distance\n\tfmt.Printf(\"メソッド値の型: %T\\n\", distanceFromP)\n\n\t// メソッド値を関数として呼び出す (引数は q のみ)\n\tdist := distanceFromP(q) // 実質的に p.Distance(q) が実行される\n\tfmt.Printf(\"distanceFromP(q) = %f\\n\", dist)\n}"
       },
       {
-        "title": "メソッド: メソッドチェーン (Method Chaining)",
+        "title": "メソッドチェーン (Method Chaining)",
         "code": "package main\n\nimport \"fmt\"\n\ntype StringBuilder struct {\n\tbuffer []byte\n}\n\n// Append は *StringBuilder を返し、チェーンを可能にする\nfunc (sb *StringBuilder) Append(s string) *StringBuilder {\n\tif sb == nil { return nil }\n\tsb.buffer = append(sb.buffer, s...)\n\treturn sb // レシーバ自身を返す\n}\n\n// String は最終結果を返す (チェーンの最後)\nfunc (sb *StringBuilder) String() string {\n\tif sb == nil { return \"\" }\n\treturn string(sb.buffer)\n}\n\nfunc main() {\n\tbuilder := &StringBuilder{} // ポインタで作成\n\n\t// メソッド呼び出しを . で繋げる\n\tresult := builder.Append(\"Hello\").Append(\", \").Append(\"World!\").String()\n\n\tfmt.Println(result) // Hello, World!\n}"
       },
       {
-        "title": "メソッド: メソッドチェーンとビルダーパターン",
+        "title": "メソッドチェーンとビルダーパターン",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"net/url\"\n)\n\n// HTTPリクエストビルダー\ntype RequestBuilder struct {\n\tmethod  string\n\turl     string\n\theaders map[string]string\n}\n\n// Method設定 (レシーバを返しチェーン可能)\nfunc (rb *RequestBuilder) Method(method string) *RequestBuilder {\n\tif rb == nil { return nil }\n\trb.method = method\n\treturn rb\n}\n\n// URL設定 (レシーバを返しチェーン可能)\nfunc (rb *RequestBuilder) URL(url string) *RequestBuilder {\n\tif rb == nil { return nil }\n\trb.url = url\n\treturn rb\n}\n// Header設定メソッド (同様に *RequestBuilder を返す)\nfunc (rb *RequestBuilder) Header(key, value string) *RequestBuilder {\n\tif rb == nil { return nil }\n\tif rb.headers == nil { rb.headers = make(map[string]string) }\n\trb.headers[key] = value\n\treturn rb\n}\n\n\n// Buildメソッド (最終オブジェクト生成)\nfunc (rb *RequestBuilder) Build() (*http.Request, error) {\n\tif rb == nil { return nil, fmt.Errorf(\"nil builder\") }\n\treq, err := http.NewRequest(rb.method, rb.url, nil) // Body は nil\n\tif err != nil { return nil, fmt.Errorf(\"request error: %w\", err) }\n\tfor key, value := range rb.headers {\n\t\treq.Header.Add(key, value)\n\t}\n\treturn req, nil\n}\n\nfunc main() {\n\t// メソッドチェーンでリクエスト構築\n\treq, err := (&RequestBuilder{}). // 初期化 (または New 関数を使う)\n\t\t\t\tMethod(\"GET\").\n\t\t\t\tURL(\"https://example.com/api\").\n\t\t\t\tHeader(\"Accept\", \"application/json\").\n\t\t\t\tBuild()\n\n\tif err != nil { fmt.Printf(\"エラー: %v\\n\", err); return }\n\n\tfmt.Printf(\"Method: %s, URL: %s\\n\", req.Method, req.URL)\n\tfmt.Printf(\"Header: %v\\n\", req.Header)\n}"
       },
       {
@@ -542,47 +542,47 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Interfaces",
     "codeExamples": [
       {
-        "title": "インターフェース: 振る舞いの契約を定義する",
-        "code": "package main\n\nimport \"fmt\"\n\n// Shape インターフェース: 振る舞いを定義\ntype Shape interface {\n\tArea() float64      // 面積を返すメソッド\n\tPerimeter() float64 // 周長を返すメソッド\n}\n\n// Shape インターフェース型の引数を受け取る関数\n// 具体的な型 (Rectangle, Circle 等) を知らなくても動作する\nfunc printShapeInfo(s Shape) {\n\tif s == nil {\n\t\tfmt.Println(\"図形が nil です\")\n\t\treturn\n\t}\n\tfmt.Printf(\"図形情報: %T\\n\", s) // 実行時の具体的な型が表示される\n\tfmt.Printf(\"  面積: %.2f\\n\", s.Area())      // インターフェースのメソッドを呼び出す\n\tfmt.Printf(\"  周長: %.2f\\n\", s.Perimeter()) // インターフェースのメソッドを呼び出す\n}\n\nfunc main() {\n\t// インターフェース型のゼロ値は nil\n\tvar s Shape\n\tfmt.Printf(\"初期状態 s: %v (%T)\\n\", s, s) // <nil> (<nil>)\n\t// printShapeInfo(s) // s が nil なので Area() 呼び出しで panic する\n\n\t// (次のセクションで具体的な型を Shape として使う例を示す)\n}"
+        "title": "振る舞いの契約を定義する",
+        "code": "package main\n\nimport \"fmt\"\n\n// Shape 振る舞いを定義\ntype Shape interface {\n\tArea() float64      // 面積を返すメソッド\n\tPerimeter() float64 // 周長を返すメソッド\n}\n\n// Shape インターフェース型の引数を受け取る関数\n// 具体的な型 (Rectangle, Circle 等) を知らなくても動作する\nfunc printShapeInfo(s Shape) {\n\tif s == nil {\n\t\tfmt.Println(\"図形が nil です\")\n\t\treturn\n\t}\n\tfmt.Printf(\"図形情報: %T\\n\", s) // 実行時の具体的な型が表示される\n\tfmt.Printf(\"  面積: %.2f\\n\", s.Area())      // インターフェースのメソッドを呼び出す\n\tfmt.Printf(\"  周長: %.2f\\n\", s.Perimeter()) // インターフェースのメソッドを呼び出す\n}\n\nfunc main() {\n\t// インターフェース型のゼロ値は nil\n\tvar s Shape\n\tfmt.Printf(\"初期状態 s: %v (%T)\\n\", s, s) // <nil> (<nil>)\n\t// printShapeInfo(s) // s が nil なので Area() 呼び出しで panic する\n\n\t// (次のセクションで具体的な型を Shape として使う例を示す)\n}"
       },
       {
-        "title": "インターフェース: インターフェースの実装 (暗黙的)",
+        "title": "インターフェースの実装 (暗黙的)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\n// インターフェース定義\ntype Shape interface {\n\tArea() float64\n\tPerimeter() float64\n}\n\n// 具体的な型: Rectangle\ntype Rectangle struct {\n\tWidth, Height float64\n}\n\n// Rectangle が Shape のメソッドを実装\nfunc (r Rectangle) Area() float64      { return r.Width * r.Height }\nfunc (r Rectangle) Perimeter() float64 { return 2 * (r.Width + r.Height) }\n\n// 具体的な型: Circle\ntype Circle struct {\n\tRadius float64\n}\n\n// Circle が Shape のメソッドを実装\nfunc (c Circle) Area() float64      { return math.Pi * c.Radius * c.Radius }\nfunc (c Circle) Perimeter() float64 { return 2 * math.Pi * c.Radius }\n\nfunc main() {\n\t// Rectangle と Circle は Shape のメソッドを全て持つので、\n\t// 暗黙的に Shape インターフェースを実装している\n\tvar s1 Shape = Rectangle{Width: 10, Height: 5}\n\tvar s2 Shape = Circle{Radius: 3}\n\n\tfmt.Printf(\"s1 (%T): Area=%.2f\\n\", s1, s1.Area())\n\tfmt.Printf(\"s2 (%T): Area=%.2f\\n\", s2, s2.Area())\n}"
       },
       {
-        "title": "インターフェース: インターフェースを使ったポリモーフィズム",
+        "title": "インターフェースを使ったポリモーフィズム",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\n// インターフェース定義\ntype Shape interface {\n\tArea() float64\n\tPerimeter() float64\n}\n\n// 具体的な型 Rectangle\ntype Rectangle struct{ Width, Height float64 }\nfunc (r Rectangle) Area() float64      { return r.Width * r.Height }\nfunc (r Rectangle) Perimeter() float64 { return 2 * (r.Width + r.Height) }\n\n// 具体的な型 Circle\ntype Circle struct{ Radius float64 }\nfunc (c Circle) Area() float64      { return math.Pi * c.Radius * c.Radius }\nfunc (c Circle) Perimeter() float64 { return 2 * math.Pi * c.Radius }\n\n// インターフェースを利用する関数\nfunc printShapeInfo(s Shape) {\n\tfmt.Printf(\"  図形:%T, 面積:%.2f, 周長:%.2f\\n\", s, s.Area(), s.Perimeter())\n}\n\nfunc main() {\n\trect := Rectangle{Width: 10, Height: 5}\n\tcirc := Circle{Radius: 3}\n\n\tfmt.Println(\"--- printShapeInfo 呼び出し ---\")\n\t// Shape を実装する具体的な型 (Rectangle, Circle) を渡せる\n\tprintShapeInfo(rect)\n\tprintShapeInfo(circ)\n\n\t// var s Shape = rect // インターフェース型変数にも代入可\n\t// s = circ\n\t// fmt.Println(s.Area())\n\n\t// shapes := []Shape{rect, circ} // インターフェース型スライスも可\n\t// fmt.Println(totalArea(shapes))\n}\n\n// func totalArea(shapes []Shape) float64 { ... } // (実装略)"
       },
       {
-        "title": "インターフェース: `nil` インターフェースと `nil` 値を持つインターフェース",
+        "title": "`nil` インターフェースと `nil` 値を持つインターフェース",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// nil ポインタ (*os.File) を error として返す関数\nfunc getNilPointerAsError() error {\n\tvar ptr *os.File = nil\n\t// 戻り値 error は (型=*os.File, 値=nil) となる\n\treturn ptr\n}\n\nfunc main() {\n\t// nil インターフェース (型=nil, 値=nil)\n\tvar err1 error\n\tfmt.Printf(\"err1: 型=%T, 値=%v\\n\", err1, err1)\n\tif err1 == nil { fmt.Println(\"err1 == nil は true\") }\n\n\tfmt.Println()\n\n\t// nil 値を持つインターフェース (型=*os.File, 値=nil)\n\terr2 := getNilPointerAsError()\n\tfmt.Printf(\"err2: 型=%T, 値=%v\\n\", err2, err2) // 型情報が表示される\n\tif err2 == nil {\n\t\tfmt.Println(\"err2 == nil は true\")\n\t} else {\n\t\t// 型情報を持つため、インターフェースとしては nil ではない\n\t\tfmt.Println(\"err2 == nil は false\")\n\t}\n\n\t// err2 は nil ではないが、値は nil なのでメソッド呼び出しは panic\n\t// err2.Error() // panic: runtime error: invalid memory address or nil pointer dereference\n}"
       },
       {
-        "title": "インターフェース: 型アサーション (Type Assertion)",
+        "title": "型アサーション (Type Assertion)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar i any // interface{} と同じ\n\n\ti = \"Hello\"\n\n\t// カンマOKイディオム (安全な方法)\n\tfmt.Println(\"--- カンマOKイディオム ---\")\n\ts2, ok1 := i.(string) // string かチェック\n\tif ok1 {\n\t\tfmt.Printf(\"i は string: \\\"%s\\\"\\n\", s2)\n\t} else {\n\t\tfmt.Println(\"i は string ではない\")\n\t}\n\n\tnum2, ok2 := i.(int) // int かチェック\n\tif ok2 {\n\t\tfmt.Printf(\"i は int: %d\\n\", num2)\n\t} else {\n\t\t// ok2 は false, num2 は int のゼロ値 0\n\t\tfmt.Printf(\"i は int ではない (ok=%t, value=%d)\\n\", ok2, num2)\n\t}\n\n\t// if 文の初期化と組み合わせるのが一般的\n\tfmt.Println(\"\\n--- if 文との組み合わせ ---\")\n\ti = 123 // i に int を代入\n\tif num, ok := i.(int); ok {\n\t\t// アサーション成功時のみ実行\n\t\tfmt.Printf(\"i は int で値は %d\\n\", num)\n\t} else {\n\t\tfmt.Println(\"i は int ではない\")\n\t}\n}"
       },
       {
-        "title": "インターフェース: 型スイッチ (Type Switch)",
+        "title": "型スイッチ (Type Switch)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Shape interface{ Area() float64 }\ntype Rectangle struct{ Width, Height float64 }\nfunc (r Rectangle) Area() float64 { return r.Width * r.Height }\ntype Circle struct{ Radius float64 }\nfunc (c Circle) Area() float64 { return math.Pi * c.Radius * c.Radius }\n\n// 型スイッチを使う関数\nfunc describeShape(s Shape) {\n\tfmt.Printf(\"入力: %v, \", s)\n\tswitch v := s.(type) { // 型スイッチ構文\n\tcase Rectangle:\n\t\t// v は Rectangle 型\n\t\tfmt.Printf(\"長方形 (W:%.1f, H:%.1f), 面積:%.2f\\n\", v.Width, v.Height, v.Area())\n\tcase Circle:\n\t\t// v は Circle 型\n\t\tfmt.Printf(\"円 (R:%.1f), 面積:%.2f\\n\", v.Radius, v.Area())\n\tcase nil:\n\t\tfmt.Println(\"nil\")\n\tdefault:\n\t\t// v は元の Shape 型\n\t\tfmt.Printf(\"未知の図形 (%T), 面積:%.2f\\n\", v, v.Area())\n\t}\n}\n\nfunc main() {\n\tvar s Shape // nil\n\tdescribeShape(s)\n\n\ts = Rectangle{5, 4}\n\tdescribeShape(s)\n\n\ts = Circle{2.5}\n\tdescribeShape(s)\n}"
       },
       {
-        "title": "インターフェース: 空インターフェース (`interface{}` / `any`)",
+        "title": "空インターフェース (`interface{}` / `any`)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// any 型 (interface{} と同じ) の変数\n\tvar value any\n\n\t// 様々な型の値を代入可能\n\tvalue = 42\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = \"Hello\"\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = 3.14\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = true\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = []int{1, 2}\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = nil\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n}"
       },
       {
-        "title": "インターフェース: 空インターフェースと型アサーション",
+        "title": "空インターフェースと型アサーション",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar data any // 空インターフェース\n\n\tdata = \"Hello\"\n\n\t// カンマOKイディオムで string 型かチェック\n\tstrValue, ok := data.(string)\n\tif ok {\n\t\tfmt.Printf(\"string として取得成功: \\\"%s\\\"\\n\", strValue)\n\t} else {\n\t\tfmt.Println(\"string ではない\")\n\t}\n\n\t// カンマOKイディオムで int 型かチェック\n\tintValue, ok := data.(int)\n\tif ok {\n\t\tfmt.Printf(\"int として取得成功: %d\\n\", intValue)\n\t} else {\n\t\t// data は string なので失敗 (ok=false, intValue=0)\n\t\tfmt.Printf(\"int ではない (ok=%t, zeroValue=%d)\\n\", ok, intValue)\n\t}\n\n\t// パニックする可能性のある形式 (非推奨)\n\t// s := data.(string) // もし data が string でなければ panic\n}"
       },
       {
-        "title": "インターフェース: 空インターフェースと型スイッチ",
+        "title": "空インターフェースと型スイッチ",
         "code": "package main\n\nimport \"fmt\"\n\n// any 型の値を受け取り、型に応じて処理\nfunc processAnything(value any) {\n\tfmt.Printf(\"入力: %v, \", value)\n\tswitch v := value.(type) { // 型スイッチ\n\tcase int:\n\t\tfmt.Printf(\"整数: %d\\n\", v)\n\tcase string:\n\t\tfmt.Printf(\"文字列: %s\\n\", v)\n\tcase bool:\n\t\tfmt.Printf(\"真偽値: %t\\n\", v)\n\tcase nil:\n\t\tfmt.Println(\"nil\")\n\tdefault:\n\t\tfmt.Printf(\"その他 (%T)\\n\", v)\n\t}\n}\n\nfunc main() {\n\tprocessAnything(100)\n\tprocessAnything(\"Go\")\n\tprocessAnything(true)\n\tprocessAnything(nil)\n\tprocessAnything(1.23) // default\n}"
       },
       {
-        "title": "インターフェース: 空インターフェース (`any`) の一般的な使い道",
+        "title": "空インターフェース (`any`) の一般的な使い道",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// any 型のスライス (異なる型を混在可能)\n\tmixedSlice := []any{\n\t\t42,\n\t\t\"world\",\n\t\tfalse,\n\t\tstruct{ Name string }{\"Gopher\"},\n\t\tnil,\n\t}\n\n\t// 型スイッチで実際の型を判別して処理\n\tfor i, item := range mixedSlice {\n\t\tfmt.Printf(\"Index %d: \", i)\n\t\tswitch v := item.(type) {\n\t\tcase int:\n\t\t\tfmt.Printf(\"整数 %d\\n\", v)\n\t\tcase string:\n\t\t\tfmt.Printf(\"文字列 \\\"%s\\\"\\n\", v)\n\t\tcase bool:\n\t\t\tfmt.Printf(\"真偽値 %t\\n\", v)\n\t\tdefault:\n\t\t\tfmt.Printf(\"その他 %T (%v)\\n\", v, v)\n\t\t}\n\t}\n}"
       },
       {
-        "title": "インターフェース: インターフェースの組み合わせ (コンポジション)",
+        "title": "インターフェースの組み合わせ (コンポジション)",
         "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\" // Reader, Writer, ReadWriter など\n)\n\n// io パッケージのインターフェース定義 (例)\n// type Reader interface { Read(p []byte) (n int, err error) }\n// type Writer interface { Write(p []byte) (n int, err error) }\n// type ReadWriter interface {\n//     Reader // Reader インターフェースを埋め込み\n//     Writer // Writer インターフェースを埋め込み\n// }\n\nfunc main() {\n\tvar buffer bytes.Buffer // Read と Write メソッドを持つ\n\n\t// buffer は Writer を満たす\n\tvar writer io.Writer = &buffer\n\twriter.Write([]byte(\"Data \"))\n\tfmt.Printf(\"Writer (%T): OK\\n\", writer)\n\n\t// buffer は Reader を満たす\n\tvar reader io.Reader = &buffer\n\t// reader.Write(...) // エラー: Reader に Write はない\n\tfmt.Printf(\"Reader (%T): OK\\n\", reader)\n\n\t// buffer は Reader と Writer を両方満たすので、\n\t// それらを埋め込んだ ReadWriter も満たす\n\tvar readWriter io.ReadWriter = &buffer\n\treadWriter.Write([]byte(\"More\"))\n\tbuf := make([]byte, 10)\n\tn, _ := readWriter.Read(buf)\n\tfmt.Printf(\"ReadWriter (%T): Read '%s'\\n\", readWriter, string(buf[:n]))\n}"
       },
       {
@@ -610,19 +610,19 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
         "code": "package main\n\nimport (\n\t\"fmt\"\n)\n\ntype MyError struct{ Message string }\nfunc (e *MyError) Error() string { return e.Message }\n\n// 悪い例: 成功時に *MyError 型の nil ポインタを返す\nfunc processDataBad(fail bool) error {\n\tif fail { return &MyError{\"失敗\"} }\n\tvar errPtr *MyError = nil\n\treturn errPtr // (型=*main.MyError, 値=nil) の error が返る\n}\n\n// 良い例: 成功時に明示的に nil を返す\nfunc processDataGood(fail bool) error {\n\tif fail { return &MyError{\"失敗\"} }\n\treturn nil // (型=nil, 値=nil) の error が返る\n}\n\nfunc main() {\n\tfmt.Println(\"--- 悪い例 ---\")\n\terrBad := processDataBad(false) // 成功のはずが...\n\tfmt.Printf(\"errBad: (%T, %v)\\n\", errBad, errBad)\n\tif errBad != nil {\n\t\t// 型情報を持つため nil ではないと判定される！\n\t\tfmt.Println(\" エラー発生と誤判定:\", errBad)\n\t}\n\n\tfmt.Println(\"\\n--- 良い例 ---\")\n\terrGood := processDataGood(false) // 成功\n\tfmt.Printf(\"errGood: (%T, %v)\\n\", errGood, errGood)\n\tif errGood != nil {\n\t\tfmt.Println(\" エラー発生:\", errGood)\n\t} else {\n\t\t// 正しく nil と判定される\n\t\tfmt.Println(\" 処理成功\")\n\t}\n}"
       },
       {
-        "title": "インターフェース: ジェネリクスの型制約としての利用",
+        "title": "ジェネリクスの型制約としての利用",
         "code": "package main\n\nimport \"fmt\"\n\n// 型リストによる制約: int または float64 を許容\ntype Number interface {\n\tint | float64\n\t// ~int | ~float64 のように ~ を付けると基底型が int/float64 の型も許容\n}\n\n// ジェネリック関数: Number 制約を持つ型 T を受け取る\nfunc Double[T Number](value T) T {\n\t// T は int か float64 なので * 2 が可能\n\treturn value * 2\n}\n\n// 比較可能な型を制約する組み込みの comparable\nfunc AreEqual[T comparable](a, b T) bool {\n\treturn a == b\n}\n\nfunc main() {\n\tfmt.Println(\"Double(5):\", Double(5))       // T=int\n\tfmt.Println(\"Double(3.14):\", Double(3.14)) // T=float64\n\t// Double(\"hello\") // エラー: string は Number 制約を満たさない\n\n\tfmt.Println(\"AreEqual(1, 1):\", AreEqual(1, 1)) // T=int\n\t// AreEqual([]int{1}, []int{1}) // エラー: スライスは比較不可\n}"
       },
       {
-        "title": "インターフェース: 制約付きジェネリック関数",
-        "code": "package main\n\nimport \"fmt\"\n\n// 型制約インターフェース: int または float64\ntype Number interface {\n\tint | float64\n}\n\n// ジェネリック関数: Number 制約を持つ型 T のスライスの合計を計算\nfunc SumNumbers[T Number](values []T) T {\n\tvar sum T // T のゼロ値で初期化\n\tfor _, v := range values {\n\t\tsum += v // + 演算子が使えることが保証される\n\t}\n\treturn sum\n}\n\nfunc main() {\n\tintSlice := []int{1, 2, 3}\n\tfloatSlice := []float64{1.1, 2.2}\n\n\t// T が int と推論される\n\tintSum := SumNumbers(intSlice)\n\tfmt.Printf(\"Sum(%v) = %v (%T)\\n\", intSlice, intSum, intSum)\n\n\t// T が float64 と推論される\n\tfloatSum := SumNumbers(floatSlice)\n\tfmt.Printf(\"Sum(%v) = %v (%T)\\n\", floatSlice, floatSum, floatSum)\n\n\t// SumNumbers([]string{\"a\"}) // エラー: string は Number 制約を満たさない\n}"
+        "title": "制約付きジェネリック関数",
+        "code": "package main\n\nimport \"fmt\"\n\n// 型制約int または float64\ntype Number interface {\n\tint | float64\n}\n\n// ジェネリック関数: Number 制約を持つ型 T のスライスの合計を計算\nfunc SumNumbers[T Number](values []T) T {\n\tvar sum T // T のゼロ値で初期化\n\tfor _, v := range values {\n\t\tsum += v // + 演算子が使えることが保証される\n\t}\n\treturn sum\n}\n\nfunc main() {\n\tintSlice := []int{1, 2, 3}\n\tfloatSlice := []float64{1.1, 2.2}\n\n\t// T が int と推論される\n\tintSum := SumNumbers(intSlice)\n\tfmt.Printf(\"Sum(%v) = %v (%T)\\n\", intSlice, intSum, intSum)\n\n\t// T が float64 と推論される\n\tfloatSum := SumNumbers(floatSlice)\n\tfmt.Printf(\"Sum(%v) = %v (%T)\\n\", floatSlice, floatSum, floatSum)\n\n\t// SumNumbers([]string{\"a\"}) // エラー: string は Number 制約を満たさない\n}"
       },
       {
-        "title": "インターフェース: ジェネリクスのメソッド制約",
-        "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n)\n\n// 制約インターフェース: String() メソッドを持つ\ntype Stringer interface {\n\tString() string\n}\n\n// ジェネリック関数: Stringer 制約を持つ T のスライスを連結\nfunc JoinToStrings[T Stringer](values []T, sep string) string {\n\tvar builder strings.Builder\n\tfor i, v := range values {\n\t\tif i > 0 { builder.WriteString(sep) }\n\t\tbuilder.WriteString(v.String()) // v は String() を持つことが保証される\n\t}\n\treturn builder.String()\n}\n\n// Stringer を実装する型 (例)\ntype MyInt int\nfunc (i MyInt) String() string { return \"MyInt:\" + strconv.Itoa(int(i)) }\n\nfunc main() {\n\tmyInts := []MyInt{1, 2, 3}\n\n\t// ジェネリック関数呼び出し (T は MyInt と推論される)\n\tresult := JoinToStrings(myInts, \", \")\n\tfmt.Println(result) // MyInt:1, MyInt:2, MyInt:3\n\n\t// plainInts := []int{4, 5}\n\t// JoinToStrings(plainInts, \"-\") // エラー: int は Stringer ではない\n}"
+        "title": "ジェネリクスのメソッド制約",
+        "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n)\n\n// 制約String() メソッドを持つ\ntype Stringer interface {\n\tString() string\n}\n\n// ジェネリック関数: Stringer 制約を持つ T のスライスを連結\nfunc JoinToStrings[T Stringer](values []T, sep string) string {\n\tvar builder strings.Builder\n\tfor i, v := range values {\n\t\tif i > 0 { builder.WriteString(sep) }\n\t\tbuilder.WriteString(v.String()) // v は String() を持つことが保証される\n\t}\n\treturn builder.String()\n}\n\n// Stringer を実装する型 (例)\ntype MyInt int\nfunc (i MyInt) String() string { return \"MyInt:\" + strconv.Itoa(int(i)) }\n\nfunc main() {\n\tmyInts := []MyInt{1, 2, 3}\n\n\t// ジェネリック関数呼び出し (T は MyInt と推論される)\n\tresult := JoinToStrings(myInts, \", \")\n\tfmt.Println(result) // MyInt:1, MyInt:2, MyInt:3\n\n\t// plainInts := []int{4, 5}\n\t// JoinToStrings(plainInts, \"-\") // エラー: int は Stringer ではない\n}"
       },
       {
-        "title": "インターフェース: ジェネリックデータ構造",
+        "title": "ジェネリックデータ構造",
         "code": "package main\n\nimport \"fmt\"\n\n// ジェネリック型 Stack[T any]: 任意の型 T のスタック\ntype Stack[T any] struct {\n\titems []T\n}\n\n// Push メソッド (レシーバにも型パラメータ [T] が必要)\nfunc (s *Stack[T]) Push(item T) {\n\tif s == nil { return }\n\ts.items = append(s.items, item)\n}\n\n// Pop メソッド\nfunc (s *Stack[T]) Pop() (T, bool) {\n\tif s == nil || len(s.items) == 0 {\n\t\tvar zero T // T のゼロ値を返す\n\t\treturn zero, false\n\t}\n\tlastIndex := len(s.items) - 1\n\titem := s.items[lastIndex]\n\ts.items = s.items[:lastIndex]\n\treturn item, true\n}\n\nfunc main() {\n\t// int 型のスタックをインスタンス化\n\tintStack := Stack[int]{}\n\n\tintStack.Push(10)\n\tintStack.Push(20)\n\tfmt.Printf(\"Push 後 Size: %d\\n\", len(intStack.items)) // (Size() メソッドは省略)\n\n\tval, ok := intStack.Pop()\n\tif ok { fmt.Printf(\"Pop: %d\\n\", val) } // 20\n}"
       }
     ]
@@ -632,55 +632,55 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Packages",
     "codeExamples": [
       {
-        "title": "パッケージ: コードの構成単位 `package` 宣言",
+        "title": "コードの構成単位 `package` 宣言",
         "code": "// ファイルの先頭で package main を宣言\npackage main\n\nimport \"fmt\"\n// import \"myutils\" // 他のパッケージもインポート可\n\n// main 関数 (プログラムのエントリーポイント)\nfunc main() {\n\tfmt.Println(\"This is the main package.\")\n\t// msg := myutils.GetMessage() // ライブラリ関数呼び出し例\n\t// fmt.Println(msg)\n}\n\n// このファイルは go run や go build で実行可能"
       },
       {
-        "title": "パッケージ: エクスポートされる識別子 vs エクスポートされない識別子",
+        "title": "エクスポートされる識別子 vs エクスポートされない識別子",
         "code": "// calculator パッケージ\npackage calculator\n\nimport \"fmt\"\n\n// 公開される定数 (大文字始まり)\nconst MaxValue = 1000\n\n// 公開される関数\nfunc Add(a, b int) int {\n\tlogOperation(\"Add\", a, b) // 非公開関数を呼ぶ\n\treturn a + b\n}\n\n// 公開される構造体\ntype Result struct {\n\tOperation string // 公開フィールド\n\tValue     int    // 公開フィールド\n\tcomment   string // 非公開フィールド\n}\n\n// 非公開の関数 (小文字始まり)\nfunc logOperation(opName string, a, b int) {\n\tfmt.Printf(\"  [internal log] %s(%d, %d)\\n\", opName, a, b)\n}\n\n// 公開される関数 (非公開フィールドを扱う)\nfunc NewResult(op string, val int) *Result {\n\treturn &Result{\n\t\tOperation: op,\n\t\tValue:     val,\n\t\tcomment:   \"完了\", // パッケージ内から非公開フィールドにアクセス\n\t}\n}\n\n// (main パッケージからの呼び出し例は解説参照)"
       },
       {
-        "title": "パッケージ: ドキュメンテーションコメント",
+        "title": "ドキュメンテーションコメント",
         "code": "// Package mypackage は、文字列操作ユーティリティを提供します。(パッケージコメント例)\npackage mypackage\n\nimport (\n\t\"fmt\"\n\t\"unicode/utf8\"\n)\n\n// DefaultSeparator はデフォルトの区切り文字を表します。\nconst DefaultSeparator = \",\"\n\n// ErrorCount は処理中に発生したエラーの数を記録します。\nvar ErrorCount int\n\n// Processor は文字列を処理するインターフェースです。\ntype Processor interface {\n\tProcess(s string) (string, error)\n}\n\n// Reverse は与えられた文字列を逆順にして返します。\n// マルチバイト文字にも対応しています。\nfunc Reverse(s string) string {\n\trunes := []rune(s)\n\tn := len(runes)\n\tfor i := 0; i < n/2; i++ {\n\t\trunes[i], runes[n-1-i] = runes[n-1-i], runes[i]\n\t}\n\treturn string(runes)\n}\n\n// CountRunes は文字列の文字数 (Rune の数) を返します。\nfunc CountRunes(s string) int {\n\treturn countRunesInternal(s) // 非公開関数を呼ぶ\n}\n\n// countRunesInternal は非公開関数 (コメントは必須ではない)\nfunc countRunesInternal(s string) int {\n\treturn utf8.RuneCountInString(s)\n}"
       },
       {
-        "title": "\"パッケージ: 単一および複数のインポート\"",
+        "title": "\"単一および複数のインポート\"",
         "code": "import \"fmt\""
       },
       {
-        "title": "パッケージ: インポート時のエイリアス (別名)",
+        "title": "インポート時のエイリアス (別名)",
         "code": "package main\n\n// fmt パッケージを f というエイリアスでインポート\nimport f \"fmt\"\nimport \"strings\" // 比較用\n\nfunc main() {\n\t// エイリアス f を使って fmt の関数を呼び出す\n\tf.Println(\"エイリアスを使って出力\")\n\n\ts := strings.ToUpper(\"hello\")\n\tf.Println(s) // ここでも f を使う\n}"
       },
       {
-        "title": "パッケージ: ドットインポート (`.`) - 非推奨",
+        "title": "ドットインポート (`.`) - 非推奨",
         "code": "package main\n\n// fmt と math をドットインポート (非推奨)\nimport (\n\t. \"fmt\"\n\t. \"math\"\n)\n\nfunc main() {\n\t// fmt.Println ではなく Println で呼び出せる\n\t// しかし、これが fmt.Println なのか、\n\t// main パッケージの Println なのか不明瞭になる\n\tPrintln(\"Hello\") // fmt.Println が呼ばれる\n\n\t// math.Pi ではなく Pi で参照できる\n\tPrintf(\"円周率: %f\\n\", Pi) // fmt.Printf も同様\n\n\t// math.Sqrt ではなく Sqrt で参照できる\n\tPrintf(\"平方根: %f\\n\", Sqrt(2))\n\n\t// もし main にも Pi があったら衝突する\n\t// var Pi = 999 // エラーになる可能性\n}"
       },
       {
-        "title": "パッケージ: ブランクインポート (`_`) と副作用",
+        "title": "ブランクインポート (`_`) と副作用",
         "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"image\"\n\t// ★ PNG フォーマットを扱えるようにブランクインポート\n\t// この行がないと image.Decode は PNG を認識できない\n\t_ \"image/png\"\n\t\"os\"\n)\n\n// 簡単な PNG データ (1x1 透明ピクセル)\nvar pngData = []byte{ /* ... (バイトデータは省略) ... */\n\t0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,\n\t0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,\n\t0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,\n\t0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,\n\t0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,\n\t0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,\n}\n\nfunc main() {\n\t// _ \"image/png\" がインポートされているため PNG を認識可能\n\timg, formatName, err := image.Decode(bytes.NewReader(pngData))\n\tif err != nil {\n\t\tfmt.Fprintf(os.Stderr, \"デコードエラー: %v\\n\", err)\n\t\treturn\n\t}\n\tfmt.Printf(\"フォーマット: %s, サイズ: %dx%d\\n\", formatName, img.Bounds().Dx(), img.Bounds().Dy())\n}"
       },
       {
-        "title": "パッケージ: インポートパスと Go Modules",
+        "title": "インポートパスと Go Modules",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t// 正しいインポートパス (モジュールパスからの絶対パス)\n\t\"mycompany.com/myproject/internal/helper\"\n\n\t// 間違ったインポートパス (相対パスは不可)\n\t// \"./internal/helper\"\n\t// \"../myproject/internal/helper\"\n)\n\nfunc main() {\n\tfmt.Println(\"Main started.\")\n\tmessage := helper.GetHelperMessage() // 正しくインポートされた関数を呼び出す\n\tfmt.Println(message)\n}\n\n// --- internal/helper/helper.go ---\n// package helper\n// func GetHelperMessage() string { return \"Helper message\" }\n\n// --- go.mod ---\n// module mycompany.com/myproject\n// go 1.20"
       },
       {
-        "title": "パッケージ: パッケージ変数 (Package Variables)",
+        "title": "パッケージ変数 (Package Variables)",
         "code": "// config パッケージ (例)\npackage config\n\nimport \"fmt\"\n\n// --- パッケージ変数 ---\n\n// 公開されるパッケージ変数\nvar DefaultPort int = 8080\n\n// 非公開パッケージ変数\nvar apiKey string = \"initial-key\"\nvar accessCount int // ゼロ値 0\n\n// --- 関数 ---\n\n// 非公開 apiKey を取得する公開関数\nfunc GetAPIKey() string {\n\taccessCount++\n\tfmt.Printf(\"  (GetAPIKey: アクセス %d 回目)\\n\", accessCount)\n\treturn apiKey\n}\n\n// 非公開 apiKey を設定する公開関数\nfunc SetAPIKey(newKey string) {\n\tfmt.Printf(\"  (SetAPIKey: '%s' に変更)\\n\", newKey)\n\tapiKey = newKey\n}\n\n// アクセスカウントを取得する公開関数\nfunc GetAccessCount() int {\n\treturn accessCount\n}\n\n// --- main パッケージからの利用例 (解説参照) ---\n// import \"myproject/config\"\n// func main() {\n//     fmt.Println(config.DefaultPort) // OK\n//     key := config.GetAPIKey()      // OK\n//     config.SetAPIKey(\"new\")      // OK\n//     // fmt.Println(config.apiKey) // エラー (非公開)\n// }"
       },
       {
-        "title": "パッケージ: 初期化関数 `init()`",
+        "title": "初期化関数 `init()`",
         "code": "// --- パッケージ a (例: a/a.go) ---\npackage a\n\nimport \"fmt\"\n\nvar VarA = \"Var A initialized\"\n\nfunc init() {\n\tfmt.Println(\"Package a: init()\")\n\tVarA = \"Var A modified in init\"\n}\nfunc FuncA() { fmt.Println(\"Package a: FuncA()\") }\n\n// --- main パッケージ (例: main.go) ---\npackage main\n\nimport (\n\t\"fmt\"\n\t\"myproject/a\" // パスは例\n)\n\nvar VarMain = \"Var Main initialized\"\n\nfunc init() {\n\tfmt.Println(\"Package main: init()\")\n}\n\nfunc main() {\n\tfmt.Println(\"--- main() started ---\")\n\tfmt.Println(\"main: VarA:\", a.VarA) // a の init() 実行後の値\n\ta.FuncA()\n\tfmt.Println(\"main: VarMain:\", VarMain)\n\tfmt.Println(\"--- main() finished ---\")\n}\n\n/* 実行結果 (おおよその順序):\nPackage a: init()\nPackage main: init()\n--- main() started ---\nmain: VarA: Var A modified in init\nPackage a: FuncA()\nmain: VarMain: Var Main initialized\n--- main() finished ---\n*/"
       },
       {
-        "title": "パッケージ: 複数の `init()` 関数",
+        "title": "複数の `init()` 関数",
         "code": "// --- パッケージ mypkg (例: mypkg/a.go) ---\npackage mypkg\nimport \"fmt\"\nfunc init() { fmt.Println(\"mypkg/a.go: init()\") }\nfunc FuncA() { fmt.Println(\"mypkg/a.go: FuncA()\") }\n\n// --- パッケージ mypkg (例: mypkg/b.go) ---\n// (同じパッケージ内に別のファイル)\npackage mypkg\nimport \"fmt\"\nvar VarB = initializeVarB() // 変数初期化は init より先\nfunc initializeVarB() string { fmt.Println(\"mypkg/b.go: VarB init\"); return \"VarB\" }\nfunc init() { fmt.Println(\"mypkg/b.go: init()\") }\nfunc FuncB() { fmt.Println(\"mypkg/b.go: FuncB()\") }\n\n// --- main パッケージ (例: main.go) ---\npackage main\nimport (\n\t\"fmt\"\n\t\"myproject/mypkg\" // パスは例\n)\nfunc main() {\n\tfmt.Println(\"main() 開始\")\n\tmypkg.FuncA()\n\tmypkg.FuncB()\n\tfmt.Println(\"main() 終了\")\n}\n\n/* 実行結果例 (mypkg 内の init 順序は不定):\nmypkg/b.go: VarB init\nmypkg/a.go: init()\nmypkg/b.go: init()\nmain() 開始\nmypkg/a.go: FuncA()\nmypkg/b.go: FuncB()\nmain() 終了\n*/"
       },
       {
-        "title": "パッケージ: Go Modules によるプロジェクト初期化 (`go mod init`)",
+        "title": "Go Modules によるプロジェクト初期化 (`go mod init`)",
         "code": "// 4. main.go などを作成して開発開始\npackage main\nimport \"fmt\"\nfunc main() { fmt.Println(\"Hello Modules!\") }\n\n// 5. go run main.go や go build で実行"
       },
       {
-        "title": "パッケージ: `go.mod` ファイルの構造 (Go Modules)",
+        "title": "`go.mod` ファイルの構造 (Go Modules)",
         "code": ".mod\n// モジュールパス (必須、通常はリポジトリパス)\nmodule example.com/mymodule\n\n// Go の最小バージョン (必須)\ngo 1.20\n\n// 依存モジュールとそのバージョン (go get などで自動管理)\nrequire (\n\tgithub.com/google/uuid v1.3.0\n\tgolang.org/x/exp v0.0.0-20230310184433-ae3f4189d583\n\tgopkg.in/yaml.v2 v2.4.0 // indirect (間接的な依存)\n)\n\n// 特定バージョンの除外 (オプション)\nexclude github.com/unstable/dependency v0.5.1\n\n// 依存の置き換え (オプション、ローカル開発などで使用)\nreplace example.com/mylibrary => ../mylibrary\n\n// 公開済みバージョンの取り消し (オプション、モジュール作者が使用)\nretract (\n\tv0.1.0 // バグがあったバージョンなど\n\t[v0.1.5, v0.1.9]\n)",
         "description": "このセクションにはGoのコード例はありません。\n依存関係管理コマンドはターミナル (bashなど) で実行します。"
       },
@@ -709,7 +709,7 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"net/http\" // HTTP パッケージ\n)\n\n// ルート (\"/\") ハンドラ関数\nfunc rootHandler(w http.ResponseWriter, r *http.Request) {\n\tif r.URL.Path != \"/\" {\n\t\thttp.NotFound(w, r)\n\t\treturn\n\t}\n\tfmt.Fprint(w, \"Welcome!\") // レスポンス書き込み\n}\n\n// /hello ハンドラ関数\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n\tfmt.Fprint(w, \"Hello!\")\n}\n\nfunc main() {\n\t// ハンドラの登録\n\thttp.HandleFunc(\"/\", rootHandler)\n\thttp.HandleFunc(\"/hello\", helloHandler)\n\n\t// サーバーの起動\n\tport := \":8080\"\n\tfmt.Printf(\"Server listening on port %s\\n\", port)\n\tlog.Fatal(http.ListenAndServe(port, nil)) // エラーなら Fatal\n}"
       },
       {
-        "title": "パッケージ: `internal` パッケージによる内部実装の隠蔽",
+        "title": "`internal` パッケージによる内部実装の隠蔽",
         "code": "// --- internal/config/config.go ---\npackage config\n\n// internal 以下にあるパッケージ\n\n// Load は設定をロードする (エクスポートされている)\nfunc Load() string {\n\treturn \"Loaded Config from internal/config\"\n}\n\n// --- cmd/myapp/main.go (internal の親のサブツリー内) ---\npackage main\n\nimport (\n\t\"example.com/myproject/internal/config\" // OK: インポート可\n\t\"fmt\"\n)\n\nfunc main() {\n\tcfg := config.Load() // internal の関数を呼び出し\n\tfmt.Println(cfg)\n}\n\n// --- anotherproject/main.go (外部プロジェクト) ---\n/*\npackage main\n\nimport (\n\t\"fmt\"\n\t// \"example.com/myproject/internal/config\" // コンパイルエラー!\n)\n\nfunc main() {\n\t// cfg := config.Load() // エラー\n\tfmt.Println(\"Cannot import internal package\")\n}\n// エラー例: use of internal package example.com/myproject/internal/config not allowed\n*/"
       }
     ]
@@ -719,79 +719,79 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Error Handling",
     "codeExamples": [
       {
-        "title": "エラー処理: `error` インターフェース",
+        "title": "`error` インターフェース",
         "code": "package main\n\nimport \"fmt\"\n\n// 独自のエラー型\ntype MyError struct {\n\tOperation string\n\tCode      int\n\tMessage   string\n}\n\n// Error() メソッドを実装し、error インターフェースを満たす\nfunc (e *MyError) Error() string {\n\treturn fmt.Sprintf(\"Op:'%s' Code:%d Msg:'%s'\", e.Operation, e.Code, e.Message)\n}\n\n// エラーを返す可能性のある関数\nfunc performOperation(fail bool) error { // 戻り値は error\n\tif fail {\n\t\t// *MyError は error を満たすので返せる\n\t\treturn &MyError{\"データ処理\", 500, \"内部エラー\"}\n\t}\n\treturn nil // 成功時は nil を返す\n}\n\nfunc main() {\n\t// 成功ケース\n\terr1 := performOperation(false)\n\tif err1 != nil {\n\t\tfmt.Println(\"エラー:\", err1.Error()) // Error() でメッセージ取得\n\t} else {\n\t\tfmt.Println(\"成功\")\n\t}\n\n\t// 失敗ケース\n\terr2 := performOperation(true)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2.Error()) // 実装した Error() が呼ばれる\n\t\tfmt.Printf(\"エラーの型: %T\\n\", err2) // *main.MyError\n\t} else {\n\t\tfmt.Println(\"成功\")\n\t}\n}"
       },
       {
-        "title": "エラー処理: 簡単なエラーの作成 `errors.New`",
+        "title": "簡単なエラーの作成 `errors.New`",
         "code": "package main\n\nimport (\n\t\"errors\" // errors パッケージ\n\t\"fmt\"\n)\n\n// 失敗したら errors.New でエラーを返す関数\nfunc checkValue(value int) error {\n\tif value < 0 {\n\t\treturn errors.New(\"値が負数です\") // エラーメッセージを指定\n\t}\n\t// 成功時は nil\n\treturn nil\n}\n\nfunc main() {\n\t// 成功ケース\n\terr1 := checkValue(10)\n\tif err1 == nil {\n\t\tfmt.Println(\"checkValue(10): 成功\")\n\t}\n\n\t// 失敗ケース\n\terr2 := checkValue(-5)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // err2.Error() と同じ\n\t\tfmt.Printf(\"エラー型: %T\\n\", err2) // *errors.errorString\n\t}\n}"
       },
       {
-        "title": "エラー処理: フォーマットされたエラーの作成 `fmt.Errorf`",
+        "title": "フォーマットされたエラーの作成 `fmt.Errorf`",
         "code": "package main\n\nimport (\n\t\"errors\" // errors.Is を使う\n\t\"fmt\"\n\t\"os\"\n)\n\n// ファイルを開く処理をラップし、エラー時に %w を使う関数\nfunc openFileWrapped(filename string) error {\n\tfile, err := os.Open(filename)\n\tif err != nil {\n\t\t// %w で元のエラー err をラップする\n\t\treturn fmt.Errorf(\"ファイル '%s' オープン失敗: %w\", filename, err)\n\t}\n\tfile.Close()\n\treturn nil\n}\n\nfunc main() {\n\terr := openFileWrapped(\"non_existent.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err) // ラップされたメッセージ\n\n\t\t// errors.Is でラップされたエラーを確認できる\n\t\tif errors.Is(err, os.ErrNotExist) {\n\t\t\tfmt.Println(\"-> 原因: ファイルが存在しない\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: エラーを返す関数",
+        "title": "エラーを返す関数",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// ゼロ除算をチェックし、エラーを返す関数\nfunc divide(a, b int) (int, error) { // 戻り値に error を含める\n\tif b == 0 {\n\t\t// 失敗: ゼロ値とエラーを返す\n\t\treturn 0, errors.New(\"ゼロによる除算\")\n\t}\n\t// 成功: 結果と nil を返す\n\treturn a / b, nil\n}\n\nfunc main() {\n\t// 呼び出し側でエラーをチェック\n\tresult1, err1 := divide(10, 2)\n\tif err1 != nil {\n\t\tfmt.Println(\"エラー:\", err1)\n\t} else {\n\t\tfmt.Println(\"10 / 2 =\", result1)\n\t}\n\n\tresult2, err2 := divide(10, 0)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // エラー発生\n\t} else {\n\t\tfmt.Println(\"10 / 0 =\", result2)\n\t}\n}"
       },
       {
-        "title": "エラー処理: 基本的なエラーハンドリング (`if err != nil`)",
+        "title": "基本的なエラーハンドリング (`if err != nil`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"strconv\"\n)\n\n// 文字列を整数に変換。失敗したらエラーをラップして返す。\nfunc parseAndDescribe(s string) (string, error) {\n\tvalue, err := strconv.Atoi(s)\n\tif err != nil {\n\t\t// ★ エラーチェックと早期リターン\n\t\treturn \"\", fmt.Errorf(\"変換失敗 '%s': %w\", s, err)\n\t}\n\n\t// --- 正常系の処理 ---\n\tdesc := fmt.Sprintf(\"数値 %d は\", value)\n\tif value%2 == 0 { desc += \"偶数\" } else { desc += \"奇数\" }\n\treturn desc, nil // 成功時は nil を返す\n}\n\nfunc main() {\n\tinputs := []string{\"123\", \"abc\", \"-4\"}\n\tfor _, input := range inputs {\n\t\tfmt.Printf(\"入力 '%s':\\n\", input)\n\t\tdesc, err := parseAndDescribe(input)\n\n\t\t// ★ 呼び出し側でのエラーチェック\n\t\tif err != nil {\n\t\t\tlog.Printf(\"  エラー: %v\\n\", err)\n\t\t\tcontinue // エラーなら次の入力へ\n\t\t}\n\n\t\t// --- 正常系の処理 ---\n\t\tfmt.Printf(\"  -> 結果: %s\\n\", desc)\n\t}\n}"
       },
       {
-        "title": "エラー処理: エラーラッピング (`%w`)",
+        "title": "エラーラッピング (`%w`)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n)\n\n// 下位の処理 (エラーを返す可能性)\nfunc openDataFile(filename string) (*os.File, error) {\n\treturn os.Open(filename) // 元のエラーを返す\n}\n\n// 上位の処理 (エラーをラップする)\nfunc processFile(filename string) error {\n\tfile, err := openDataFile(filename)\n\tif err != nil {\n\t\t// ★ %w で元のエラー err をラップする\n\t\treturn fmt.Errorf(\"ファイル処理失敗 (%s): %w\", filename, err)\n\t}\n\tdefer file.Close()\n\tfmt.Printf(\"ファイル '%s' 処理成功\\n\", filename)\n\treturn nil\n}\n\nfunc main() {\n\terr := processFile(\"non_existent.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err) // ラップされたメッセージ\n\n\t\t// errors.Is でラップされた根本原因をチェック\n\t\tif errors.Is(err, os.ErrNotExist) {\n\t\t\tfmt.Println(\"-> 原因: ファイルが存在しない\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: エラーは値 (`errors.Is`)",
+        "title": "エラーは値 (`errors.Is`)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\" // os.ErrNotExist\n)\n\n// センチネルエラー (パッケージレベルで定義される特定のエラー値)\nvar ErrItemNotFound = errors.New(\"アイテムが見つかりません\")\nvar ErrPermissionDenied = errors.New(\"権限がありません\")\n\n// エラーを返す関数 (センチネルエラーまたはラップされたエラー)\nfunc getItem(id int) (string, error) {\n\tif id == 1 { return \"Apple\", nil }\n\tif id == 2 { return \"\", ErrItemNotFound } // センチネルエラーを返す\n\tif id == 3 { return \"\", ErrPermissionDenied }\n\toriginalErr := errors.New(\"DB接続エラー\")\n\treturn \"\", fmt.Errorf(\"ID %d 取得失敗: %w\", id, originalErr) // ラップされたエラー\n}\n\nfunc main() {\n\tfor _, id := range []int{2, 3, 4} {\n\t\tfmt.Printf(\"\\nアイテム %d 取得:\\n\", id)\n\t\t_, err := getItem(id)\n\t\tif err != nil {\n\t\t\tfmt.Printf(\" エラー: %v\\n\", err)\n\t\t\t// errors.Is でエラーの種類を判定\n\t\t\tif errors.Is(err, ErrItemNotFound) {\n\t\t\t\tfmt.Println(\"  -> 原因: アイテムなし\")\n\t\t\t} else if errors.Is(err, ErrPermissionDenied) {\n\t\t\t\tfmt.Println(\"  -> 原因: 権限なし\")\n\t\t\t} else {\n\t\t\t\tfmt.Println(\"  -> 原因: その他\")\n\t\t\t}\n\t\t}\n\t}\n\t// _, errOpen := os.Open(\"no.txt\")\n\t// if errors.Is(errOpen, os.ErrNotExist) { /* ... */ }\n}"
       },
       {
-        "title": "エラー処理: カスタムエラー型の定義",
+        "title": "カスタムエラー型の定義",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// カスタムエラー型 (構造体)\ntype OperationError struct {\n\tTimestamp time.Time\n\tOp        string\n\tCode      int\n\tMessage   string\n\tErr       error // ラップされたエラー (オプション)\n}\n\n// Error() メソッドを実装し、error インターフェースを満たす\nfunc (e *OperationError) Error() string {\n\t// フィールドを使って詳細なメッセージを生成\n\tmsg := fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n\tif e.Err != nil {\n\t\tmsg += fmt.Sprintf(\" (Cause: %v)\", e.Err)\n\t}\n\treturn msg\n}\n\n// (Unwrap() error メソッドを実装するとエラーラッピングをサポート)\n\nfunc main() {\n\t// カスタムエラーを生成 (例)\n\terr := &OperationError{\n\t\tTimestamp: time.Now(), Op: \"Update\", Code: 501, Message: \"Failed\",\n\t}\n\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err) // 実装した Error() が呼ばれる\n\t\tfmt.Printf(\"型: %T\\n\", err) // *main.OperationError\n\t\t// if opErr, ok := err.(*OperationError); ok { /* フィールドアクセス */ }\n\t}\n}"
       },
       {
-        "title": "エラー処理: カスタムエラーを返す",
+        "title": "カスタムエラーを返す",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// カスタムエラー型 (前のセクションで定義)\ntype OperationError struct {\n\tTimestamp time.Time; Op string; Code int; Message string\n}\nfunc (e *OperationError) Error() string { /* ... 実装 ... */\n\treturn fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n}\n\n\n// カスタムエラーを返す関数\nfunc performAction(action string, shouldFail bool) error { // 戻り値は error\n\tfmt.Printf(\"アクション '%s' 実行...\\n\", action)\n\tif shouldFail {\n\t\t// 失敗時: *OperationError を error として返す\n\t\treturn &OperationError{\n\t\t\tTimestamp: time.Now(), Op: action, Code: 400, Message: \"無効な入力\",\n\t\t}\n\t}\n\t// 成功時: nil を返す\n\treturn nil\n}\n\nfunc main() {\n\t// 成功ケース\n\terr1 := performAction(\"登録\", false)\n\tif err1 == nil { fmt.Println(\"-> 成功\") }\n\n\t// 失敗ケース\n\terr2 := performAction(\"削除\", true)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // 実装した Error() が呼ばれる\n\t\tfmt.Printf(\"型: %T\\n\", err2) // *main.OperationError\n\t}\n}"
       },
       {
-        "title": "エラー処理: カスタムエラーの判定 (型アサーション)",
+        "title": "カスタムエラーの判定 (型アサーション)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// カスタムエラー型 (例)\ntype OperationError struct {\n\tTimestamp time.Time; Op string; Code int; Message string\n}\nfunc (e *OperationError) Error() string { /* ... 実装 ... */\n\treturn fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n}\n\n// カスタムエラーを返す関数 (例)\nfunc performAction(action string, failCode int) error {\n\tif failCode != 0 {\n\t\treturn &OperationError{ time.Now(), action, failCode, \"問題発生\" }\n\t}\n\treturn nil\n}\n\nfunc main() {\n\terr := performAction(\"読込\", 404) // エラーを発生させる\n\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\n\t\t// ★ 型アサーションで *OperationError かチェック ★\n\t\topErr, ok := err.(*OperationError)\n\t\tif ok {\n\t\t\t// 成功: opErr は *OperationError 型\n\t\t\tfmt.Println(\"-> OperationError です\")\n\t\t\tfmt.Printf(\"   コード: %d\\n\", opErr.Code) // フィールドにアクセス\n\t\t\tif opErr.Code == 404 { fmt.Println(\"   -> Not Found\") }\n\t\t} else {\n\t\t\tfmt.Println(\"-> OperationError ではありません\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: 特定の型のエラーの取得 (`errors.As`)",
+        "title": "特定の型のエラーの取得 (`errors.As`)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n\t\"time\"\n)\n\n// カスタムエラー型\ntype OperationError struct {\n\tTimestamp time.Time; Op string; Code int; Message string; Err error\n}\nfunc (e *OperationError) Error() string { /* ... 実装 ... */\n\tmsg := fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n\tif e.Err != nil { msg += fmt.Sprintf(\" (Cause: %v)\", e.Err) }\n\treturn msg\n}\n// エラーラッピングのために Unwrap を実装\nfunc (e *OperationError) Unwrap() error { return e.Err }\n\n// エラーをラップして返す関数\nfunc openFileWrapped(filename string) error {\n\t_, err := os.Open(filename)\n\tif err != nil {\n\t\t// os.Open のエラー err を OperationError でラップ\n\t\treturn &OperationError{ time.Now(), \"open\", 500, \"失敗\", err }\n\t}\n\treturn nil\n}\n\nfunc main() {\n\terr := openFileWrapped(\"non_existent.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\n\t\t// errors.As で *OperationError 型を探す\n\t\tvar opErr *OperationError // 対象の型のポインタ変数を用意\n\t\t// 第2引数に opErr のアドレス (&opErr) を渡す\n\t\tif errors.As(err, &opErr) {\n\t\t\t// 見つかった場合、opErr に値が設定される\n\t\t\tfmt.Println(\"-> OperationError です\")\n\t\t\tfmt.Printf(\"   コード: %d\\n\", opErr.Code) // フィールドにアクセス\n\t\t\tif opErr.Err != nil {\n\t\t\t\tfmt.Printf(\"   ラップされたエラー: %v\\n\", opErr.Err)\n\t\t\t\t// if errors.Is(opErr.Err, os.ErrNotExist) { ... }\n\t\t\t}\n\t\t} else {\n\t\t\tfmt.Println(\"-> OperationError ではありません\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: ラップされたエラーの判定 (`errors.Is`)",
+        "title": "ラップされたエラーの判定 (`errors.Is`)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n)\n\n// 下位の処理 (os.Open のエラーをラップ)\nfunc loadConfig(path string) error {\n\t_, err := os.Open(path)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"設定読込失敗 '%s': %w\", path, err) // %w でラップ\n\t}\n\treturn nil\n}\n\n// 上位の処理 (loadConfig のエラーをさらにラップ)\nfunc setup(configPath string) error {\n\terr := loadConfig(configPath)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"初期設定失敗: %w\", err) // %w でラップ\n\t}\n\treturn nil\n}\n\nfunc main() {\n\terr := setup(\"config.yaml\") // 存在しないファイル\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\n\t\t// errors.Is でラップされた根本原因 (os.ErrNotExist) をチェック\n\t\tif errors.Is(err, os.ErrNotExist) {\n\t\t\tfmt.Println(\"-> 原因: 設定ファイルが存在しない\")\n\t\t} else {\n\t\t\tfmt.Println(\"-> その他のエラー\")\n\t\t}\n\n\t\t// if err == os.ErrNotExist { ... } // これは false になる\n\t}\n}"
       },
       {
-        "title": "エラー処理: センチネルエラー (Sentinel Errors)",
+        "title": "センチネルエラー (Sentinel Errors)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// パッケージレベルでセンチネルエラーを定義\nvar ErrResourceNotFound = errors.New(\"リソースが見つかりません\")\nvar ErrInvalidInput = errors.New(\"入力が無効です\")\n\n// センチネルエラーを返す可能性のある関数\nfunc fetchData(id int) (string, error) {\n\tif id <= 0 { return \"\", ErrInvalidInput }\n\tif id == 404 { return \"\", ErrResourceNotFound }\n\treturn fmt.Sprintf(\"データ %d\", id), nil\n}\n\nfunc main() {\n\tid := 404\n\tfmt.Printf(\"ID %d 取得:\\n\", id)\n\t_, err := fetchData(id)\n\n\tif err != nil {\n\t\tfmt.Printf(\" エラー: %v\\n\", err)\n\t\t// errors.Is でセンチネルエラーを判定\n\t\tif errors.Is(err, ErrResourceNotFound) {\n\t\t\tfmt.Println(\"  -> 原因: リソースなし\")\n\t\t} else if errors.Is(err, ErrInvalidInput) {\n\t\t\tfmt.Println(\"  -> 原因: 無効入力\")\n\t\t} else {\n\t\t\tfmt.Println(\"  -> 原因: その他\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: 早期リターンパターン (Early Return)",
+        "title": "早期リターンパターン (Early Return)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// ダミーの処理ステップ関数 (エラーを返す可能性あり)\nfunc step1() error { fmt.Println(\"Step 1\"); return nil }\nfunc step2(s string) error { fmt.Println(\"Step 2\", s); if s == \"\" { return errors.New(\"step 2 error\") }; return nil }\nfunc step3() error { fmt.Println(\"Step 3\"); return nil }\n\n\n// 複数のステップを実行し、エラーがあれば早期リターン\nfunc processSequence() error {\n\tfmt.Println(\"Process Start\")\n\n\terr := step1()\n\tif err != nil {\n\t\treturn fmt.Errorf(\"step 1 failed: %w\", err) // 早期リターン\n\t}\n\n\tintermediate := \"step1 ok\" // step1 の結果を使う例\n\n\terr = step2(intermediate)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"step 2 failed: %w\", err) // 早期リターン\n\t}\n\n\terr = step3()\n\tif err != nil {\n\t\treturn fmt.Errorf(\"step 3 failed: %w\", err) // 早期リターン\n\t}\n\n\tfmt.Println(\"Process Success\")\n\treturn nil // すべて成功\n}\n\nfunc main() {\n\terr := processSequence()\n\tif err != nil {\n\t\tfmt.Println(\"\\n最終エラー:\", err)\n\t} else {\n\t\tfmt.Println(\"\\n最終結果: 成功\")\n\t}\n}"
       },
       {
-        "title": "エラー処理: HTTPミドルウェアによるエラーハンドリング",
+        "title": "HTTPミドルウェアによるエラーハンドリング",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"log\"\n\t\"net/http\"\n)\n\n// エラーを返すカスタムハンドラ型\ntype AppHandler func(http.ResponseWriter, *http.Request) error\n\n// ServeHTTP でエラー処理ミドルウェアを実装\nfunc (fn AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {\n\t// Panic Recovery\n\tdefer func() {\n\t\tif rcv := recover(); rcv != nil {\n\t\t\tlog.Printf(\"Panic: %v\", rcv)\n\t\t\thttp.Error(w, \"Internal Server Error\", http.StatusInternalServerError)\n\t\t}\n\t}()\n\n\t// ハンドラ実行とエラー処理\n\terr := fn(w, r)\n\tif err != nil {\n\t\tlog.Printf(\"Error: %v\", err)\n\t\t// errors.Is や errors.As でエラーの種類を判別し、\n\t\t// 適切な statusCode を設定する (例はデフォルト 500)\n\t\tstatusCode := http.StatusInternalServerError\n\t\thttp.Error(w, err.Error(), statusCode)\n\t}\n}\n\n// ハンドラ関数の例 (error を返す)\nfunc handleExample(w http.ResponseWriter, r *http.Request) error {\n\tif r.URL.Query().Get(\"fail\") == \"true\" {\n\t\treturn errors.New(\"処理失敗\") // エラーを返す\n\t}\n\tif r.URL.Query().Get(\"panic\") == \"true\" {\n\t\tpanic(\"パニック発生\") // パニックを起こす\n\t}\n\tfmt.Fprintln(w, \"成功\")\n\treturn nil // 成功時は nil\n}\n\nfunc main() {\n\tmux := http.NewServeMux()\n\t// AppHandler 型にキャストして登録\n\tmux.Handle(\"/example\", AppHandler(handleExample))\n\n\tfmt.Println(\"Listening on :8080...\")\n\tlog.Fatal(http.ListenAndServe(\":8080\", mux))\n}"
       },
       {
-        "title": "エラー処理: 構造化エラー (Structured Errors)",
+        "title": "構造化エラー (Structured Errors)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"strings\"\n)\n\n// 構造化エラー型 (例: バリデーションエラー)\ntype ValidationError struct {\n\tFieldName string; ErrValue any; Message string\n}\nfunc (e *ValidationError) Error() string {\n\treturn fmt.Sprintf(\"Validation Error (Field: %s, Value: '%v'): %s\",\n\t\te.FieldName, e.ErrValue, e.Message)\n}\n\n// バリデーション関数 (構造化エラーを返す)\nfunc validateUsername(username string) error {\n\tif len(username) < 3 {\n\t\treturn &ValidationError{\"username\", username, \"短すぎ\"}\n\t}\n\tif strings.Contains(username, \" \") {\n\t\treturn &ValidationError{\"username\", username, \"空白不可\"}\n\t}\n\treturn nil\n}\n\nfunc main() {\n\tnames := []string{\"gopher\", \"go\", \"user name\"}\n\tfor _, name := range names {\n\t\tfmt.Printf(\"\\n検証 '%s':\\n\", name)\n\t\terr := validateUsername(name)\n\t\tif err != nil {\n\t\t\tfmt.Println(\" エラー:\", err)\n\t\t\t// errors.As で ValidationError 型かチェック\n\t\t\tvar valErr *ValidationError\n\t\t\tif errors.As(err, &valErr) {\n\t\t\t\t// 型が一致すればフィールドにアクセスできる\n\t\t\t\tfmt.Printf(\"  -> Field: %s, Detail: %s\\n\", valErr.FieldName, valErr.Message)\n\t\t\t}\n\t\t} else {\n\t\t\tfmt.Println(\" -> OK\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: 複数のエラーの結合 `errors.Join` (Go 1.20+)",
+        "title": "複数のエラーの結合 `errors.Join` (Go 1.20+)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"strings\"\n)\n\nvar ErrValueRequired = errors.New(\"値が必要\")\nvar ErrValueTooShort = errors.New(\"短すぎ\")\n\nfunc validateName(name string) error {\n\tif name == \"\" { return fmt.Errorf(\"名前: %w\", ErrValueRequired) }\n\tif len(name) < 3 { return fmt.Errorf(\"名前 '%s': %w\", name, ErrValueTooShort) }\n\treturn nil\n}\nfunc validateEmail(email string) error {\n\tif email == \"\" { return fmt.Errorf(\"メール: %w\", ErrValueRequired) }\n\tif !strings.Contains(email, \"@\") { return fmt.Errorf(\"メール '%s': 無効\", email) }\n\treturn nil\n}\n\n// 複数のバリデーションを行い、エラーを errors.Join で結合\nfunc validateForm(name, email string) error {\n\t// 各バリデーション結果 (error または nil) を Join に渡す\n\treturn errors.Join(\n\t\tvalidateName(name),\n\t\tvalidateEmail(email),\n\t) // nil は無視され、エラーがあれば結合される\n}\n\nfunc main() {\n\t// 複数のエラーが発生するケース\n\terr := validateForm(\"Go\", \"invalid-email\")\n\tif err != nil {\n\t\t// Error() は結合されたメッセージを改行区切りで返す\n\t\tfmt.Printf(\"エラー:\\n%v\\n\", err)\n\n\t\t// errors.Is で特定のエラーが含まれるか確認できる\n\t\tif errors.Is(err, ErrValueTooShort) {\n\t\t\tfmt.Println(\"-> 短すぎるエラーあり\")\n\t\t}\n\t\tif errors.Is(err, ErrValueRequired) {\n\t\t\tfmt.Println(\"-> 必須エラーあり\") // これは含まれない\n\t\t}\n\t}\n}"
       },
       {
-        "title": "エラー処理: 結合されたエラーの検査 (Go 1.20+)",
+        "title": "結合されたエラーの検査 (Go 1.20+)",
         "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n\t// \"strings\" // strings.Split を使う場合\n)\n\n// --- エラー定義やエラーを返す関数は省略 (前のセクション参照) ---\nvar ErrValueRequired = errors.New(\"値が必要\")\nvar ErrValueTooShort = errors.New(\"短すぎ\")\ntype ConfigError struct { FileName string; Err error }\nfunc (e *ConfigError) Error() string { return fmt.Sprintf(\"設定 '%s': %v\", e.FileName, e.Err) }\nfunc (e *ConfigError) Unwrap() error { return e.Err }\nfunc validateName(name string) error { if len(name) < 3 { return fmt.Errorf(\"名前 '%s': %w\", name, ErrValueTooShort) }; return nil }\nfunc validateEmail(email string) error { if email == \"\" { return fmt.Errorf(\"メール: %w\", ErrValueRequired) }; return nil }\nfunc loadConfigFile(filename string) error { _, err := os.Open(filename); if err != nil { return &ConfigError{filename, err} }; return nil }\n// --- ここまで省略 ---\n\n\nfunc main() {\n\t// 複数のエラーを結合 (例)\n\tjoinedErr := errors.Join(\n\t\tvalidateName(\"Go\"),             // ErrValueTooShort をラップ\n\t\tvalidateEmail(\"\"),              // ErrValueRequired をラップ\n\t\tloadConfigFile(\"config.txt\"), // ConfigError (os.ErrNotExist をラップ)\n\t)\n\n\tif joinedErr != nil {\n\t\tfmt.Printf(\"結合エラー:\\n%v\\n\", joinedErr)\n\n\t\t// errors.Is で特定のエラー値が含まれるか検査\n\t\tif errors.Is(joinedErr, ErrValueTooShort) { fmt.Println(\"-> 短すぎエラーあり\") }\n\t\tif errors.Is(joinedErr, os.ErrNotExist) { fmt.Println(\"-> ファイルなしエラーあり\") }\n\n\t\t// errors.As で特定の型のエラーが含まれるか検査\n\t\tvar configErr *ConfigError\n\t\tif errors.As(joinedErr, &configErr) {\n\t\t\tfmt.Println(\"-> ConfigError あり (ファイル:\", configErr.FileName, \")\")\n\t\t}\n\n\t\t// 個々のエラーメッセージ取得 (参考: Error() を分割)\n\t\t// for _, line := range strings.Split(joinedErr.Error(), \"\\n\") { ... }\n\t}\n}"
       },
       {
-        "title": "エラー処理: `defer` と組み合わせたエラーハンドリング",
+        "title": "`defer` と組み合わせたエラーハンドリング",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// ファイル処理関数 (defer 内で Close のエラーも考慮)\n// ★ 戻り値 error に名前 'err' を付ける\nfunc processFile(filename string) (err error) {\n\tfmt.Printf(\"\\n処理開始: %s\\n\", filename)\n\tf, openErr := os.Open(filename)\n\tif openErr != nil {\n\t\terr = fmt.Errorf(\"オープン失敗: %w\", openErr)\n\t\treturn // err が返る\n\t}\n\n\t// ★ defer でクローズ処理とエラーハンドリング\n\tdefer func() {\n\t\tfmt.Println(\" defer: クローズ処理...\")\n\t\tcloseErr := f.Close()\n\t\tif closeErr != nil {\n\t\t\tfmt.Printf(\" defer: クローズエラー: %v\\n\", closeErr)\n\t\t\t// ★ 関数本体でエラーが発生していなければ (err == nil)、\n\t\t\t//    クローズエラーを関数の最終エラーとする\n\t\t\tif err == nil {\n\t\t\t\terr = fmt.Errorf(\"クローズ失敗: %w\", closeErr)\n\t\t\t}\n\t\t\t// (本体エラーがあればそちらを優先)\n\t\t} else {\n\t\t\tfmt.Println(\" defer: クローズ成功\")\n\t\t}\n\t}() // defer func() { ... }()\n\n\t// --- ファイル処理 (例) ---\n\tfmt.Println(\" ファイル処理中...\")\n\t// if someCondition {\n\t//     err = errors.New(\"処理中エラー\")\n\t//     return // この場合でも defer は実行される\n\t// }\n\n\tfmt.Println(\" 処理正常終了\")\n\treturn nil // 成功時は nil (defer で closeErr も nil なら)\n}\n\nfunc main() {\n\t// 正常ケース (ファイル作成・削除は省略)\n\t// os.WriteFile(\"test.txt\", []byte(\"data\"), 0644)\n\tprocessFile(\"test.txt\") // 存在しないファイルでオープンエラーを試す\n\n\t// os.Remove(\"test.txt\")\n}"
       }
     ]
@@ -801,95 +801,95 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Concurrency",
     "codeExamples": [
       {
-        "title": "並行処理: Goroutine (ゴルーチン) の開始",
+        "title": "Goroutine (ゴルーチン) の開始",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// Goroutine で実行する関数\nfunc say(s string) {\n\tfor i := 0; i < 3; i++ {\n\t\tfmt.Printf(\"%s: %d\\n\", s, i)\n\t\ttime.Sleep(100 * time.Millisecond)\n\t}\n\tfmt.Printf(\"%s: 完了\\n\", s)\n}\n\nfunc main() {\n\tfmt.Println(\"main: 開始\")\n\n\t// say 関数を新しい Goroutine として起動\n\tgo say(\"Hello\")\n\tfmt.Println(\"main: say(\\\"Hello\\\") Goroutine 起動\")\n\n\t// 匿名関数も Goroutine で起動可能\n\t// go func(msg string) { ... }(\"メッセージ\")\n\n\tfmt.Println(\"main: 他の処理...\")\n\ttime.Sleep(50 * time.Millisecond)\n\n\t// ★ 注意: main がここで終了すると say Goroutine も終了してしまう\n\t//          完了を待つ必要がある (次のセクションで解説)\n\t//          time.Sleep は不確実なため、実際のコードでは使わない！\n\tfmt.Println(\"main: 少し待機 (悪い例)...\")\n\ttime.Sleep(500 * time.Millisecond)\n\n\tfmt.Println(\"main: 終了\")\n}"
       },
       {
-        "title": "並行処理: Goroutine の終了を待つ (`sync.WaitGroup`)",
+        "title": "Goroutine の終了を待つ (`sync.WaitGroup`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\" // sync パッケージ\n\t\"time\"\n)\n\n// Goroutine で実行するワーカー関数\nfunc worker(id int, wg *sync.WaitGroup) {\n\t// ★ 最初に defer で Done() を登録\n\tdefer wg.Done() // Goroutine 完了時にカウンターを減らす\n\n\tfmt.Printf(\"Worker %d: Start\\n\", id)\n\ttime.Sleep(time.Duration(id) * 100 * time.Millisecond) // 処理のシミュレート\n\tfmt.Printf(\"Worker %d: End\\n\", id)\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup // WaitGroup を宣言\n\n\tnumWorkers := 3\n\tfmt.Printf(\"Starting %d workers...\\n\", numWorkers)\n\n\t// ★ 起動する Goroutine の数を Add で設定\n\twg.Add(numWorkers)\n\n\t// Goroutine を起動\n\tfor i := 1; i <= numWorkers; i++ {\n\t\tgo worker(i, &wg) // wg のポインタを渡す\n\t}\n\n\tfmt.Println(\"Waiting for workers to finish...\")\n\t// ★ Wait でカウンターが 0 になるのを待つ\n\twg.Wait() // 全ての worker が Done() を呼ぶまでブロック\n\n\tfmt.Println(\"All workers finished.\")\n}"
       },
       {
-        "title": "並行処理: 複数の Goroutine と WaitGroup",
+        "title": "複数の Goroutine と WaitGroup",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\tnumWorkers := 5\n\n\tfmt.Printf(\"%d 個のワーカー起動...\\n\", numWorkers)\n\n\t// ループで複数の Goroutine を起動\n\tfor i := 1; i <= numWorkers; i++ {\n\t\twg.Add(1) // Goroutine 起動前にカウンターを増やす\n\t\t// ループ変数 i を Goroutine に引数として渡す\n\t\tgo func(workerID int) {\n\t\t\tdefer wg.Done() // Goroutine 完了時にカウンターを減らす\n\n\t\t\tfmt.Printf(\"Worker %d: Start\\n\", workerID)\n\t\t\ttime.Sleep(time.Duration(workerID) * 50 * time.Millisecond)\n\t\t\tfmt.Printf(\"Worker %d: End\\n\", workerID)\n\t\t}(i) // ★ 現在の i の値を引数として渡す\n\t}\n\n\tfmt.Println(\"全ワーカーの終了待機...\")\n\twg.Wait() // カウンターが 0 になるまで待つ\n\n\tfmt.Println(\"全ワーカー終了\")\n}"
       },
       {
-        "title": "並行処理: チャネル (Channel) の基本",
+        "title": "チャネル (Channel) の基本",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\t// バッファなしチャネル作成\n\tch1 := make(chan string)\n\n\tgo func() {\n\t\tfmt.Println(\"Goroutine: 送信開始\")\n\t\tch1 <- \"Hello\" // 送信 (受信側が待つまでブロックする可能性)\n\t\tfmt.Println(\"Goroutine: 送信完了\")\n\t\ttime.Sleep(50 * time.Millisecond)\n\t\tch1 <- \"World\"\n\t\tfmt.Println(\"Goroutine: 送信完了、クローズ\")\n\t\tclose(ch1) // ★ 送信側がクローズ\n\t}()\n\n\tfmt.Println(\"main: 受信待機...\")\n\tmsg1 := <-ch1 // 受信 (送信されるまでブロックする可能性)\n\tfmt.Printf(\"main: 受信1: %s\\n\", msg1)\n\tmsg2 := <-ch1 // 再度受信\n\tfmt.Printf(\"main: 受信2: %s\\n\", msg2)\n\n\t// クローズ後の受信確認\n\tmsg3, ok := <-ch1\n\tif !ok {\n\t\tfmt.Printf(\"main: 受信3: クローズ済み (値:%q, ok:%t)\\n\", msg3, ok)\n\t}\n\t// close(ch1) // 再クローズは panic\n\t// ch1 <- \"Bye\" // クローズ後送信は panic\n}"
       },
       {
-        "title": "並行処理: `for range` によるチャネルからの受信",
+        "title": "`for range` によるチャネルからの受信",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// メッセージを送信し、最後にチャネルをクローズする関数\nfunc produceMessages(count int, ch chan<- string) {\n\tfmt.Println(\"Producer: 開始\")\n\tfor i := 1; i <= count; i++ {\n\t\tmsg := fmt.Sprintf(\"Msg %d\", i)\n\t\tfmt.Printf(\"Producer: 送信 '%s'\\n\", msg)\n\t\tch <- msg\n\t\ttime.Sleep(50 * time.Millisecond)\n\t}\n\tfmt.Println(\"Producer: クローズ\")\n\tclose(ch) // ★ 送信完了後にクローズ\n}\n\nfunc main() {\n\tmessageChannel := make(chan string)\n\tgo produceMessages(3, messageChannel) // Goroutine で送信\n\n\tfmt.Println(\"Consumer: 受信開始 (for range)...\")\n\t// ★ for range でチャネルから受信\n\t// チャネルがクローズされるまでループが続く\n\tfor msg := range messageChannel {\n\t\tfmt.Printf(\"Consumer: 受信 '%s'\\n\", msg)\n\t}\n\tfmt.Println(\"Consumer: ループ終了 (チャネルクローズ)\")\n}"
       },
       {
-        "title": "並行処理: 方向付きチャネル (Directional Channels)",
+        "title": "方向付きチャネル (Directional Channels)",
         "code": "package main\n\nimport \"fmt\"\n\n// 送信専用チャネル (chan<- string) を受け取る関数\nfunc producer(out chan<- string) {\n\tfmt.Println(\"Producer: 送信開始\")\n\tout <- \"データ\" // 送信のみ可能\n\t// <-out // 受信はコンパイルエラー\n\tfmt.Println(\"Producer: 送信完了\")\n\t// close(out) // 送信専用はクローズ不可\n}\n\n// 受信専用チャネル (<-chan string) を受け取る関数\nfunc consumer(in <-chan string) {\n\tfmt.Println(\"Consumer: 受信開始\")\n\tmsg := <-in // 受信のみ可能\n\tfmt.Printf(\"Consumer: 受信: %s\\n\", msg)\n\t// in <- \"x\" // 送信はコンパイルエラー\n\tfmt.Println(\"Consumer: 受信完了\")\n}\n\nfunc main() {\n\t// 通常の双方向チャネルを作成\n\tch := make(chan string, 1)\n\n\t// 双方向チャネルを方向付きチャネルとして渡せる\n\tgo producer(ch) // producer は chan<- string を期待\n\tconsumer(ch)    // consumer は <-chan string を期待\n\n\tclose(ch) // クローズは元の双方向チャネルで行う\n}"
       },
       {
-        "title": "並行処理: ワーカープール (Worker Pool) パターン",
+        "title": "ワーカープール (Worker Pool) パターン",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\n// ワーカー: jobs から受信し、処理して results へ送信\nfunc worker(id int, jobs <-chan int, results chan<- int, wg *sync.WaitGroup) {\n\tdefer wg.Done() // 完了を通知\n\tfor job := range jobs { // jobs が close されるまで受信\n\t\tfmt.Printf(\"Worker %d: Job %d 開始\\n\", id, job)\n\t\ttime.Sleep(100 * time.Millisecond) // 処理シミュレート\n\t\tresult := job * 2\n\t\tfmt.Printf(\"Worker %d: Job %d 完了, Result %d\\n\", id, job, result)\n\t\tresults <- result // 結果を送信\n\t}\n\tfmt.Printf(\"Worker %d: 終了\\n\", id)\n}\n\nfunc main() {\n\tconst numJobs = 5\n\tconst numWorkers = 3\n\n\tjobs := make(chan int, numJobs)\n\tresults := make(chan int, numJobs)\n\tvar wg sync.WaitGroup\n\n\t// ワーカー Goroutine 起動\n\tfmt.Printf(\"%d ワーカー起動...\\n\", numWorkers)\n\tfor w := 1; w <= numWorkers; w++ {\n\t\twg.Add(1)\n\t\tgo worker(w, jobs, results, &wg)\n\t}\n\n\t// ジョブ送信\n\tfmt.Printf(\"%d ジョブ送信...\\n\", numJobs)\n\tfor j := 1; j <= numJobs; j++ {\n\t\tjobs <- j\n\t}\n\tclose(jobs) // ★ 全ジョブ送信後、jobs をクローズ\n\tfmt.Println(\"全ジョブ送信完了、jobs クローズ\")\n\n\t// 全ワーカーの終了待機\n\tfmt.Println(\"ワーカー終了待機...\")\n\twg.Wait()\n\tfmt.Println(\"全ワーカー終了\")\n\n\t// ★ 全ワーカー終了後、results をクローズ\n\tclose(results)\n\n\t// 結果収集\n\tfmt.Println(\"結果収集...\")\n\ttotal := 0\n\tfor result := range results { // results が close されるまで受信\n\t\tfmt.Printf(\"結果受信: %d\\n\", result)\n\t\ttotal += result\n\t}\n\tfmt.Printf(\"結果合計: %d\\n\", total)\n}"
       },
       {
-        "title": "並行処理: `select` 文による複数チャネル操作の待機",
+        "title": "`select` 文による複数チャネル操作の待機",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tch1 := make(chan string)\n\tch2 := make(chan string)\n\n\t// Goroutine 1: 1秒後に ch1 へ送信\n\tgo func() { time.Sleep(1 * time.Second); ch1 <- \"from 1\" }()\n\t// Goroutine 2: 500ミリ秒後に ch2 へ送信\n\tgo func() { time.Sleep(500 * time.Millisecond); ch2 <- \"from 2\" }()\n\n\tfmt.Println(\"受信待機中...\")\n\n\t// select で ch1 または ch2 から受信可能な方を待つ\n\tselect {\n\tcase msg1 := <-ch1:\n\t\tfmt.Printf(\"ch1 受信: %s\\n\", msg1)\n\tcase msg2 := <-ch2:\n\t\tfmt.Printf(\"ch2 受信: %s\\n\", msg2) // ch2 が先に準備できる\n\t}\n\n\tfmt.Println(\"最初のメッセージ受信完了\")\n\n\t// (もう一方を受信するには再度 select や受信操作が必要)\n\t// msg := <-ch1 // 例\n\t// fmt.Println(\"残りを別途受信:\", msg)\n}"
       },
       {
-        "title": "並行処理: `select` によるタイムアウト処理",
+        "title": "`select` によるタイムアウト処理",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// 時間のかかる処理 (シミュレーション)\nfunc longOperation(duration time.Duration, resultChan chan<- string) {\n\tfmt.Printf(\" Goroutine: %v 処理開始...\\n\", duration)\n\ttime.Sleep(duration)\n\tresult := fmt.Sprintf(\"完了 (%v)\", duration)\n\tfmt.Printf(\" Goroutine: 結果 '%s' 送信\\n\", result)\n\t// 注意: タイムアウト後も送信しようとする可能性がある\n\tresultChan <- result\n}\n\nfunc main() {\n\tch1 := make(chan string, 1)\n\tgo longOperation(2*time.Second, ch1) // 2秒かかる処理\n\n\tfmt.Println(\"1秒間のタイムアウトを設定して待機...\")\n\n\tselect {\n\tcase res := <-ch1: // 処理結果の受信を待つ\n\t\tfmt.Printf(\"受信成功: %s\\n\", res)\n\tcase <-time.After(1 * time.Second): // 1秒待つ\n\t\t// 1秒以内に ch1 から受信できなければ、こちらが実行される\n\t\tfmt.Println(\"タイムアウトしました！\")\n\t}\n\n\t// (タイムアウトしなかった場合の例は解説参照)\n\t// time.Sleep(2 * time.Second) // Goroutine が完了するのを待つ (デモ用)\n}"
       },
       {
-        "title": "並行処理: `select` と終了チャネル (Quit Channel)",
+        "title": "`select` と終了チャネル (Quit Channel)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// 終了通知を受け取るまで処理を続けるワーカー\nfunc worker(id int, dataChan <-chan string, quitChan <-chan struct{}) {\n\tfmt.Printf(\"Worker %d: 開始\\n\", id)\n\tfor {\n\t\tselect {\n\t\tcase data := <-dataChan:\n\t\t\tfmt.Printf(\"Worker %d: 処理 '%s'\\n\", id, data)\n\t\t\ttime.Sleep(50 * time.Millisecond)\n\t\tcase <-quitChan: // ★ 終了チャネルから受信 (またはクローズ検知)\n\t\t\tfmt.Printf(\"Worker %d: 終了シグナル受信\\n\", id)\n\t\t\treturn // Goroutine 終了\n\t\t}\n\t}\n}\n\nfunc main() {\n\tdataChan := make(chan string)\n\tquitChan := make(chan struct{}) // 終了通知用チャネル\n\n\tgo worker(1, dataChan, quitChan) // ワーカー起動\n\n\tdataChan <- \"データ A\"\n\tdataChan <- \"データ B\"\n\ttime.Sleep(200 * time.Millisecond)\n\n\tfmt.Println(\"main: 終了シグナル送信 (close)\")\n\tclose(quitChan) // ★ チャネルをクローズして終了を通知\n\n\ttime.Sleep(100 * time.Millisecond) // 終了を待つ (WaitGroup推奨)\n\tfmt.Println(\"main: 終了\")\n}"
       },
       {
-        "title": "並行処理: ノンブロッキング `select` (`default` ケース)",
+        "title": "ノンブロッキング `select` (`default` ケース)",
         "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tmessages := make(chan string) // バッファなし\n\tmsgToSend := \"Hi\"\n\n\t// ノンブロッキング受信\n\t// messages は空なので受信はブロックするはず\n\tselect {\n\tcase msg := <-messages:\n\t\tfmt.Println(\"受信:\", msg)\n\tdefault: // ★ 他の case がブロックするので default が実行される\n\t\tfmt.Println(\"受信メッセージなし\")\n\t}\n\n\t// ノンブロッキング送信\n\t// messages に受信側がいないので送信はブロックするはず\n\tselect {\n\tcase messages <- msgToSend:\n\t\tfmt.Println(\"送信成功:\", msgToSend)\n\tdefault: // ★ 他の case がブロックするので default が実行される\n\t\tfmt.Println(\"送信失敗 (ブロックするため)\")\n\t}\n\n\t// 受信を試みる (ノンブロッキング)\n\t// この時点でも受信できないので default が実行される\n\tselect {\n\tcase msg := <-messages:\n\t\tfmt.Println(\"受信:\", msg)\n\tdefault:\n\t\tfmt.Println(\"再度受信試行: 受信メッセージなし\")\n\t}\n}"
       },
       {
-        "title": "並行処理: 共有メモリの保護 (`sync.Mutex`)",
+        "title": "共有メモリの保護 (`sync.Mutex`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n)\n\nvar mu sync.Mutex // 共有カウンターを保護する Mutex\n\n// Mutex を使って安全にカウンターをインクリメント\nfunc safeIncrement(wg *sync.WaitGroup, counter *int) {\n\tdefer wg.Done()\n\n\tmu.Lock() // ロック獲得\n\t// ★ defer で必ず Unlock する\n\tdefer mu.Unlock()\n\n\t// Lock と Unlock の間は一度に1つの Goroutine のみ実行可能\n\t*counter = *counter + 1\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\titerations := 1000\n\tsafeCounter := 0\n\n\tfmt.Println(\"--- Mutex あり ---\")\n\twg.Add(iterations)\n\tfor i := 0; i < iterations; i++ {\n\t\tgo safeIncrement(&wg, &safeCounter)\n\t}\n\twg.Wait()\n\t// 常に期待値になる\n\tfmt.Printf(\"最終カウンター: %d (期待値: %d)\\n\", safeCounter, iterations)\n\n\t// 競合検出: go run -race main.go\n}"
       },
       {
-        "title": "並行処理: 読み取り/書き込みロック (`sync.RWMutex`)",
+        "title": "読み取り/書き込みロック (`sync.RWMutex`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\nvar config = make(map[string]string)\nvar rwmu sync.RWMutex // 読み取り/書き込みロック\n\n// 読み取り (RLock/RUnlock)\nfunc getConfig(key string, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\trwmu.RLock() // 読み取りロック獲得\n\tdefer rwmu.RUnlock() // 必ず解放\n\n\tvalue := config[key]\n\tfmt.Printf(\"Reader: Read '%s' -> '%s'\\n\", key, value)\n\ttime.Sleep(50 * time.Millisecond)\n}\n\n// 書き込み (Lock/Unlock)\nfunc setConfig(key, value string, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\trwmu.Lock() // 書き込みロック獲得 (排他的)\n\tdefer rwmu.Unlock() // 必ず解放\n\n\tfmt.Printf(\"Writer: Set '%s' = '%s'\\n\", key, value)\n\tconfig[key] = value\n\ttime.Sleep(100 * time.Millisecond)\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\n\t// 初期設定 (書き込み)\n\twg.Add(1); go setConfig(\"key1\", \"val1\", &wg); wg.Wait()\n\n\t// 複数リーダーと1ライター起動\n\tfor i := 0; i < 3; i++ { wg.Add(1); go getConfig(\"key1\", &wg) }\n\ttime.Sleep(10 * time.Millisecond)\n\twg.Add(1); go setConfig(\"key1\", \"val2\", &wg)\n\tfor i := 0; i < 2; i++ { wg.Add(1); go getConfig(\"key1\", &wg) }\n\n\twg.Wait() // 全て完了を待つ\n\tfmt.Println(\"Final key1:\", config[\"key1\"]) // val2\n}"
       },
       {
-        "title": "並行処理: 一度だけの実行 (`sync.Once`)",
+        "title": "一度だけの実行 (`sync.Once`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\nvar config map[string]string\nvar loadConfigOnce sync.Once // ★ sync.Once 変数\n\n// 設定読み込み関数 (一度だけ実行される)\nfunc loadConfig() {\n\tfmt.Println(\"--- 設定読み込み実行 ---\")\n\ttime.Sleep(100 * time.Millisecond) // 時間がかかる処理を模倣\n\tconfig = map[string]string{\"apiKey\": \"xyz\"}\n\tfmt.Println(\"--- 設定読み込み完了 ---\")\n}\n\n// 設定取得関数 (必要なら初期化)\nfunc getConfig(key string, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\t// ★ Do メソッドで loadConfig を呼び出す\n\t//   最初の呼び出し時のみ loadConfig が実行される\n\tloadConfigOnce.Do(loadConfig)\n\n\t// Do の後では config は初期化済み\n\tvalue := config[key]\n\tfmt.Printf(\"Goroutine: Get '%s' -> '%s'\\n\", key, value)\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\tnumGoroutines := 3\n\twg.Add(numGoroutines)\n\tfor i := 0; i < numGoroutines; i++ {\n\t\tgo getConfig(\"apiKey\", &wg) // 複数 Goroutine から呼び出し\n\t}\n\twg.Wait()\n\tfmt.Println(\"初回取得完了\")\n\n\t// 再度呼び出しても loadConfig は実行されない\n\twg.Add(1); go getConfig(\"apiKey\", &wg); wg.Wait()\n}"
       },
       {
-        "title": "\"並行処理: sync.WaitGroup (再確認)\"",
+        "title": "\"sync.WaitGroup (再確認)\"",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\nfunc task(id int, wg *sync.WaitGroup) {\n\tdefer wg.Done() // タスク完了時にカウンターを減らす\n\tfmt.Printf(\"タスク %d: 開始\\n\", id)\n\ttime.Sleep(time.Duration(id) * 100 * time.Millisecond) // 処理をシミュレート\n\tfmt.Printf(\"タスク %d: 完了\\n\", id)\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup // WaitGroup を宣言\n\n\tnumTasks := 3\n\tfmt.Printf(\"%d 個のタスクを Goroutine で実行します...\\n\", numTasks)\n\n\twg.Add(numTasks) // 待機する Goroutine の数を設定\n\n\t// Goroutine を起動\n\tgo task(1, &wg)\n\tgo task(2, &wg)\n\tgo task(3, &wg)\n\n\tfmt.Println(\"すべてのタスクの完了を待機します...\")\n\twg.Wait() // カウンターが 0 になるまで待機\n\n\tfmt.Println(\"すべてのタスクが完了しました。\")\n}\n\n/* 実行結果の例 (Goroutine の実行順序により多少前後する可能性あり):\n3 個のタスクを Goroutine で実行します...\nすべてのタスクの完了を待機します...\nタスク 1: 開始\nタスク 2: 開始\nタスク 3: 開始\nタスク 1: 完了\nタスク 2: 完了\nタスク 3: 完了\nすべてのタスクが完了しました。\n*/"
       },
       {
-        "title": "並行処理: 条件変数 (`sync.Cond`)",
+        "title": "条件変数 (`sync.Cond`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\nvar (\n\tdata      string\n\tdataMutex sync.Mutex\n\tdataCond  = sync.NewCond(&dataMutex) // Mutex に関連付け\n\twg        sync.WaitGroup\n)\n\n// 消費者: データが準備されるのを待つ\nfunc consumer() {\n\tdefer wg.Done()\n\tfmt.Println(\"Consumer: 待機開始\")\n\tdataCond.L.Lock() // ロック取得\n\tfor data == \"\" { // ★ 条件チェックループ\n\t\tfmt.Println(\"Consumer: Wait...\")\n\t\tdataCond.Wait() // アンロックして待機、起こされたら再ロック\n\t}\n\tfmt.Printf(\"Consumer: データ受信 '%s'\\n\", data)\n\tdataCond.L.Unlock() // ロック解放\n}\n\n// 生産者: データを準備して通知\nfunc producer() {\n\tdefer wg.Done()\n\tfmt.Println(\"Producer: 準備開始\")\n\ttime.Sleep(100 * time.Millisecond) // 準備時間\n\tdataCond.L.Lock() // ロック取得\n\tdata = \"準備完了データ\"\n\tfmt.Println(\"Producer: 準備完了、Signal 送信\")\n\tdataCond.Signal() // 待機中の Goroutine を1つ起こす\n\tdataCond.L.Unlock() // ロック解放\n}\n\nfunc main() {\n\twg.Add(2)\n\tgo consumer()\n\ttime.Sleep(10 * time.Millisecond) // consumer が先に Wait するように\n\tgo producer()\n\twg.Wait()\n\tfmt.Println(\"完了\")\n}"
       },
       {
-        "title": "並行処理: アトミック操作 (`sync/atomic` パッケージ)",
+        "title": "アトミック操作 (`sync/atomic` パッケージ)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"sync/atomic\" // atomic パッケージ\n)\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\tvar counter atomic.Int64 // ★ atomic.Int64 で宣言\n\titerations := 1000\n\n\twg.Add(iterations)\n\tfor i := 0; i < iterations; i++ {\n\t\tgo func() {\n\t\t\tdefer wg.Done()\n\t\t\t// ★ Add メソッドでアトミックにインクリメント\n\t\t\tcounter.Add(1)\n\t\t}()\n\t}\n\twg.Wait()\n\n\t// ★ Load メソッドでアトミックに読み取り\n\tfinalCount := counter.Load()\n\tfmt.Printf(\"最終カウンター: %d\\n\", finalCount) // 常に 1000\n}"
       },
       {
-        "title": "\"並行処理: アトミック操作 (Go 1.19 未満の古い方法)\"",
+        "title": "\"アトミック操作 (Go 1.19 未満の古い方法)\"",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"sync/atomic\" // atomic パッケージをインポート\n)\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\tvar counter int64 // ★ 通常の int64 型で宣言\n\titerations := 1000\n\n\tfmt.Printf(\"%d 回インクリメントします...\\n\", iterations)\n\n\twg.Add(iterations)\n\tfor i := 0; i < iterations; i++ {\n\t\tgo func() {\n\t\t\tdefer wg.Done()\n\t\t\t// ★ atomic.AddInt64 でアトミックにインクリメント ★\n\t\t\t// 第一引数にはカウンター変数のポインタ (&counter) を渡す\n\t\t\tatomic.AddInt64(&counter, 1)\n\t\t}()\n\t}\n\n\twg.Wait() // すべての Goroutine が完了するのを待つ\n\n\t// ★ atomic.LoadInt64 でアトミックに値を読み取る ★\n\t// 第一引数にはカウンター変数のポインタ (&counter) を渡す\n\tfinalCount := atomic.LoadInt64(&counter)\n\tfmt.Printf(\"最終カウンター: %d (期待値: %d)\\n\", finalCount, iterations)\n\n\t// --- その他の操作例 ---\n\tfmt.Println(\"\\n--- その他の操作 ---\")\n\n\t// CompareAndSwap: 現在値が 1000 なら 0 にする\n\tswapped := atomic.CompareAndSwapInt64(&counter, 1000, 0)\n\tfmt.Printf(\"CompareAndSwapInt64(1000, 0): %t, 現在値: %d\\n\", swapped, atomic.LoadInt64(&counter))\n\n\t// Swap: 現在値を 500 に設定し、古い値を取得\n\toldValue := atomic.SwapInt64(&counter, 500)\n\tfmt.Printf(\"SwapInt64(500): 古い値=%d, 現在値: %d\\n\", oldValue, atomic.LoadInt64(&counter))\n\n\t// Store: 現在値を -100 に設定\n\tatomic.StoreInt64(&counter, -100)\n\tfmt.Printf(\"StoreInt64(-100): 現在値: %d\\n\", atomic.LoadInt64(&counter))\n}\n\n/* 実行結果:\n1000 回インクリメントします...\n最終カウンター: 1000 (期待値: 1000)\n\n--- その他の操作 ---\nCompareAndSwapInt64(1000, 0): true, 現在値: 0\nSwapInt64(500): 古い値=0, 現在値: 500\nStoreInt64(-100): 現在値: -100\n*/"
       },
       {
-        "title": "並行処理: アトミックポインタ (`atomic.Pointer[T]`, Go 1.19+)",
+        "title": "アトミックポインタ (`atomic.Pointer[T]`, Go 1.19+)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n\t\"sync/atomic\"\n)\n\ntype Config struct { Version string; APIKey string }\n\n// Config へのポインタをアトミックに保持\nvar currentConfig atomic.Pointer[Config]\n\n// 設定読み取り (アトミックにポインタ取得)\nfunc configReader(id int, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tcfg := currentConfig.Load() // アトミックにポインタ取得\n\tif cfg != nil {\n\t\tfmt.Printf(\"Reader %d: Read Ver='%s'\\n\", id, cfg.Version)\n\t} else {\n\t\tfmt.Printf(\"Reader %d: Config nil\\n\", id)\n\t}\n}\n\n// 設定更新 (アトミックにポインタ設定)\nfunc configUpdater(newCfg *Config, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tfmt.Printf(\"Updater: Set Ver='%s'\\n\", newCfg.Version)\n\tcurrentConfig.Store(newCfg) // アトミックにポインタ設定\n\t// ok := currentConfig.CompareAndSwap(oldCfg, newCfg) // CASも可能\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\tinitialCfg := &Config{Version: \"v1\"}\n\tcurrentConfig.Store(initialCfg) // 初期設定\n\n\twg.Add(2)\n\tgo configReader(1, &wg)\n\tgo configUpdater(&Config{Version: \"v2\"}, &wg)\n\twg.Wait()\n\n\tfinalCfg := currentConfig.Load()\n\tfmt.Printf(\"Final Version: %s\\n\", finalCfg.Version) // v2\n}"
       },
       {
-        "title": "並行処理: Context の生成 (`context` パッケージ)",
+        "title": "Context の生成 (`context` パッケージ)",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\ntype contextKey string // Value 用のキー型\nconst userIDKey contextKey = \"userID\"\n\nfunc main() {\n\t// 1. ルート Context (通常 Background を使う)\n\tctxBg := context.Background()\n\tfmt.Println(\"1. Background:\", ctxBg)\n\t// ctxTodo := context.TODO() // 未定の場合のプレースホルダー\n\n\t// 2. キャンセル可能 Context\n\tctxCancel, cancelFunc := context.WithCancel(ctxBg)\n\tdefer cancelFunc() // ★ 必ず cancel を呼ぶ\n\tfmt.Println(\"2. WithCancel:\", ctxCancel)\n\t// cancelFunc() // 呼ぶとキャンセルされる\n\n\t// 3. タイムアウト付き Context\n\tctxTimeout, cancelTimeout := context.WithTimeout(ctxBg, 100*time.Millisecond)\n\tdefer cancelTimeout() // ★ 必ず cancel を呼ぶ\n\tfmt.Println(\"3. WithTimeout:\", ctxTimeout)\n\n\t// 4. 値付き Context\n\tctxValue := context.WithValue(ctxBg, userIDKey, \"user-123\")\n\tfmt.Println(\"4. WithValue:\", ctxValue)\n\tretrieved := ctxValue.Value(userIDKey)\n\tfmt.Printf(\"   Value: %v (%T)\\n\", retrieved, retrieved)\n}"
       },
       {
-        "title": "並行処理: Context による値の伝達 (`context.WithValue`)",
+        "title": "Context による値の伝達 (`context.WithValue`)",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"net/http\"\n)\n\n// Context キー用の独自型\ntype contextKey string\nconst requestIDKey contextKey = \"requestID\"\n\n// ミドルウェア: Context にリクエストIDを追加\nfunc addRequestID(next http.Handler) http.Handler {\n\treturn http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n\t\treqID := \"req-123\" // 簡単な例\n\t\t// ★ WithValue で Context に値を追加\n\t\tctxWithID := context.WithValue(r.Context(), requestIDKey, reqID)\n\t\t// ★ 新しい Context を持つリクエストで次を呼び出す\n\t\tnext.ServeHTTP(w, r.WithContext(ctxWithID))\n\t})\n}\n\n// ハンドラ: Context からリクエストIDを取得\nfunc myHandler(w http.ResponseWriter, r *http.Request) {\n\t// ★ r.Context() で Context を取得\n\tctx := r.Context()\n\t// ★ Value() と型アサーションで値を取得\n\treqID, ok := ctx.Value(requestIDKey).(string)\n\tif !ok { reqID = \"unknown\" }\n\n\tfmt.Printf(\"[%s] ハンドラ処理\\n\", reqID)\n\tfmt.Fprintf(w, \"[%s] 完了\", reqID)\n\t// processData(ctx) // 後続処理にも ctx を渡せる\n}\n\nfunc main() {\n\thandlerWithMiddleware := addRequestID(http.HandlerFunc(myHandler))\n\thttp.Handle(\"/data\", handlerWithMiddleware)\n\tfmt.Println(\"Listening on :8080...\")\n\t// http.ListenAndServe(\":8080\", nil) // サーバー起動 (実行は省略)\n}"
       },
       {
-        "title": "並行処理: Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)",
+        "title": "Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// Context を受け取り、キャンセルをチェックする関数\nfunc longRunningTask(ctx context.Context, taskID int) error {\n\tfmt.Printf(\"Task %d: 開始\\n\", taskID)\n\tfor i := 0; i < 5; i++ {\n\t\tselect {\n\t\tcase <-ctx.Done(): // ★ Done() チャネルでキャンセルを検知\n\t\t\tfmt.Printf(\"Task %d: キャンセル (%v)\\n\", taskID, ctx.Err())\n\t\t\treturn ctx.Err() // キャンセル理由を返す\n\t\tcase <-time.After(200 * time.Millisecond): // 処理/待機を模倣\n\t\t\tfmt.Printf(\"Task %d: Step %d\\n\", taskID, i+1)\n\t\t}\n\t}\n\tfmt.Printf(\"Task %d: 正常終了\\n\", taskID)\n\treturn nil\n}\n\nfunc main() {\n\t// タイムアウト (500ms) 付き Context を作成\n\tctxTimeout, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)\n\tdefer cancel() // ★ cancel 関数を必ず呼ぶ\n\n\t// タスク実行 (1000ms かかるはず)\n\terr := longRunningTask(ctxTimeout, 1)\n\tif err != nil {\n\t\tfmt.Printf(\"Main: エラー: %v\\n\", err) // context deadline exceeded\n\t}\n}"
       },
       {
-        "title": "並行処理: Context による明示的なキャンセル",
+        "title": "Context による明示的なキャンセル",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\n// キャンセルされるまで作業するワーカー\nfunc worker(ctx context.Context, id int, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tfmt.Printf(\"Worker %d: 開始\\n\", id)\n\tfor {\n\t\tselect {\n\t\tcase <-ctx.Done(): // ★ キャンセルを検知\n\t\t\tfmt.Printf(\"Worker %d: キャンセル (%v)\\n\", id, ctx.Err())\n\t\t\treturn\n\t\tcase <-time.After(150 * time.Millisecond): // 作業模倣\n\t\t\tfmt.Printf(\"Worker %d: 動作中...\\n\", id)\n\t\t}\n\t}\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\n\t// キャンセル可能なルート Context と cancel 関数を作成\n\tctx, cancelAll := context.WithCancel(context.Background())\n\tdefer cancelAll() // ★ main 終了時に必ず cancel を呼ぶ\n\n\tnumWorkers := 2\n\twg.Add(numWorkers)\n\tfor i := 1; i <= numWorkers; i++ {\n\t\tgo worker(ctx, i, &wg) // 同じ ctx を渡す\n\t}\n\n\ttime.Sleep(400 * time.Millisecond) // しばらく実行\n\n\tfmt.Println(\"\\nMain: キャンセル実行 (cancelAll)\")\n\tcancelAll() // ★ これで全ワーカーにキャンセルが伝播\n\n\twg.Wait() // 全ワーカーの終了を待つ\n\tfmt.Println(\"Main: 全ワーカー終了\")\n}"
       }
     ]
@@ -899,79 +899,79 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Context",
     "codeExamples": [
       {
-        "title": "Context パッケージ: 概要",
+        "title": "概要",
         "code": "package context // (実際には組み込み)\n\nimport \"time\"\n\n// Context インターフェース定義\ntype Context interface {\n\tDeadline() (deadline time.Time, ok bool)\n\tDone() <-chan struct{}\n\tErr() error\n\tValue(key any) any\n}"
       },
       {
-        "title": "\"Context パッケージ: 基本的な Context の生成\"",
+        "title": "\"基本的な Context の生成\"",
         "code": "import \"context\"\n\n// main 関数や初期化処理でルート Context を生成\nctx := context.Background()\n\n// この ctx を基にして、WithCancel, WithTimeout などで子 Context を作成していく"
       },
       {
-        "title": "Context パッケージ: Context の受け渡し規約",
+        "title": "Context の受け渡し規約",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// 下位関数: Context を受け取りキャンセルをチェック\nfunc queryDatabase(ctx context.Context, query string) (string, error) {\n\tfmt.Printf(\" DB Query: '%s'\\n\", query)\n\tselect {\n\tcase <-time.After(100 * time.Millisecond): // 処理模倣\n\t\tfmt.Printf(\" Query OK: '%s'\\n\", query)\n\t\treturn \"data\", nil\n\tcase <-ctx.Done(): // ★ キャンセルチェック\n\t\tfmt.Printf(\" Query Cancelled: '%s' (%v)\\n\", query, ctx.Err())\n\t\treturn \"\", ctx.Err()\n\t}\n}\n\n// 上位関数: Context を受け取り下位関数に渡す\nfunc handleRequest(ctx context.Context, requestData string) error {\n\tfmt.Println(\"Request Handling Start\")\n\t// ★ 下位関数に ctx をそのまま渡す\n\tresult, err := queryDatabase(ctx, \"find:\"+requestData)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"request failed: %w\", err)\n\t}\n\tfmt.Printf(\"Result: %s\\n\", result)\n\treturn nil\n}\n\n// main (呼び出し元)\n// func main() {\n// \tctx := context.Background()\n// \tctxTimeout, cancel := context.WithTimeout(ctx, 50*time.Millisecond)\n// \tdefer cancel()\n// \thandleRequest(ctxTimeout, \"some-data\") // Context を渡す\n// }"
       },
       {
-        "title": "\"Context パッケージ: Context の伝播\"",
+        "title": "\"Context の伝播\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// 下位の関数: Context を受け取る\nfunc queryDatabase(ctx context.Context, query string) (string, error) {\n\tfmt.Printf(\"データベースクエリ '%s' を実行中...\\n\", query)\n\tselect {\n\tcase <-time.After(100 * time.Millisecond):\n\t\tfmt.Printf(\"クエリ '%s' 成功\\n\", query)\n\t\treturn \"結果データ\", nil\n\tcase <-ctx.Done(): // ★ 上位から渡された Context のキャンセルをチェック\n\t\tfmt.Printf(\"クエリ '%s' はキャンセルされました: %v\\n\", query, ctx.Err())\n\t\treturn \"\", ctx.Err()\n\t}\n}\n\n// 上位の関数: Context を受け取り、下位の関数にそのまま渡す\nfunc handleRequest(ctx context.Context, requestData string) error {\n\tfmt.Println(\"リクエスト処理開始\")\n\t// ★ 受け取った ctx をそのまま queryDatabase に渡す ★\n\tresult, err := queryDatabase(ctx, fmt.Sprintf(\"SELECT data WHERE id='%s'\", requestData))\n\tif err != nil {\n\t\treturn fmt.Errorf(\"リクエスト処理失敗: %w\", err)\n\t}\n\tfmt.Printf(\"取得結果: %s\\n\", result)\n\tfmt.Println(\"リクエスト処理完了\")\n\treturn nil\n}\n\nfunc main() {\n\t// タイムアウト付き Context を作成\n\tctxWithTimeout, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)\n\tdefer cancel()\n\n\t// handleRequest にタイムアウト付き Context を渡す\n\t// handleRequest はそれを queryDatabase に渡す\n\t// タイムアウト (50ms) がクエリの実行時間 (100ms) より短いため、キャンセルされる\n\terr := handleRequest(ctxWithTimeout, \"data1\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\t}\n}\n\n/* 実行結果:\nリクエスト処理開始\nデータベースクエリ 'SELECT data WHERE id='data1'' を実行中...\nクエリ 'SELECT data WHERE id='data1'' はキャンセルされました: context deadline exceeded\nエラー: リクエスト処理失敗: クエリ 'SELECT data WHERE id='data1'' はキャンセルされました: context deadline exceeded\n*/"
       },
       {
-        "title": "Context パッケージ: キャンセル可能な Context の生成 (`WithCancel`)",
+        "title": "キャンセル可能な Context の生成 (`WithCancel`)",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\n// キャンセルされるまで待機するワーカー\nfunc watch(ctx context.Context, name string, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tfmt.Printf(\"%s: 開始\\n\", name)\n\tselect {\n\tcase <-ctx.Done(): // キャンセルを待つ\n\t\tfmt.Printf(\"%s: キャンセル (%v)\\n\", name, ctx.Err())\n\t}\n}\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\trootCtx := context.Background()\n\n\t// キャンセル可能な Context を作成\n\tctx1, cancel1 := context.WithCancel(rootCtx)\n\tdefer cancel1() // ★ 必ず cancel を呼ぶ\n\n\twg.Add(1)\n\tgo watch(ctx1, \"Watcher 1\", &wg) // ctx1 を渡す\n\n\t// (ctx1 から派生した ctx2 を作成し、別の Goroutine に渡すことも可能)\n\t// ctx2, cancel2 := context.WithCancel(ctx1)\n\t// defer cancel2()\n\t// go watch(ctx2, \"Watcher 2\", &wg)\n\n\ttime.Sleep(100 * time.Millisecond)\n\n\tfmt.Println(\"main: cancel1() 呼び出し...\")\n\tcancel1() // ★ ctx1 をキャンセル (派生した ctx2 もキャンセルされる)\n\n\twg.Wait() // Goroutine の終了を待つ\n\tfmt.Println(\"main: 終了\")\n}"
       },
       {
-        "title": "\"Context パッケージ: キャンセルへの応答 (`ctx.Done()`)\"",
+        "title": "\"キャンセルへの応答 (`ctx.Done()`)\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// 時間のかかる処理をシミュレートする関数 (再掲)\nfunc longRunningTask(ctx context.Context, taskID int) error {\n\tfmt.Printf(\"タスク %d: 開始\\n\", taskID)\n\tticker := time.NewTicker(100 * time.Millisecond) // 定期的な処理を模倣\n\tdefer ticker.Stop()\n\n\tfor {\n\t\tselect {\n\t\tcase <-ctx.Done(): // ★ Context のキャンセルをチェック\n\t\t\tfmt.Printf(\"タスク %d: キャンセル検知 (%v)\\n\", taskID, ctx.Err())\n\t\t\treturn ctx.Err() // キャンセル理由を返す\n\t\tcase t := <-ticker.C: // ★ 通常の処理 (例: 100ms ごと)\n\t\t\tfmt.Printf(\"タスク %d: 実行中 at %v\\n\", taskID, t.Format(\"15:04:05.000\"))\n\t\t\t// ここで実際の処理を行う\n\t\t\t// もしこの処理が非常に長い場合は、さらに内部で ctx.Done() をチェックすることも検討\n\t\t}\n\t}\n}\n\nfunc main() {\n\t// キャンセル可能な Context を作成\n\tctx, cancel := context.WithCancel(context.Background())\n\n\t// Goroutine でタスクを開始\n\tgo longRunningTask(ctx, 1)\n\n\t// 500ms 後にキャンセル\n\ttime.Sleep(500 * time.Millisecond)\n\tfmt.Println(\"main: キャンセル実行！\")\n\tcancel()\n\n\t// Goroutine が終了するのを少し待つ\n\ttime.Sleep(100 * time.Millisecond)\n\tfmt.Println(\"main: 終了\")\n}\n\n/* 実行結果の例 (時刻は実行時に依存):\nタスク 1: 開始\nタスク 1: 実行中 at 01:50:00.100\nタスク 1: 実行中 at 01:50:00.200\nタスク 1: 実行中 at 01:50:00.300\nタスク 1: 実行中 at 01:50:00.400\nタスク 1: 実行中 at 01:50:00.500\nmain: キャンセル実行！\nタスク 1: キャンセル検知 (context canceled)\nmain: 終了\n*/"
       },
       {
-        "title": "Context パッケージ: ワーカーパターンにおけるキャンセル",
+        "title": "ワーカーパターンにおけるキャンセル",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"sync\"\n\t\"time\"\n)\n\ntype Task int\ntype Result int\n\n// ワーカー: Context を受け取り、キャンセルを監視\nfunc worker(ctx context.Context, id int, tasks <-chan Task, results chan<- Result, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tfmt.Printf(\"Worker %d: Start\\n\", id)\n\tfor {\n\t\tselect {\n\t\tcase task, ok := <-tasks:\n\t\t\tif !ok { return } // タスクチャネル close\n\t\t\tfmt.Printf(\"Worker %d: Task %d Process...\\n\", id, task)\n\t\t\ttime.Sleep(100 * time.Millisecond) // 処理模倣\n\t\t\tresults <- Result(task * 10)\n\t\tcase <-ctx.Done(): // ★ キャンセル検知\n\t\t\tfmt.Printf(\"Worker %d: Cancelled (%v)\\n\", id, ctx.Err())\n\t\t\treturn\n\t\t}\n\t}\n}\n\nfunc main() {\n\ttasks := make(chan Task, 5)\n\tresults := make(chan Result, 5)\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel() // main 終了時にキャンセル\n\tvar wg sync.WaitGroup\n\n\t// ワーカー起動\n\tfor w := 1; w <= 3; w++ {\n\t\twg.Add(1)\n\t\tgo worker(ctx, w, tasks, results, &wg) // ctx を渡す\n\t}\n\n\t// タスク送信\n\tfor j := 1; j <= 5; j++ { tasks <- Task(j) }\n\tclose(tasks) // タスク送信完了 -> ワーカーはタスクを終えたら終了できる\n\n\t// 途中でキャンセルする場合 (例)\n\t// time.Sleep(150 * time.Millisecond)\n\t// fmt.Println(\">>> Cancelling...\")\n\t// cancel() // これで全ワーカーにキャンセルが伝播\n\n\twg.Wait() // 全ワーカー終了待機\n\tclose(results) // 結果チャネルをクローズ\n\tfmt.Println(\"All workers done.\")\n\t// 結果収集 (省略)\n\t// for res := range results { fmt.Println(\"Result:\", res) }\n}"
       },
       {
-        "title": "Context パッケージ: タイムアウト付き Context (`WithTimeout`)",
+        "title": "タイムアウト付き Context (`WithTimeout`)",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// Context のキャンセルをチェックする関数\nfunc simulateWork(ctx context.Context, duration time.Duration) error {\n\tfmt.Printf(\"作業開始 (最大 %v)\\n\", duration)\n\tselect {\n\tcase <-time.After(duration): // 処理模倣\n\t\tfmt.Println(\"作業完了\")\n\t\treturn nil\n\tcase <-ctx.Done(): // ★ タイムアウト/キャンセル検知\n\t\tfmt.Printf(\"作業キャンセル: %v\\n\", ctx.Err())\n\t\treturn ctx.Err()\n\t}\n}\n\nfunc main() {\n\t// 500ms でタイムアウトする Context を作成\n\tctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)\n\tdefer cancel() // ★ 必ず cancel を呼ぶ\n\n\t// 1秒かかる処理を実行 -> タイムアウトするはず\n\terr := simulateWork(ctx, 1*time.Second)\n\tif err != nil {\n\t\tfmt.Printf(\"エラー: %v\\n\", err) // context deadline exceeded\n\t}\n}"
       },
       {
-        "title": "Context パッケージ: デッドライン付き Context (`WithDeadline`)",
+        "title": "デッドライン付き Context (`WithDeadline`)",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// Context のキャンセルをチェックする関数\nfunc simulateWork(ctx context.Context, duration time.Duration) error {\n\tfmt.Printf(\"作業開始 (最大 %v)\\n\", duration)\n\tselect {\n\tcase <-time.After(duration): // 処理模倣\n\t\tfmt.Println(\"作業完了\")\n\t\treturn nil\n\tcase <-ctx.Done(): // ★ デッドライン超過/キャンセル検知\n\t\tfmt.Printf(\"作業キャンセル: %v\\n\", ctx.Err())\n\t\treturn ctx.Err()\n\t}\n}\n\nfunc main() {\n\t// 500ms 後をデッドラインとして設定\n\tdeadline := time.Now().Add(500 * time.Millisecond)\n\tctx, cancel := context.WithDeadline(context.Background(), deadline)\n\tdefer cancel() // ★ 必ず cancel を呼ぶ\n\n\t// 1秒かかる処理を実行 -> デッドラインを超えるはず\n\terr := simulateWork(ctx, 1*time.Second)\n\tif err != nil {\n\t\tfmt.Printf(\"エラー: %v\\n\", err) // context deadline exceeded\n\t}\n}"
       },
       {
-        "title": "Context パッケージ: タイムアウト/デッドライン超過の確認",
+        "title": "タイムアウト/デッドライン超過の確認",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"time\"\n)\n\n// Context のキャンセル理由を確認する関数\nfunc checkContextStatus(ctx context.Context, name string) {\n\tselect {\n\tcase <-ctx.Done(): // キャンセル待ち\n\t\terr := ctx.Err() // 理由を取得\n\t\tfmt.Printf(\"%s: Cancelled. Reason: %v\\n\", name, err)\n\t\t// 理由を判定\n\t\tif err == context.DeadlineExceeded { // または errors.Is\n\t\t\tfmt.Printf(\"   -> %s: Timeout/Deadline\\n\", name)\n\t\t} else if err == context.Canceled { // または errors.Is\n\t\t\tfmt.Printf(\"   -> %s: Explicit Cancel\\n\", name)\n\t\t}\n\tcase <-time.After(1 * time.Second): // タイムアウト待ち (デモ用)\n\t\tfmt.Printf(\"%s: Not cancelled within 1s\\n\", name)\n\t}\n}\n\nfunc main() {\n\t// タイムアウトケース\n\tctxTimeout, cancelT := context.WithTimeout(context.Background(), 50*time.Millisecond)\n\tdefer cancelT()\n\tcheckContextStatus(ctxTimeout, \"TimeoutCtx\")\n\n\t// 明示的キャンセルケース\n\tctxCancel, cancelC := context.WithCancel(context.Background())\n\tgo func() { time.Sleep(100 * time.Millisecond); cancelC() }()\n\tcheckContextStatus(ctxCancel, \"CancelCtx\")\n\n\t// ラップされたエラーの場合 (解説参照)\n\t// wrappedErr := fmt.Errorf(\"... %w\", ctx.Err())\n\t// if errors.Is(wrappedErr, context.DeadlineExceeded) { ... }\n}"
       },
       {
-        "title": "Context パッケージ: HTTP クライアントでのタイムアウト/キャンセル",
+        "title": "HTTP クライアントでのタイムアウト/キャンセル",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"os\"\n\t\"time\"\n)\n\nfunc main() {\n\t// タイムアウト付き Context (例: 50ms)\n\trequestTimeout := 50 * time.Millisecond\n\tctx, cancel := context.WithTimeout(context.Background(), requestTimeout)\n\tdefer cancel() // ★ 必ず cancel を呼ぶ\n\n\t// Context 付きリクエスト作成\n\turl := \"https://example.com\"\n\treq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)\n\tif err != nil { /* エラー処理 */ return }\n\n\tfmt.Printf(\"GET %s (Timeout: %v)...\\n\", url, requestTimeout)\n\n\t// リクエスト実行\n\tresp, err := http.DefaultClient.Do(req)\n\t// ★ エラーがあってもなくても resp.Body を閉じる必要あり\n\tif resp != nil {\n\t\tdefer resp.Body.Close()\n\t}\n\n\t// エラーチェック\n\tif err != nil {\n\t\tfmt.Fprintf(os.Stderr, \"Request Error: %v\\n\", err)\n\t\t// タイムアウトかチェック\n\t\tif errors.Is(err, context.DeadlineExceeded) {\n\t\t\tfmt.Fprintln(os.Stderr, \"-> Timeout!\")\n\t\t}\n\t\treturn\n\t}\n\n\t// 成功時の処理 (例)\n\tfmt.Printf(\"Status: %s\\n\", resp.Status)\n\t// body, _ := io.ReadAll(resp.Body) // ボディ読み取りなど\n}"
       },
       {
-        "title": "Context パッケージ: データベース操作でのタイムアウト/キャンセル",
+        "title": "データベース操作でのタイムアウト/キャンセル",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"database/sql\"\n\t\"errors\"\n\t\"fmt\"\n\t\"log\"\n\t\"time\"\n\t// _ \"github.com/mattn/go-sqlite3\" // 実際のドライバ\n)\n\n// ダミーのDBクエリ関数 (Context をチェック)\nfunc dummyQueryContext(ctx context.Context, db *sql.DB, query string) error {\n\tfmt.Printf(\"Query: %s\\n\", query)\n\tselect {\n\tcase <-time.After(200 * time.Millisecond): // 200ms かかると仮定\n\t\tfmt.Println(\" -> Query Success (Dummy)\")\n\t\t// _, err := db.QueryContext(ctx, query) // 実際の呼び出し\n\t\t// return err\n\t\treturn nil\n\tcase <-ctx.Done(): // Context キャンセルをチェック\n\t\tfmt.Printf(\" -> Query Cancelled: %v\\n\", ctx.Err())\n\t\treturn ctx.Err()\n\t}\n}\n\nfunc main() {\n\t// db, err := sql.Open(\"sqlite3\", \":memory:\") // 実際の接続例\n\tdb := &sql.DB{} // ダミー\n\t// if err != nil { log.Fatal(err) }\n\t// defer db.Close()\n\n\t// 100ms でタイムアウトする Context\n\tctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)\n\tdefer cancel()\n\n\t// QueryContext (を模倣した関数) を呼び出す\n\terr := dummyQueryContext(ctx, db, \"SELECT ...\")\n\tif err != nil {\n\t\tfmt.Printf(\"Error: %v\\n\", err)\n\t\tif errors.Is(err, context.DeadlineExceeded) {\n\t\t\tfmt.Println(\"-> Timeout!\")\n\t\t}\n\t}\n}"
       },
       {
-        "title": "\"Context パッケージ: Context への値の追加 (`WithValue`)\"",
+        "title": "\"Context への値の追加 (`WithValue`)\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n)\n\n// キーとして使うための独自型\ntype contextKey string\n\nconst (\n\tuserIDKey    contextKey = \"userID\"\n\ttraceIDKey   contextKey = \"traceID\"\n\tsessionIDKey contextKey = \"sessionID\"\n)\n\nfunc main() {\n\t// 1. ベースとなる Context\n\tctx := context.Background()\n\tfmt.Printf(\"ベース Context: %v\\n\", ctx)\n\n\t// 2. userID を追加\n\tctx = context.WithValue(ctx, userIDKey, \"user-987\")\n\tfmt.Printf(\"userID 追加後: %v\\n\", ctx)\n\n\t// 3. traceID を追加 (前の Context を親にする)\n\tctx = context.WithValue(ctx, traceIDKey, \"trace-abc-123\")\n\tfmt.Printf(\"traceID 追加後: %v\\n\", ctx)\n\n\t// 4. sessionID を追加 (さらに親にする)\n\tctx = context.WithValue(ctx, sessionIDKey, \"sess-xyz-789\")\n\tfmt.Printf(\"sessionID 追加後: %v\\n\", ctx)\n\n\t// --- 値の取得 (後続のファイルで説明) ---\n\t// 値を取得するには ctx.Value(key) を使う\n\t// 例: userID := ctx.Value(userIDKey).(string)\n\t// 例: traceID := ctx.Value(traceIDKey).(string)\n\t// 例: sessionID := ctx.Value(sessionIDKey).(string)\n\t// 例: 존재하지 않는 키 -> nil\n\t// nonExistent := ctx.Value(contextKey(\"otherKey\"))\n\t// fmt.Printf(\"存在しないキーの値: %v (nil: %t)\\n\", nonExistent, nonExistent == nil)\n}\n\n/* 実行結果の例 (Context の文字列表現は内部詳細であり、変わりうる):\nベース Context: context.Background\nuserID 追加後: context.Background.WithValue(type main.contextKey, val user-987)\ntraceID 追加後: context.Background.WithValue(type main.contextKey, val user-987).WithValue(type main.contextKey, val trace-abc-123)\nsessionID 追加後: context.Background.WithValue(type main.contextKey, val user-987).WithValue(type main.contextKey, val trace-abc-123).WithValue(type main.contextKey, val sess-xyz-789)\n*/"
       },
       {
-        "title": "\"Context パッケージ: Context からの値の取得 (`Value`)\"",
+        "title": "\"Context からの値の取得 (`Value`)\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n)\n\n// キーとして使うための独自型 (再掲)\ntype contextKey string\n\nconst (\n\tuserIDKey    contextKey = \"userID\"\n\ttraceIDKey   contextKey = \"traceID\"\n\tsessionIDKey contextKey = \"sessionID\"\n)\n\n// Context を受け取り、値を表示する関数\nfunc processRequest(ctx context.Context) {\n\tfmt.Println(\"\\n--- processRequest ---\")\n\n\t// userID を取得\n\tuserIDValue := ctx.Value(userIDKey)\n\t// 型アサーション (カンマOKイディオム)\n\tuserID, ok := userIDValue.(string)\n\tif !ok {\n\t\tfmt.Println(\"userID が見つからないか、型が異なります。\")\n\t} else {\n\t\tfmt.Printf(\"取得した userID: %s\\n\", userID)\n\t}\n\n\t// traceID を取得\n\ttraceID, ok := ctx.Value(traceIDKey).(string)\n\tif !ok {\n\t\tfmt.Println(\"traceID が見つからないか、型が異なります。\")\n\t} else {\n\t\tfmt.Printf(\"取得した traceID: %s\\n\", traceID)\n\t}\n\n\t// 存在しないキーを試す\n\totherValue := ctx.Value(contextKey(\"otherKey\"))\n\tif otherValue == nil {\n\t\tfmt.Println(\"存在しないキー 'otherKey' の値は nil です。\")\n\t}\n}\n\nfunc main() {\n\t// 値を持つ Context を作成 (前のセクションの例)\n\tctx := context.Background()\n\tctx = context.WithValue(ctx, userIDKey, \"user-987\")\n\tctx = context.WithValue(ctx, traceIDKey, \"trace-abc-123\")\n\t// sessionIDKey は設定しない\n\n\t// 関数に Context を渡す\n\tprocessRequest(ctx)\n\n\t// sessionIDKey を持つ子 Context を作成\n\tctxWithSession := context.WithValue(ctx, sessionIDKey, \"sess-xyz-789\")\n\tprocessRequest(ctxWithSession) // この呼び出しでは sessionID も取得できるはず\n}\n\n/* 実行結果:\n--- processRequest ---\n取得した userID: user-987\n取得した traceID: trace-abc-123\n存在しないキー 'otherKey' の値は nil です。\n\n--- processRequest ---\n取得した userID: user-987\n取得した traceID: trace-abc-123\n存在しないキー 'otherKey' の値は nil です。\n*/"
       },
       {
-        "title": "\"Context パッケージ: 値のキーに関するベストプラクティス\"",
+        "title": "\"値のキーに関するベストプラクティス\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n)\n\n// --- キーの定義 ---\n// キーとして使うための非公開の独自型 (string のエイリアスでも良い)\ntype contextKey string\n// または type contextKey struct{} でも良い\n\n// このパッケージ内でのみ使うキー変数を定義\nconst (\n\tuserIDKey    contextKey = \"user_id\" // 値は何でも良いが、区別できる文字列が一般的\n\ttraceIDKey   contextKey = \"trace_id\"\n)\n\n// --- 値の設定と取得 ---\nfunc main() {\n\t// 値を設定\n\tctx := context.Background()\n\tctx = context.WithValue(ctx, userIDKey, 12345) // キーには userIDKey (contextKey 型) を使う\n\tctx = context.WithValue(ctx, traceIDKey, \"xyz-trace-987\")\n\n\t// 値を取得\n\tuserIDValue := ctx.Value(userIDKey) // キーには userIDKey を使う\n\tuserID, ok := userIDValue.(int)     // 型アサーション\n\tif ok {\n\t\tfmt.Printf(\"UserID: %d\\n\", userID)\n\t} else {\n\t\tfmt.Println(\"UserID が見つからないか、型が異なります。\")\n\t}\n\n\ttraceIDValue := ctx.Value(traceIDKey)\n\ttraceID, ok := traceIDValue.(string)\n\tif ok {\n\t\tfmt.Printf(\"TraceID: %s\\n\", traceID)\n\t} else {\n\t\tfmt.Println(\"TraceID が見つからないか、型が異なります。\")\n\t}\n\n\t// --- 文字列リテラルをキーとして使う場合 (非推奨) ---\n\t// ctx = context.WithValue(ctx, \"userID\", 12345) // 非推奨\n\t// userIDValue = ctx.Value(\"userID\")             // 非推奨\n}\n\n/* 実行結果:\nUserID: 12345\nTraceID: xyz-trace-987\n*/"
       },
       {
-        "title": "\"Context パッケージ: 呼び出しスタックを通じた Context の伝播\"",
+        "title": "\"呼び出しスタックを通じた Context の伝播\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"errors\" // errors パッケージをインポート\n\t\"fmt\"\n\t\"net/http\"\n\t\"time\"\n)\n\n// 下位の処理 (例: 外部 API 呼び出し)\nfunc callExternalAPI(ctx context.Context, param string) (string, error) {\n\tfmt.Printf(\"  (外部API呼び出し '%s' 開始...)\\n\", param)\n\tselect {\n\tcase <-time.After(150 * time.Millisecond): // API 応答に時間がかかると仮定\n\t\tfmt.Printf(\"  (外部API呼び出し '%s' 成功)\\n\", param)\n\t\treturn fmt.Sprintf(\"API結果(%s)\", param), nil\n\tcase <-ctx.Done(): // ★ Context のキャンセルをチェック\n\t\tfmt.Printf(\"  (外部API呼び出し '%s' キャンセル: %v)\\n\", param, ctx.Err())\n\t\treturn \"\", ctx.Err()\n\t}\n}\n\n// 中間の処理 (Context を受け取り、下位に渡す)\nfunc processLogic(ctx context.Context, data string) (string, error) {\n\tfmt.Printf(\" 中間処理 '%s' 開始...\\n\", data)\n\t// ★ 受け取った ctx をそのまま callExternalAPI に渡す ★\n\tresult, err := callExternalAPI(ctx, data)\n\tif err != nil {\n\t\treturn \"\", fmt.Errorf(\"中間処理失敗: %w\", err)\n\t}\n\tprocessedResult := fmt.Sprintf(\"処理済み: %s\", result)\n\tfmt.Printf(\" 中間処理 '%s' 完了\\n\", data)\n\treturn processedResult, nil\n}\n\n// HTTP ハンドラ (リクエストの起点)\nfunc handleRequest(w http.ResponseWriter, r *http.Request) {\n\tfmt.Println(\"\\n--- リクエスト受信 ---\")\n\t// リクエストから Context を取得 (ミドルウェアで値が追加されている可能性もある)\n\tctx := r.Context()\n\n\t// このリクエスト処理全体のタイムアウトを設定 (例: 200ms)\n\tctxWithTimeout, cancel := context.WithTimeout(ctx, 200*time.Millisecond)\n\tdefer cancel() // ハンドラ終了時に cancel を呼ぶ\n\n\t// ★ タイムアウト付き Context を下位の処理に渡す ★\n\tresult, err := processLogic(ctxWithTimeout, \"input-data\")\n\tif err != nil {\n\t\t// エラーの種類に応じて適切なステータスコードを返す\n\t\tstatusCode := http.StatusInternalServerError\n\t\tif errors.Is(err, context.DeadlineExceeded) {\n\t\t\tstatusCode = http.StatusGatewayTimeout // タイムアウトの場合\n\t\t}\n\t\thttp.Error(w, err.Error(), statusCode)\n\t\tfmt.Printf(\"--- リクエスト処理エラー: %v ---\\n\", err)\n\t\treturn\n\t}\n\n\t// 成功レスポンス\n\tfmt.Fprintf(w, \"成功: %s\", result)\n\tfmt.Println(\"--- リクエスト処理成功 ---\")\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/\", handleRequest)\n\tfmt.Println(\"サーバーをポート :8080 で起動します...\")\n\t// エラーハンドリングを追加\n\terr := http.ListenAndServe(\":8080\", nil)\n\tif err != nil {\n\t\tfmt.Printf(\"サーバー起動エラー: %v\\n\", err)\n\t}\n}"
       },
       {
-        "title": "\"Context パッケージ: ミドルウェアでの Context 利用\"",
+        "title": "\"ミドルウェアでの Context 利用\"",
         "code": "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"time\"\n)\n\n// キーの型とキー\ntype contextKey string\nconst requestTimeKey contextKey = \"requestTime\"\nconst requestIDKey contextKey = \"requestID\" // 200_context-with-values.md の例から\n\n// リクエスト時刻とIDを追加するミドルウェア\nfunc loggingMiddleware(next http.Handler) http.Handler {\n\treturn http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n\t\tstartTime := time.Now()\n\t\treqID := fmt.Sprintf(\"req-%d\", startTime.UnixNano()) // 簡単なID生成\n\n\t\t// 元の Context を取得\n\t\tctx := r.Context()\n\t\t// 値を追加して新しい Context を生成\n\t\tctx = context.WithValue(ctx, requestTimeKey, startTime)\n\t\tctx = context.WithValue(ctx, requestIDKey, reqID)\n\n\t\tfmt.Printf(\"[%s] ミドルウェア: リクエスト受信 (%s)\\n\", reqID, r.URL.Path)\n\n\t\t// 新しい Context を持つリクエストで次のハンドラを呼び出す\n\t\tnext.ServeHTTP(w, r.WithContext(ctx))\n\n\t\t// レスポンスが返された後の処理 (例: 処理時間ログ)\n\t\tduration := time.Since(startTime)\n\t\tfmt.Printf(\"[%s] ミドルウェア: 処理完了 (%s, duration: %v)\\n\", reqID, r.URL.Path, duration)\n\t})\n}\n\n// Context から値を取得するハンドラ\nfunc myHandler(w http.ResponseWriter, r *http.Request) {\n\tctx := r.Context()\n\treqID, _ := ctx.Value(requestIDKey).(string)\n\tstartTime, _ := ctx.Value(requestTimeKey).(time.Time)\n\n\tfmt.Printf(\"[%s] ハンドラ: 処理開始 (リクエスト時刻: %s)\\n\", reqID, startTime.Format(time.RFC3339Nano))\n\ttime.Sleep(50 * time.Millisecond) // 処理をシミュレート\n\tfmt.Fprintf(w, \"[%s] Hello!\", reqID)\n}\n\nfunc main() {\n\tfinalHandler := http.HandlerFunc(myHandler)\n\t// ミドルウェアでハンドラをラップ\n\thttp.Handle(\"/\", loggingMiddleware(finalHandler))\n\n\tfmt.Println(\"サーバーをポート :8080 で起動します...\")\n\t// エラーハンドリングを追加\n\terr := http.ListenAndServe(\":8080\", nil)\n\tif err != nil {\n\t\tfmt.Printf(\"サーバー起動エラー: %v\\n\", err)\n\t}\n}\n\n/*\nサーバー起動後、 http://localhost:8080/ にアクセスすると、\nコンソールに以下のようなログが出力される (IDと時刻は実行ごとに変わる):\n\n[req-1711644000123456789] ミドルウェア: リクエスト受信 (/)\n[req-1711644000123456789] ハンドラ: 処理開始 (リクエスト時刻: 2025-03-29T01:56:00.123456789+09:00)\n[req-1711644000123456789] ミドルウェア: 処理完了 (/, duration: 50.XXXms)\n*/"
       },
       {
-        "title": "Context パッケージ: タイムアウト Context を使ったテスト",
+        "title": "タイムアウト Context を使ったテスト",
         "code": "package processor_test // テスト対象とは別パッケージ\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"testing\" // testing パッケージ\n\t\"time\"\n\n\t\"myproject/processor\" // テスト対象パッケージ (パスは例)\n)\n\n// 正常系: タイムアウトしない\nfunc TestProcessDataWithContext_Success(t *testing.T) {\n\t// 処理時間(150ms想定)より長いタイムアウト(500ms)\n\tctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)\n\tdefer cancel()\n\n\t_, err := processor.ProcessDataWithContext(ctx, \"test-success\")\n\tif err != nil { // エラーが発生しないことを期待\n\t\tt.Errorf(\"予期せぬエラー: %v\", err)\n\t}\n}\n\n// 異常系: タイムアウトする\nfunc TestProcessDataWithContext_Timeout(t *testing.T) {\n\t// 処理時間(150ms想定)より短いタイムアウト(50ms)\n\tctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)\n\tdefer cancel()\n\n\t_, err := processor.ProcessDataWithContext(ctx, \"test-timeout\")\n\n\t// エラーが発生することを期待\n\tif err == nil {\n\t\tt.Fatal(\"タイムアウトエラーが発生しませんでした\")\n\t}\n\t// ★ エラーが DeadlineExceeded であることを確認 ★\n\tif !errors.Is(err, context.DeadlineExceeded) {\n\t\tt.Errorf(\"期待したエラーは DeadlineExceeded ですが、実際は %v\", err)\n\t}\n}\n\n// --- テスト対象の関数 (例: processor/processor.go) ---\n/*\npackage processor\nimport (\"context\"; \"time\"; \"fmt\")\nfunc ProcessDataWithContext(ctx context.Context, data string) (string, error) {\n\tselect {\n\tcase <-time.After(150 * time.Millisecond): // 150ms かかる処理\n\t\treturn \"processed: \" + data, nil\n\tcase <-ctx.Done(): // キャンセルチェック\n\t\treturn \"\", ctx.Err()\n\t}\n}\n*/"
       },
       {
-        "title": "Context パッケージ: キャンセル Context を使ったテスト",
+        "title": "キャンセル Context を使ったテスト",
         "code": "package processor_test\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"testing\"\n\t\"time\"\n\n\t\"myproject/processor\" // テスト対象パッケージ (パスは例)\n)\n\n// テスト: 明示的にキャンセルする場合\nfunc TestProcessDataWithContext_Cancel(t *testing.T) {\n\t// キャンセル可能な Context を作成\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel() // テスト終了時に確実に解放\n\n\terrChan := make(chan error, 1) // 結果受け取り用チャネル\n\n\t// テスト対象関数を Goroutine で実行\n\tgo func() {\n\t\t_, err := processor.ProcessDataWithContext(ctx, \"test-cancel\")\n\t\terrChan <- err\n\t}()\n\n\t// 少し待ってからキャンセルを実行 (処理時間より短く)\n\ttime.Sleep(50 * time.Millisecond)\n\tfmt.Println(\"Test: cancel() 呼び出し...\")\n\tcancel() // ★ Context をキャンセル\n\n\t// 結果を検証 (タイムアウト付きで待つのがより安全)\n\tselect {\n\tcase err := <-errChan:\n\t\tif err == nil { // エラーが発生することを期待\n\t\t\tt.Fatal(\"キャンセルエラーが発生しませんでした\")\n\t\t}\n\t\t// ★ エラーが Canceled であることを確認 ★\n\t\tif !errors.Is(err, context.Canceled) {\n\t\t\tt.Errorf(\"期待エラーは Canceled ですが、実際は %v\", err)\n\t\t} else {\n\t\t\tfmt.Println(\"Test: 期待通りキャンセルされました\")\n\t\t}\n\tcase <-time.After(1 * time.Second): // テスト自体のタイムアウト\n\t\tt.Fatal(\"テストがタイムアウトしました\")\n\t}\n}\n\n// --- テスト対象の関数 (例: processor/processor.go) ---\n/*\npackage processor\nimport (\"context\"; \"time\"; \"fmt\")\nfunc ProcessDataWithContext(ctx context.Context, data string) (string, error) {\n\tselect {\n\tcase <-time.After(150 * time.Millisecond): // 150ms かかる処理\n\t\treturn \"processed: \" + data, nil\n\tcase <-ctx.Done(): // キャンセルチェック\n\t\treturn \"\", ctx.Err()\n\t}\n}\n*/",
         "description": "Context のテストでは通常モックは不要。\n標準の context.WithCancel や context.WithTimeout を使う。\n例 (タイムアウトテスト):\nctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)\ndefer cancel()\nerr := functionUnderTest(ctx)\nif !errors.Is(err, context.DeadlineExceeded) { /* エラー処理 */ }\n例 (キャンセルテスト):\nctx, cancel := context.WithCancel(context.Background())\ndefer cancel()\ngo func() { time.Sleep(50*time.Millisecond); cancel() }()\nerr := functionUnderTest(ctx)\nif !errors.Is(err, context.Canceled) { /* エラー処理 */ }\n例 (値テスト):\nctx := context.WithValue(context.Background(), myKey, testValue)\nfunctionUnderTest(ctx)\n// (必要なら functionUnderTest 内での値利用を検証)"
       }
@@ -982,99 +982,99 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Io Operations",
     "codeExamples": [
       {
-        "title": "I/O 操作: ファイル全体を読み込む (`os.ReadFile`)",
+        "title": "ファイル全体を読み込む (`os.ReadFile`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os パッケージ\n)\n\nfunc main() {\n\tfileName := \"example.txt\" // 読み込むファイル名\n\t// 事前にファイルを作成しておく必要があります\n\t// os.WriteFile(fileName, []byte(\"ファイル内容\"), 0644)\n\n\tfmt.Printf(\"'%s' を読み込み中...\\n\", fileName)\n\t// os.ReadFile でファイル全体をバイトスライスに読み込む\n\tdata, err := os.ReadFile(fileName)\n\n\t// エラーチェックは必須\n\tif err != nil {\n\t\tlog.Fatalf(\"読み込み失敗: %v\", err)\n\t}\n\n\t// 読み込んだ内容 (バイトスライス) を文字列に変換して表示\n\tfmt.Println(\"--- 内容 ---\")\n\tfmt.Print(string(data))\n\tfmt.Println(\"------------\")\n\tfmt.Printf(\"バイト数: %d\\n\", len(data))\n\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: ファイルへの書き込み (`os.WriteFile`)",
+        "title": "ファイルへの書き込み (`os.WriteFile`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os パッケージ\n)\n\nfunc main() {\n\tfileName := \"output.txt\"\n\tcontent := \"os.WriteFile で書き込むテキスト。\\n改行もOK。\\n\"\n\tdata := []byte(content) // 文字列をバイトスライスに変換\n\n\t// os.WriteFile でファイルに書き込む (パーミッション 0644)\n\terr := os.WriteFile(fileName, data, 0644)\n\n\t// エラーチェックは必須\n\tif err != nil {\n\t\tlog.Fatalf(\"書き込み失敗 '%s': %v\", fileName, err)\n\t}\n\n\tfmt.Printf(\"'%s' に書き込み成功。\\n\", fileName)\n\n\t// (確認のため os.ReadFile で読み込む処理は省略)\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: ファイルを開く/作成する (`os.Open`, `os.Create`, `os.OpenFile`)",
+        "title": "ファイルを開く/作成する (`os.Open`, `os.Create`, `os.OpenFile`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"test_open.txt\"\n\n\t// os.Create: 書き込み用に作成 (または上書き)\n\tfile1, err := os.Create(fileName)\n\tif err != nil { log.Fatalf(\"Create failed: %v\", err) }\n\tfmt.Printf(\"'%s' created/opened for writing.\\n\", fileName)\n\tdefer file1.Close() // ★ 必ず Close する\n\t// file1.WriteString(\"...\") // 書き込み可能\n\n\t// os.Open: 読み取り専用で開く\n\tfile2, err := os.Open(fileName) // 既存ファイルを開く\n\tif err != nil { log.Fatalf(\"Open failed: %v\", err) }\n\tfmt.Printf(\"'%s' opened for reading.\\n\", fileName)\n\tdefer file2.Close() // ★ 必ず Close する\n\t// content, _ := io.ReadAll(file2) // 読み取り可能\n\n\t// os.OpenFile: 追記モードで開く (例)\n\t// flag := os.O_WRONLY | os.O_APPEND | os.O_CREATE\n\t// file3, err := os.OpenFile(fileName, flag, 0644)\n\t// if err != nil { log.Fatalf(\"OpenFile failed: %v\", err) }\n\t// fmt.Printf(\"'%s' opened for appending.\\n\", fileName)\n\t// defer file3.Close()\n\t// file3.WriteString(\"Appended text.\\n\")\n\n\tos.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: ファイルからの読み込み (`file.Read`)",
+        "title": "ファイルからの読み込み (`file.Read`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.EOF\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"example.txt\" // 事前に作成しておく\n\t// os.WriteFile(fileName, []byte(\"Line1\\nLine2\"), 0644)\n\n\tfile, err := os.Open(fileName) // 読み取り用に開く\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close() // ★ 必ず閉じる\n\n\tbuffer := make([]byte, 32) // 読み込み用バッファ\n\ttotalBytes := 0\n\tfmt.Println(\"--- Reading ---\")\n\n\tfor {\n\t\t// バッファに読み込む\n\t\tbytesRead, err := file.Read(buffer)\n\t\tif bytesRead > 0 {\n\t\t\t// 読み込んだ分だけ処理 (例: 表示)\n\t\t\tfmt.Printf(\"Read %d bytes: %s\\n\", bytesRead, string(buffer[:bytesRead]))\n\t\t\ttotalBytes += bytesRead\n\t\t}\n\n\t\t// ★ エラーチェック (EOF含む) ★\n\t\tif err != nil {\n\t\t\tif err == io.EOF { // ファイル終端なら正常終了\n\t\t\t\tfmt.Println(\"--- EOF ---\")\n\t\t\t\tbreak // ループを抜ける\n\t\t\t}\n\t\t\t// EOF 以外のエラー\n\t\t\tlog.Fatalf(\"Read error: %v\", err)\n\t\t}\n\t}\n\tfmt.Printf(\"Total read: %d bytes\\n\", totalBytes)\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: ファイルへの書き込み (`file.Write`, `file.WriteString`)",
+        "title": "ファイルへの書き込み (`file.Write`, `file.WriteString`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"output_write.txt\"\n\tfile, err := os.Create(fileName) // 書き込み用に作成/オープン\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close() // ★ 必ず閉じる\n\n\tfmt.Printf(\"'%s' を書き込み用にオープン\\n\", fileName)\n\n\t// file.Write でバイトスライスを書き込む\n\tdata1 := []byte(\"Write で書き込み\\n\")\n\tn1, err := file.Write(data1)\n\tif err != nil { log.Fatalf(\"Write 失敗: %v\", err) }\n\tfmt.Printf(\"Write: %d バイト書き込み\\n\", n1)\n\n\t// file.WriteString で文字列を書き込む\n\tn2, err := file.WriteString(\"WriteString で書き込み\\n\")\n\tif err != nil { log.Fatalf(\"WriteString 失敗: %v\", err) }\n\tfmt.Printf(\"WriteString: %d バイト書き込み\\n\", n2)\n\n\t// fmt.Fprintf(file, \"Fprintf も使える\\n\") // *os.File は io.Writer\n\n\tfmt.Println(\"書き込み完了\")\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: ファイル内の位置移動 (`file.Seek`)",
+        "title": "ファイル内の位置移動 (`file.Seek`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // Seek 定数\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"example_seek.txt\"\n\t// 事前にファイル作成: os.WriteFile(fileName, []byte(\"0123456789ABC...\"), 0644)\n\n\tfile, err := os.OpenFile(fileName, os.O_RDWR, 0644) // 読み書きで開く\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\tbuffer := make([]byte, 5)\n\n\t// 1. 先頭から 10 バイト目に移動 (SeekStart)\n\tnewOffset, err := file.Seek(10, io.SeekStart)\n\tif err != nil { log.Fatal(err) }\n\tfmt.Printf(\"Seek(10, Start): Offset=%d\\n\", newOffset) // 10\n\n\t// 2. 現在位置から 5 バイト読み込む\n\tn, err := file.Read(buffer)\n\tif err != nil { log.Fatal(err) }\n\tfmt.Printf(\" Read: %s\\n\", string(buffer[:n])) // ABCDE\n\n\t// 3. 末尾から 5 バイト前に移動 (SeekEnd)\n\tnewOffset, err = file.Seek(-5, io.SeekEnd)\n\tif err != nil { log.Fatal(err) }\n\tfmt.Printf(\"Seek(-5, End): Offset=%d\\n\", newOffset) // 例: 31\n\n\t// 4. 現在位置から 5 バイト読み込む\n\tn, err = file.Read(buffer)\n\tif err != nil && err != io.EOF { log.Fatal(err) }\n\tfmt.Printf(\" Read: %s\\n\", string(buffer[:n])) // VWXYZ\n\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: データのコピー (`io.Copy`, `io.CopyN`)",
+        "title": "データのコピー (`io.Copy`, `io.CopyN`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.Copy\n\t\"log\"\n\t\"os\"\n\t// \"strings\" // strings.NewReader の例は省略\n)\n\nfunc main() {\n\t// --- ファイルからファイルへのコピー ---\n\tsrcFileName := \"source.txt\"\n\tdstFileName := \"dest.txt\"\n\tos.WriteFile(srcFileName, []byte(\"Source content.\\n\"), 0644) // 元ファイル準備\n\n\tsrcFile, err := os.Open(srcFileName) // Reader として開く\n\tif err != nil { log.Fatal(err) }\n\tdefer srcFile.Close()\n\n\tdstFile, err := os.Create(dstFileName) // Writer として開く\n\tif err != nil { log.Fatal(err) }\n\tdefer dstFile.Close()\n\n\t// ★ io.Copy で src から dst へコピー ★\n\tbytesCopied, err := io.Copy(dstFile, srcFile)\n\tif err != nil {\n\t\tlog.Fatalf(\"コピー失敗: %v\", err)\n\t}\n\tfmt.Printf(\"Copied %d bytes from %s to %s\\n\", bytesCopied, srcFileName, dstFileName)\n\n\t// (コピー結果確認や後片付けは省略)\n\t// os.Remove(srcFileName); os.Remove(dstFileName)\n}"
       },
       {
-        "title": "I/O 操作: 一時ディレクトリの作成 (`os.MkdirTemp`)",
+        "title": "一時ディレクトリの作成 (`os.MkdirTemp`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n\t// \"path/filepath\"\n)\n\nfunc main() {\n\tfmt.Println(\"一時ディレクトリ作成...\")\n\n\t// システム一時ディレクトリ内に \"myapp-*\" パターンのディレクトリ作成\n\ttempDir, err := os.MkdirTemp(\"\", \"myapp-*\")\n\tif err != nil {\n\t\tlog.Fatalf(\"作成失敗: %v\", err)\n\t}\n\n\t// ★★★ defer で必ず削除 ★★★\n\tdefer func() {\n\t\tfmt.Printf(\"defer: '%s' を削除\\n\", tempDir)\n\t\terr := os.RemoveAll(tempDir) // ディレクトリと中身を削除\n\t\tif err != nil { log.Printf(\"警告: 削除失敗: %v\", err) }\n\t}()\n\n\tfmt.Printf(\"作成された一時ディレクトリ: %s\\n\", tempDir)\n\n\t// --- 一時ディレクトリ内にファイル作成等 ---\n\t// filePath := filepath.Join(tempDir, \"temp.txt\")\n\t// os.WriteFile(filePath, []byte(\"data\"), 0644)\n\tfmt.Println(\"一時ディレクトリ内で処理実行中...\")\n\n\t// main 終了時に defer が実行される\n}"
       },
       {
-        "title": "I/O 操作: 一時ファイルの作成 (`os.CreateTemp`)",
+        "title": "一時ファイルの作成 (`os.CreateTemp`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfmt.Println(\"一時ファイル作成...\")\n\n\t// 一時ディレクトリ内に \"temp-*.txt\" パターンのファイルを作成・オープン\n\ttempFile, err := os.CreateTemp(\"\", \"temp-*.txt\")\n\tif err != nil { log.Fatal(err) }\n\n\t// ★★★ 2段階 defer でクリーンアップ ★★★\n\t// 1. ファイルハンドルを閉じる (Remove より先に defer)\n\tdefer func() {\n\t\tfmt.Printf(\"defer: Close '%s'\\n\", tempFile.Name())\n\t\ttempFile.Close()\n\t}()\n\t// 2. ファイル自体を削除する (Close より後に defer)\n\tdefer func() {\n\t\tfmt.Printf(\"defer: Remove '%s'\\n\", tempFile.Name())\n\t\tos.Remove(tempFile.Name())\n\t}()\n\n\n\tfmt.Printf(\"作成された一時ファイル: %s\\n\", tempFile.Name())\n\n\t// 一時ファイルに書き込む\n\t_, err = tempFile.Write([]byte(\"一時データ\"))\n\tif err != nil { log.Fatal(err) }\n\tfmt.Println(\"一時ファイルに書き込み完了\")\n\n\t// main 終了時に defer が逆順 (Remove -> Close) で実行される\n}"
       },
       {
-        "title": "I/O 操作: Reader からすべて読み込む (`io.ReadAll`)",
+        "title": "Reader からすべて読み込む (`io.ReadAll`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.ReadAll\n\t\"log\"\n\t\"strings\" // strings.NewReader\n\t// \"os\"\n\t// \"net/http\"\n)\n\nfunc main() {\n\t// 例: strings.Reader から読み込む\n\treader := strings.NewReader(\"リーダーからのデータ。\")\n\tdata, err := io.ReadAll(reader) // Reader から全て読み込む\n\n\tif err != nil { // EOF 以外のエラーチェック\n\t\tlog.Fatalf(\"ReadAll 失敗: %v\", err)\n\t}\n\n\t// data は []byte\n\tfmt.Printf(\"読み込み成功 (%d bytes): %s\\n\", len(data), string(data))\n\n\t// --- 他の Reader の例 ---\n\t// file, _ := os.Open(\"file.txt\")\n\t// defer file.Close()\n\t// fileData, _ := io.ReadAll(file)\n\n\t// resp, _ := http.Get(\"...\")\n\t// defer resp.Body.Close()\n\t// bodyData, _ := io.ReadAll(resp.Body)\n}"
       },
       {
-        "title": "I/O 操作: 複数の Reader の連結 (`io.MultiReader`)",
+        "title": "複数の Reader の連結 (`io.MultiReader`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\" // io.MultiReader, io.Copy\n\t\"log\"\n\t\"os\"\n\t\"strings\" // strings.NewReader\n)\n\nfunc main() {\n\t// 複数の Reader を準備\n\tr1 := strings.NewReader(\"First part. \")\n\tr2 := strings.NewReader(\"Second part. \")\n\tr3 := strings.NewReader(\"Third part.\")\n\n\t// io.MultiReader で連結\n\tmultiReader := io.MultiReader(r1, r2, r3)\n\n\tfmt.Println(\"--- Reading from MultiReader ---\")\n\n\t// 連結された Reader から io.Copy で読み込む\n\tbytesCopied, err := io.Copy(os.Stdout, multiReader) // 標準出力へコピー\n\tfmt.Println() // 改行\n\tif err != nil {\n\t\tlog.Fatalf(\"Copy failed: %v\", err)\n\t}\n\tfmt.Printf(\"(Copied %d bytes)\\n\", bytesCopied)\n\n\t// 読み込み後、元の r1, r2, r3 は EOF になっている\n}"
       },
       {
-        "title": "I/O 操作: 複数への同時書き込み (`io.MultiWriter`)",
+        "title": "複数への同時書き込み (`io.MultiWriter`)",
         "code": "package main\n\nimport (\n\t\"bytes\" // bytes.Buffer\n\t\"fmt\"\n\t\"io\" // io.MultiWriter, io.WriteString\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\t// 書き込み先を準備\n\tw1 := os.Stdout      // 1. 標準出力\n\tvar w2 bytes.Buffer // 2. メモリバッファ (io.Writer を満たす)\n\t// w3, _ := os.Create(\"file.log\") // 3. ファイル (例)\n\t// defer w3.Close()\n\n\t// io.MultiWriter で複数の Writer を束ねる\n\t// ここでは標準出力とメモリバッファに書き込む Writer を作成\n\tmultiWriter := io.MultiWriter(w1, &w2) // バッファはポインタを渡す\n\n\tfmt.Println(\"--- Writing to MultiWriter ---\")\n\n\t// multiWriter に書き込むと、w1 と w2 の両方に書き込まれる\n\tmessage := \"Log message.\\n\"\n\tn, err := io.WriteString(multiWriter, message)\n\tif err != nil {\n\t\tlog.Fatalf(\"Write failed: %v\", err)\n\t}\n\tfmt.Printf(\"(Wrote %d bytes)\\n\", n)\n\n\tfmt.Println(\"--- End Writing ---\")\n\n\t// 結果確認 (バッファの内容)\n\tfmt.Println(\"\\n--- Buffer Content ---\")\n\tfmt.Print(w2.String()) // \"Log message.\\n\" が入っている\n}"
       },
       {
-        "title": "I/O 操作: バッファ付きリーダー (`bufio.NewReader`)",
+        "title": "バッファ付きリーダー (`bufio.NewReader`)",
         "code": "package main\n\nimport (\n\t\"bufio\" // bufio パッケージ\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"os\"\n\t// \"strings\"\n)\n\nfunc main() {\n\tfileName := \"example.txt\" // 事前に作成しておく\n\t// os.WriteFile(fileName, []byte(\"Line1\\nLine2\\n\"), 0644)\n\n\tfile, err := os.Open(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\t// bufio.NewReader でラップ\n\treader := bufio.NewReader(file)\n\n\tfmt.Println(\"--- Reading line by line ---\")\n\tfor {\n\t\t// ReadString('\\n') で改行まで読み込む\n\t\tline, err := reader.ReadString('\\n')\n\t\tif len(line) > 0 {\n\t\t\tfmt.Print(line) // 読み込んだ行を表示 (改行含む)\n\t\t}\n\n\t\t// エラーチェック (EOF含む)\n\t\tif err != nil {\n\t\t\tif err == io.EOF {\n\t\t\t\tfmt.Println(\"--- EOF ---\")\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tlog.Fatalf(\"Read error: %v\", err)\n\t\t}\n\t}\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: バッファ付きスキャナー (`bufio.Scanner`)",
+        "title": "バッファ付きスキャナー (`bufio.Scanner`)",
         "code": "package main\n\nimport (\n\t\"bufio\" // bufio.Scanner\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n\t// \"strings\"\n)\n\nfunc main() {\n\tfileName := \"example_scanner.txt\" // 事前に作成しておく\n\t// os.WriteFile(fileName, []byte(\"Line 1\\nLine 2\\n\"), 0644)\n\n\tfile, err := os.Open(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\t// Scanner を作成 (デフォルトは行単位でスキャン)\n\tscanner := bufio.NewScanner(file)\n\n\tfmt.Println(\"--- Reading file line by line ---\")\n\tlineNum := 1\n\t// for scanner.Scan() ループで反復処理\n\tfor scanner.Scan() {\n\t\t// scanner.Text() で現在の行を取得 (改行は含まない)\n\t\tline := scanner.Text()\n\t\tfmt.Printf(\"%d: %s\\n\", lineNum, line)\n\t\tlineNum++\n\t}\n\n\t// ★ ループ終了後、必ずエラーをチェック ★\n\tif err := scanner.Err(); err != nil {\n\t\tlog.Fatalf(\"Scan error: %v\", err)\n\t}\n\tfmt.Println(\"Scan finished.\")\n\t// os.Remove(fileName) // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: バッファ付きライター (`bufio.Writer`)",
+        "title": "バッファ付きライター (`bufio.Writer`)",
         "code": "package main\n\nimport (\n\t\"bufio\" // bufio.Writer\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\tfileName := \"output_buffered.txt\"\n\tfile, err := os.Create(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close() // ファイル自体の Close も必要\n\n\t// bufio.NewWriter でラップ\n\twriter := bufio.NewWriter(file)\n\n\tfmt.Println(\"Writing to buffer...\")\n\t// データ書き込み (バッファへ)\n\tn1, _ := writer.WriteString(\"Buffered Write 1.\\n\")\n\tn2, _ := writer.Write([]byte(\"Buffered Write 2.\\n\"))\n\t_ = writer.WriteByte('!')\n\tfmt.Printf(\"Buffered: %d bytes\\n\", writer.Buffered()) // バッファ内のバイト数\n\n\t// ★★★ Flush でバッファ内容を書き出す ★★★\n\tfmt.Println(\"Flushing buffer...\")\n\terr = writer.Flush() // この時点でファイルに書き込まれる\n\tif err != nil { log.Fatalf(\"Flush failed: %v\", err) }\n\tfmt.Println(\"Flush complete.\")\n\tfmt.Printf(\"Buffered after flush: %d bytes\\n\", writer.Buffered()) // 0\n\n\t// (ファイル内容確認や os.Remove は省略)\n}"
       },
       {
-        "title": "I/O 操作: 文字列を Reader として扱う (`strings.NewReader`)",
+        "title": "文字列を Reader として扱う (`strings.NewReader`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"os\"\n\t\"strings\" // strings.NewReader\n)\n\n// io.Reader を受け取る関数 (例)\nfunc printContent(r io.Reader) error {\n\tfmt.Println(\"--- Content ---\")\n\t_, err := io.Copy(os.Stdout, r) // Reader から標準出力へコピー\n\tfmt.Println(\"\\n---------------\")\n\treturn err\n}\n\nfunc main() {\n\tmyString := \"メモリ上の文字列データ。\\nReader として扱える。\"\n\n\t// strings.NewReader で文字列から Reader を作成\n\tstringReader := strings.NewReader(myString)\n\n\t// io.Reader を引数に取る関数に渡す\n\terr := printContent(stringReader)\n\tif err != nil { log.Fatal(err) }\n\n\t// 読み込み後は EOF になっている\n\t// n, readErr := stringReader.Read([]byte{0}) // n=0, readErr=io.EOF\n\n\t// Seek も可能 (io.Seeker を満たす)\n\t// stringReader.Seek(10, io.SeekStart)\n}"
       },
       {
-        "title": "I/O 操作: バイトバッファ (`bytes.Buffer`)",
+        "title": "バイトバッファ (`bytes.Buffer`)",
         "code": "package main\n\nimport (\n\t\"bytes\" // bytes.Buffer\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t// \"os\"\n)\n\nfunc main() {\n\t// 空のバッファを作成\n\tvar buffer bytes.Buffer\n\n\t// 書き込み (io.Writer として動作)\n\tbuffer.WriteString(\"Hello, \")\n\tbuffer.Write([]byte(\"Buffer!\\n\"))\n\tfmt.Fprintf(&buffer, \"Length: %d\\n\", buffer.Len())\n\n\t// 内容取得\n\tfmt.Println(\"--- Content ---\")\n\tfmt.Print(buffer.String()) // 未読部分を文字列で取得\n\tfmt.Println(\"---------------\")\n\n\t// 読み込み (io.Reader として動作)\n\tfmt.Println(\"--- Reading ---\")\n\tline, err := buffer.ReadString('\\n') // 1行読み込み\n\tif err != nil && err != io.EOF { log.Fatal(err) }\n\tfmt.Printf(\"Read line: %s\", line)\n\n\tremaining, _ := io.ReadAll(&buffer) // 残りを全て読み込み\n\tfmt.Printf(\"Read remaining: %s\", string(remaining))\n\tfmt.Printf(\"Len after read: %d\\n\", buffer.Len()) // 0\n\n\t// buffer.Reset() // バッファを空にする\n}"
       },
       {
-        "title": "I/O 操作: 読み込みサイズの制限 (`io.LimitReader`)",
+        "title": "読み込みサイズの制限 (`io.LimitReader`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"strings\"\n)\n\nfunc main() {\n\toriginalData := \"0123456789ABCDEFGHIJ\" // 20バイトのデータ\n\treader := strings.NewReader(originalData)\n\n\t// LimitReader で最大 15 バイトに制限\n\tlimitReader := io.LimitReader(reader, 15)\n\n\t// ReadAll で読み込む (最大15バイトしか読めない)\n\tdata, err := io.ReadAll(limitReader)\n\tif err != nil {\n\t\tlog.Fatalf(\"ReadAll failed: %v\", err)\n\t}\n\tfmt.Printf(\"Read (%d bytes): %s\\n\", len(data), string(data)) // 15バイト\n\n\t// さらに読み込もうとしても EOF になる\n\t// n, err := limitReader.Read([]byte{0}) // n=0, err=io.EOF\n\n\t// 元の reader は 15 バイト分進んでいる\n\t// remaining, _ := io.ReadAll(reader) // \"FGHIJ\" が読める\n}"
       },
       {
-        "title": "I/O 操作: CSV データの読み込み (`encoding/csv`)",
+        "title": "CSV データの読み込み (`encoding/csv`)",
         "code": "package main\n\nimport (\n\t\"encoding/csv\" // csv パッケージ\n\t\"fmt\"\n\t\"io\"\n\t\"log\"\n\t\"strings\"\n\t// \"os\" // ファイルから読む場合は os.Open\n)\n\nfunc main() {\n\tcsvData := `\"Name\",\"Age\",\"City\"\\n\"Alice\",\"30\",\"New York\"\\n\"Bob\",\"\",\"London\"`\n\n\t// csv.NewReader でリーダー作成\n\treader := csv.NewReader(strings.NewReader(csvData))\n\t// reader.Comma = '\\t' // タブ区切りなど、オプション設定可能\n\n\tfmt.Println(\"--- Reading CSV record by record ---\")\n\t// ヘッダー行読み飛ばし (オプション)\n\t// header, _ := reader.Read()\n\t// fmt.Println(\"Header:\", header)\n\n\tfor {\n\t\t// Read() で1レコード (1行) ずつ読み込む\n\t\trecord, err := reader.Read()\n\t\tif err != nil {\n\t\t\tif err == io.EOF { break } // 終端でループ終了\n\t\t\tlog.Fatal(err) // EOF 以外のエラー\n\t\t}\n\t\t// record は []string (フィールドのスライス)\n\t\tfmt.Printf(\"Record: %v, Fields: %d\\n\", record, len(record))\n\t\t// fmt.Printf(\" Name: %s, Age: %s\\n\", record[0], record[1])\n\t}\n\tfmt.Println(\"Finished reading.\")\n}"
       },
       {
-        "title": "I/O 操作: CSV データの書き込み (`encoding/csv`)",
+        "title": "CSV データの書き込み (`encoding/csv`)",
         "code": "package main\n\nimport (\n\t\"encoding/csv\" // csv パッケージ\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n\t// \"bytes\"\n)\n\nfunc main() {\n\trecords := [][]string{\n\t\t{\"Header1\", \"Header2\"},\n\t\t{\"Data1\", \"Value, with comma\"},\n\t\t{\"Data2\", \"Value\\nwith newline\"},\n\t}\n\tfileName := \"output.csv\"\n\n\tfile, err := os.Create(fileName)\n\tif err != nil { log.Fatal(err) }\n\tdefer file.Close()\n\n\t// csv.NewWriter を作成 (io.Writer を渡す)\n\twriter := csv.NewWriter(file)\n\t// writer.Comma = '\\t' // オプション: 区切り文字変更\n\t// writer.UseCRLF = true // オプション: 改行を CRLF に\n\n\t// Write で1レコードずつ書き込み\n\tfor _, record := range records {\n\t\terr := writer.Write(record) // 自動でクォート等処理\n\t\tif err != nil { log.Fatalf(\"Write failed: %v\", err) }\n\t}\n\n\t// ★ Flush でバッファ内容を書き出す (Write を使った場合は必須) ★\n\twriter.Flush()\n\tif err := writer.Error(); err != nil { // Flush 後のエラーチェック\n\t\tlog.Fatalf(\"Flush error: %v\", err)\n\t}\n\n\tfmt.Printf(\"'%s' に書き込み完了\\n\", fileName)\n\t// (ファイル内容確認や os.Remove は省略)\n}"
       },
       {
-        "title": "I/O 操作: ディレクトリの作成 (`os.Mkdir`, `os.MkdirAll`)",
+        "title": "ディレクトリの作成 (`os.Mkdir`, `os.MkdirAll`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os.Mkdir, os.MkdirAll\n)\n\nfunc main() {\n\t// os.Mkdir: 単一ディレクトリ作成 (親が必要)\n\tdirName1 := \"single_dir\"\n\terr := os.Mkdir(dirName1, 0755) // パーミッション 0755\n\tif err != nil {\n\t\tlog.Printf(\"Mkdir %s failed: %v\", dirName1, err)\n\t\t// if os.IsExist(err) { /* 既に存在する場合の処理 */ }\n\t} else {\n\t\tfmt.Printf(\"'%s' created.\\n\", dirName1)\n\t}\n\t// os.Remove(dirName1) // 後片付け\n\n\t// os.Mkdir: 親がないとエラー\n\t// err = os.Mkdir(\"parent/child\", 0755)\n\t// if err != nil { fmt.Println(\"Mkdir parent/child error:\", err) }\n\n\t// os.MkdirAll: 親ディレクトリも含めて作成\n\tdirPathAll := \"path/to/nested\"\n\terr = os.MkdirAll(dirPathAll, 0755) // path, path/to も作成\n\tif err != nil {\n\t\tlog.Printf(\"MkdirAll %s failed: %v\", dirPathAll, err)\n\t} else {\n\t\tfmt.Printf(\"'%s' (and parents) created.\\n\", dirPathAll)\n\t}\n\t// os.RemoveAll(\"path\") // 後片付け\n}"
       },
       {
-        "title": "I/O 操作: カレントワーキングディレクトリ (`os.Getwd`, `os.Chdir`)",
+        "title": "カレントワーキングディレクトリ (`os.Getwd`, `os.Chdir`)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\"\n)\n\nfunc main() {\n\t// 現在のワーキングディレクトリを取得\n\tinitialWd, err := os.Getwd()\n\tif err != nil { log.Fatalf(\"Getwd failed: %v\", err) }\n\tfmt.Printf(\"Initial WD: %s\\n\", initialWd)\n\n\t// (例: 一時ディレクトリを作成)\n\t// tempDir, _ := os.MkdirTemp(\"\", \"chdir-example-*\")\n\t// defer os.RemoveAll(tempDir)\n\t// defer os.Chdir(initialWd) // 元に戻る defer\n\n\t// os.Chdir でワーキングディレクトリを変更 (例: /tmp へ)\n\t// 注意: 存在し、アクセス可能なディレクトリを指定する必要がある\n\ttargetDir := os.TempDir() // システムの一時ディレクトリを取得\n\tfmt.Printf(\"Changing WD to: %s\\n\", targetDir)\n\terr = os.Chdir(targetDir)\n\tif err != nil {\n\t\tlog.Fatalf(\"Chdir to %s failed: %v\", targetDir, err)\n\t}\n\n\t// 変更後のワーキングディレクトリを確認\n\tnewWd, err := os.Getwd()\n\tif err != nil { log.Fatalf(\"Getwd after Chdir failed: %v\", err) }\n\tfmt.Printf(\"New WD: %s\\n\", newWd)\n\n\t// 相対パスでのファイル操作は newWd が基準になる\n\t// os.WriteFile(\"relative.txt\", ...)\n}"
       },
       {
-        "title": "I/O 操作: ディレクトリエントリの読み込み (`os.ReadDir`, Go 1.16+)",
+        "title": "ディレクトリエントリの読み込み (`os.ReadDir`, Go 1.16+)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"os\" // os.ReadDir\n)\n\nfunc main() {\n\ttargetDir := \".\" // カレントディレクトリ\n\n\tfmt.Printf(\"Reading directory '%s'...\\n\", targetDir)\n\n\t// os.ReadDir でエントリを取得\n\tentries, err := os.ReadDir(targetDir)\n\tif err != nil {\n\t\tlog.Fatalf(\"ReadDir failed: %v\", err)\n\t}\n\n\tfmt.Println(\"--- Directory Entries ---\")\n\t// 取得したエントリをループ処理\n\tfor _, entry := range entries {\n\t\t// entry は os.DirEntry\n\t\tfmt.Printf(\" Name: %-20s IsDir: %t\\n\", entry.Name(), entry.IsDir())\n\n\t\t// 詳細情報が必要なら entry.Info() を使う (エラーチェック必要)\n\t\t// info, err := entry.Info()\n\t\t// if err == nil { fmt.Printf(\"  Size: %d\\n\", info.Size()) }\n\t}\n\tfmt.Println(\"-----------------------\")\n}"
       },
       {
-        "title": "I/O 操作: ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)",
+        "title": "ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io/fs\" // fs.DirEntry, fs.WalkDirFunc\n\t\"log\"\n\t\"path/filepath\" // filepath.WalkDir, filepath.SkipDir, filepath.Ext\n\t// \"os\" // テスト用ファイル作成・削除は省略\n)\n\nfunc main() {\n\t// 事前にテスト用ディレクトリ・ファイルを作成しておく想定\n\t// os.MkdirAll(\"tmp/subdir\", 0755)\n\t// os.MkdirAll(\"tmp/.git\", 0755)\n\t// os.WriteFile(\"tmp/file.txt\", ...)\n\t// os.WriteFile(\"tmp/app.log\", ...)\n\t// os.WriteFile(\"tmp/subdir/other.log\", ...)\n\n\troot := \"tmp\" // 探索開始ディレクトリ\n\tfmt.Printf(\"Walking directory '%s'...\\n\", root)\n\n\terr := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {\n\t\t// 1. パスアクセスエラーチェック\n\t\tif err != nil {\n\t\t\tfmt.Printf(\"Error accessing path %q: %v\\n\", path, err)\n\t\t\treturn err // エラーがあれば探索中断 (nil を返せば続行)\n\t\t}\n\n\t\t// 2. 特定ディレクトリをスキップ (例: .git)\n\t\tif d.IsDir() && d.Name() == \".git\" {\n\t\t\tfmt.Printf(\"Skipping dir: %s\\n\", path)\n\t\t\treturn filepath.SkipDir // このディレクトリ以下は探索しない\n\t\t}\n\n\t\t// 3. ファイルのみ対象とし、拡張子チェック (例: .log)\n\t\tif !d.IsDir() && filepath.Ext(path) == \".log\" {\n\t\t\tfmt.Printf(\"Found log file: %s\\n\", path)\n\t\t}\n\n\t\treturn nil // 探索続行\n\t})\n\n\tif err != nil {\n\t\tlog.Fatalf(\"WalkDir failed: %v\", err)\n\t}\n\tfmt.Println(\"Walk finished.\")\n\t// os.RemoveAll(root) // 後片付け\n}"
       }
     ]
@@ -1084,47 +1084,47 @@ export const bundledCheatSheetData: (CheatSheetSection & { id: string })[] = [
     "title": "Generics",
     "codeExamples": [
       {
-        "title": "ジェネリクス: 型パラメータを持つジェネリック関数",
+        "title": "型パラメータを持つジェネリック関数",
         "code": "package main\n\nimport \"fmt\"\n\n// ジェネリック関数 Print の定義\n// [T any] で型パラメータ T (任意の型) を宣言\nfunc Print[T any](value T) {\n\tfmt.Printf(\"Type: %T, Value: %v\\n\", value, value)\n}\n\nfunc main() {\n\t// 型推論による呼び出し\n\tPrint(42)      // T は int と推論される\n\tPrint(\"hello\") // T は string と推論される\n\n\t// 型の明示的な指定 (通常は不要)\n\t// Print[bool](true)\n}"
       },
       {
-        "title": "ジェネリクス: 複数の型パラメータを持つジェネリック関数",
+        "title": "複数の型パラメータを持つジェネリック関数",
         "code": "package main\n\nimport \"fmt\"\n\n// ジェネリック関数 Map: スライス s ([]T) の各要素に f (func(T) U) を適用し、\n// 結果のスライス ([]U) を返す。\n// [T, U any] で2つの型パラメータ T と U (どちらも任意の型) を定義。\nfunc Map[T, U any](s []T, f func(T) U) []U {\n\tresult := make([]U, len(s))\n\tfor i, v := range s {\n\t\tresult[i] = f(v)\n\t}\n\treturn result\n}\n\nfunc main() {\n\tintSlice := []int{1, 2, 3}\n\tfmt.Printf(\"Input: %v\\n\", intSlice)\n\n\t// 例1: int -> int (2乗)\n\t// T=int, U=int と推論される\n\tsquares := Map(intSlice, func(x int) int { return x * x })\n\tfmt.Printf(\"Squares: %v (%T)\\n\", squares, squares)\n\n\t// 例2: int -> string (フォーマット)\n\t// T=int, U=string と推論される\n\tidStrings := Map(intSlice, func(x int) string { return fmt.Sprintf(\"ID-%d\", x) })\n\tfmt.Printf(\"Strings: %v (%T)\\n\", idStrings, idStrings)\n\n\t// 例3: string -> int (文字数) も可能 (省略)\n\t// stringSlice := []string{\"a\", \"bb\"}\n\t// lengths := Map(stringSlice, func(s string) int { return len(s) })\n}"
       },
       {
-        "title": "ジェネリクス: インターフェースによる型制約",
+        "title": "インターフェースによる型制約",
         "code": "package main\n\nimport \"fmt\"\n\n// 型制約: 組み込みの数値型を許可するインターフェース\ntype Numeric interface {\n\tint | int8 | int16 | int32 | int64 |\n\t\tuint | uint8 | uint16 | uint32 | uint64 | uintptr |\n\t\tfloat32 | float64\n\t// (Go 1.18+ constraints パッケージに同様の定義あり)\n}\n\n// ジェネリック関数 Sum: T は Numeric 制約を満たす必要がある\nfunc Sum[T Numeric](values []T) T {\n\tvar sum T\n\tfor _, v := range values {\n\t\tsum += v // + 演算子が使える (Numeric 内の型は全てサポート)\n\t}\n\treturn sum\n}\n\nfunc main() {\n\tintSlice := []int{1, 2, 3}\n\tintSum := Sum(intSlice) // T=int\n\tfmt.Printf(\"Sum(%v): %v (%T)\\n\", intSlice, intSum, intSum)\n\n\tfloatSlice := []float64{1.1, 2.2}\n\tfloatSum := Sum(floatSlice) // T=float64\n\tfmt.Printf(\"Sum(%v): %v (%T)\\n\", floatSlice, floatSum, floatSum)\n\n\t// stringSlice := []string{\"a\"}\n\t// Sum(stringSlice) // コンパイルエラー (string は Numeric ではない)\n}"
       },
       {
-        "title": "ジェネリクス: 定義済みの型制約 (`comparable`, `cmp.Ordered`)",
+        "title": "定義済みの型制約 (`comparable`, `cmp.Ordered`)",
         "code": "package main\n\nimport (\n\t\"cmp\" // Go 1.21+\n\t\"fmt\"\n)\n\n// ジェネリック関数 Max: T は順序付け可能 (Ordered) である必要がある\nfunc Max[T cmp.Ordered](a, b T) T {\n\tif a > b { // > 演算子が使える\n\t\treturn a\n\t}\n\treturn b\n}\n\nfunc main() {\n\tfmt.Println(\"Max(10, 5):\", Max(10, 5))         // int\n\tfmt.Println(\"Max(3.14, 2.7):\", Max(3.14, 2.7)) // float64\n\tfmt.Println(\"Max(\\\"A\\\", \\\"B\\\"):\", Max(\"A\", \"B\")) // string\n\n\t// --- comparable の例 (参考) ---\n\t// func MapKeys[K comparable, V any](m map[K]V) []K { ... }\n\t// m := map[string]int{\"a\": 1}\n\t// keys := MapKeys(m) // OK: string は comparable\n\n\t// --- エラー例 ---\n\t// Max([]int{1}, []int{2}) // コンパイルエラー (スライスは Ordered ではない)\n}"
       },
       {
-        "title": "\"ジェネリクス: ジェネリックなスタック (データ構造)\"",
+        "title": "\"ジェネリックなスタック (データ構造)\"",
         "code": "package main\n\nimport \"fmt\"\n\n// --- ジェネリック型の定義 ---\n// Stack[T any]: 任意の型 T の値を格納できるスタック\ntype Stack[T any] struct {\n\titems []T // 内部的に T 型のスライスでデータを保持\n}\n\n// --- ジェネリック型に対するメソッド定義 ---\n\n// Push: スタックに要素を追加する\nfunc (s *Stack[T]) Push(item T) {\n\tif s == nil { return }\n\ts.items = append(s.items, item)\n}\n\n// Pop: スタックから要素を取り出して返す\nfunc (s *Stack[T]) Pop() (T, bool) {\n\tif s == nil || len(s.items) == 0 {\n\t\tvar zero T // T 型のゼロ値を返す準備\n\t\treturn zero, false\n\t}\n\tlastIndex := len(s.items) - 1\n\titem := s.items[lastIndex]\n\ts.items = s.items[:lastIndex]\n\treturn item, true\n}\n\n// IsEmpty: スタックが空かどうかを返す\nfunc (s *Stack[T]) IsEmpty() bool {\n\treturn s == nil || len(s.items) == 0\n}\n\nfunc main() {\n\t// --- int 型のスタック ---\n\tintStack := Stack[int]{}\n\tintStack.Push(1)\n\tintStack.Push(2)\n\tv1, ok1 := intStack.Pop() // v1=2, ok1=true\n\tfmt.Printf(\"Pop int: %v, %t\\n\", v1, ok1)\n\tv2, ok2 := intStack.Pop() // v2=1, ok2=true\n\tfmt.Printf(\"Pop int: %v, %t\\n\", v2, ok2)\n\tv3, ok3 := intStack.Pop() // v3=0, ok3=false (空)\n\tfmt.Printf(\"Pop int: %v, %t\\n\", v3, ok3)\n\n\t// --- string 型のスタック ---\n\tstrStack := Stack[string]{}\n\tstrStack.Push(\"A\")\n\tstrStack.Push(\"B\")\n\tsv1, sok1 := strStack.Pop() // sv1=\"B\", sok1=true\n\tfmt.Printf(\"Pop string: %v, %t\\n\", sv1, sok1)\n}\n\n/* 実行結果:\nPop int: 2, true\nPop int: 1, true\nPop int: 0, false\nPop string: B, true\n*/"
       },
       {
-        "title": "ジェネリクス: スレッドセーフなジェネリックマップ",
+        "title": "スレッドセーフなジェネリックマップ",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sync\"\n)\n\n// スレッドセーフなジェネリックマップ\n// K は比較可能 (comparable), V は任意 (any)\ntype SafeMap[K comparable, V any] struct {\n\tdata map[K]V\n\tmu   sync.RWMutex // 読み書きロックで保護\n}\n\n// コンストラクタ\nfunc NewSafeMap[K comparable, V any]() *SafeMap[K, V] {\n\treturn &SafeMap[K, V]{data: make(map[K]V)}\n}\n\n// Set: 書き込み操作 (Lock/Unlock)\nfunc (m *SafeMap[K, V]) Set(key K, value V) {\n\tm.mu.Lock()\n\tdefer m.mu.Unlock()\n\tm.data[key] = value\n}\n\n// Get: 読み取り操作 (RLock/RUnlock)\nfunc (m *SafeMap[K, V]) Get(key K) (V, bool) {\n\tm.mu.RLock()\n\tdefer m.mu.RUnlock()\n\tval, ok := m.data[key]\n\treturn val, ok\n}\n\n// (Delete, Len などのメソッドも同様に実装可能)\n\nfunc main() {\n\t// string -> int のマップを作成\n\tsafeMap := NewSafeMap[string, int]()\n\n\t// 複数の Goroutine から安全にアクセスできる\n\t// (ここでは main Goroutine からのみアクセス)\n\tsafeMap.Set(\"apple\", 100)\n\tsafeMap.Set(\"banana\", 200)\n\n\tval, ok := safeMap.Get(\"apple\")\n\tif ok { fmt.Println(\"apple:\", val) } // apple: 100\n\n\tval, ok = safeMap.Get(\"grape\")\n\tif !ok { fmt.Println(\"grape: not found\") } // grape: not found\n}"
       },
       {
-        "title": "ジェネリクス: メソッドによる型制約 (`fmt.Stringer` など)",
+        "title": "メソッドによる型制約 (`fmt.Stringer` など)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\n// ジェネリック関数 Join: T は fmt.Stringer を満たす必要がある\nfunc Join[T fmt.Stringer](values []T, sep string) string {\n\tvar sb strings.Builder\n\tfor i, v := range values {\n\t\tif i > 0 { sb.WriteString(sep) }\n\t\t// ★ v.String() メソッドを呼び出せる (制約で保証) ★\n\t\tsb.WriteString(v.String())\n\t}\n\treturn sb.String()\n}\n\n// fmt.Stringer を実装する型\ntype Person struct { Name string; Age int }\nfunc (p Person) String() string { // Stringer を満たす\n\treturn fmt.Sprintf(\"%s(%d)\", p.Name, p.Age)\n}\n\n// type IPAddr [4]byte\n// func (ip IPAddr) String() string { ... } // これも Stringer\n\nfunc main() {\n\tpeople := []Person{{\"Alice\", 30}, {\"Bob\", 25}}\n\t// T=Person (Stringer を満たす)\n\tpeopleStr := Join(people, \", \")\n\tfmt.Println(\"People:\", peopleStr) // People: Alice(30), Bob(25)\n\n\t// addrs := []IPAddr{{127,0,0,1}, {192,168,1,1}}\n\t// addrsStr := Join(addrs, \"; \") // これも OK\n\n\t// nums := []int{1, 2}\n\t// Join(nums, \"-\") // コンパイルエラー (int は Stringer ではない)\n}"
       },
       {
-        "title": "ジェネリクス: メソッドによる比較制約 (Comparable)",
+        "title": "メソッドによる比較制約 (Comparable)",
         "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\n// 比較メソッドを持つインターフェース制約\ntype Comparer[T any] interface {\n\t// other より小さい場合に負、等しい場合に 0、大きい場合に正を返す\n\tCompareTo(other T) int\n}\n\n// ジェネリックソート関数 (T は Comparer[T] を満たす必要あり)\nfunc SortSlice[T Comparer[T]](items []T) {\n\tsort.Slice(items, func(i, j int) bool {\n\t\t// ★ CompareTo メソッドを使って比較 ★\n\t\treturn items[i].CompareTo(items[j]) < 0\n\t})\n}\n\n// Comparer[Version] を実装する Version 型\ntype Version struct { Major, Minor, Patch int }\nfunc (v Version) String() string { /* ... */ return fmt.Sprintf(\"v%d.%d.%d\", v.Major, v.Minor, v.Patch) }\nfunc (v Version) CompareTo(other Version) int {\n\tif v.Major != other.Major { return v.Major - other.Major }\n\tif v.Minor != other.Minor { return v.Minor - other.Minor }\n\treturn v.Patch - other.Patch\n}\n\nfunc main() {\n\tversions := []Version{{1, 10, 0}, {1, 9, 5}, {2, 0, 0}}\n\tfmt.Println(\"Before:\", versions)\n\tSortSlice(versions) // T=Version (Comparer[Version] を満たす)\n\tfmt.Println(\"After:\", versions) // [v1.9.5 v1.10.0 v2.0.0]\n}"
       },
       {
-        "title": "ジェネリクス: Optional/Maybe 型パターン",
+        "title": "Optional/Maybe 型パターン",
         "code": "package optional // (パッケージ名は例)\n\n// Optional[T any]: T 型の値が存在するかもしれないことを示す型\ntype Optional[T any] struct {\n\tvalue T    // 値 (存在しない場合はゼロ値)\n\tvalid bool // 値が有効か (存在するか)\n}\n\n// Some: 値が存在する Optional を作成\nfunc Some[T any](value T) Optional[T] {\n\treturn Optional[T]{value: value, valid: true}\n}\n\n// None: 値が存在しない Optional を作成\nfunc None[T any]() Optional[T] {\n\treturn Optional[T]{valid: false} // value は T のゼロ値\n}\n\n// IsPresent: 値が存在するかどうか\nfunc (o Optional[T]) IsPresent() bool {\n\treturn o.valid\n}\n\n// Get: 値と存在有無 (bool) を返す (マップのカンマOK風)\nfunc (o Optional[T]) Get() (T, bool) {\n\treturn o.value, o.valid\n}\n\n// (IsEmpty, OrElse などのヘルパーメソッドも追加可能)"
       },
       {
-        "title": "ジェネリクス: Result 型パターン",
+        "title": "Result 型パターン",
         "code": "package result // (パッケージ名は例)\n\nimport \"fmt\"\n\n// Result[T any]: 成功時の T 型の値、またはエラーのどちらかを保持\ntype Result[T any] struct {\n\tvalue T\n\terr   error\n}\n\n// Success: 成功 Result を作成\nfunc Success[T any](value T) Result[T] {\n\treturn Result[T]{value: value, err: nil}\n}\n\n// Failure: 失敗 Result を作成\nfunc Failure[T any](err error) Result[T] {\n\treturn Result[T]{err: err} // value はゼロ値\n}\n\n// Failuref: フォーマット文字列から失敗 Result を作成\nfunc Failuref[T any](format string, args ...any) Result[T] {\n\treturn Result[T]{err: fmt.Errorf(format, args...)}\n}\n\n// IsOk: 成功かどうか\nfunc (r Result[T]) IsOk() bool { return r.err == nil }\n\n// IsErr: 失敗かどうか\nfunc (r Result[T]) IsErr() bool { return r.err != nil }\n\n// Value: 成功時の値 (失敗時はゼロ値)\nfunc (r Result[T]) Value() T { return r.value }\n\n// Error: 失敗時のエラー (成功時は nil)\nfunc (r Result[T]) Error() error { return r.err }\n\n// (Unwrap, UnwrapOr などのヘルパーも追加可能)\n// func (r Result[T]) Unwrap() T { if r.IsErr() { panic(...) }; return r.value }\n// func (r Result[T]) UnwrapOr(defaultVal T) T { if r.IsErr() { return defaultVal }; return r.value }"
       },
       {
-        "title": "\"ジェネリクス: ジェネリックな Min/Max 関数\"",
+        "title": "\"ジェネリックな Min/Max 関数\"",
         "code": "package main\n\nimport (\n\t\"cmp\" // Go 1.21+ で Ordered を使うためにインポート\n\t\"fmt\"\n)\n\n// Min は 2 つの順序付け可能な値のうち小さい方を返す\nfunc Min[T cmp.Ordered](a, b T) T {\n\t// cmp.Ordered 制約により < 演算子が使える\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n\n// Max は 2 つの順序付け可能な値のうち大きい方を返す (030 で説明済み)\nfunc Max[T cmp.Ordered](a, b T) T {\n\t// cmp.Ordered 制約により > 演算子が使える\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n\nfunc main() {\n\t// int で使用\n\tfmt.Printf(\"Min(10, 5) = %v\\n\", Min(10, 5)) // 5\n\tfmt.Printf(\"Max(10, 5) = %v\\n\", Max(10, 5)) // 10\n\n\t// float64 で使用\n\tfmt.Printf(\"Min(3.14, 2.71) = %v\\n\", Min(3.14, 2.71)) // 2.71\n\tfmt.Printf(\"Max(3.14, 2.71) = %v\\n\", Max(3.14, 2.71)) // 3.14\n\n\t// string で使用\n\tfmt.Printf(\"Min(\\\"apple\\\", \\\"banana\\\") = %v\\n\", Min(\"apple\", \"banana\")) // \"apple\"\n\tfmt.Printf(\"Max(\\\"apple\\\", \\\"banana\\\") = %v\\n\", Max(\"apple\", \"banana\")) // \"banana\"\n\n\t// Go 1.21 以降では、標準ライブラリに min, max 関数が追加された\n\t// import \"cmp\" // または import \"math\" (Go 1.23+)\n\t// fmt.Println(min(10, 5)) // 5\n\t// fmt.Println(max(3.14, 2.71)) // 3.14\n}\n\n/* 実行結果:\nMin(10, 5) = 5\nMax(10, 5) = 10\nMin(3.14, 2.71) = 2.71\nMax(3.14, 2.71) = 3.14\nMin(\"apple\", \"banana\") = apple\nMax(\"apple\", \"banana\") = banana\n*/"
       }
     ]

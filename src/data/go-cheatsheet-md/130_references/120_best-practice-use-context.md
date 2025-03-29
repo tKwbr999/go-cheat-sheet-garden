@@ -1,5 +1,5 @@
 ## タイトル
-title: "ベストプラクティス: Context を使う"
+title: Context を使う
 
 ## タグ
 tags: ["references", "best practice", "context", "concurrency", "cancel", "timeout", "deadline"]

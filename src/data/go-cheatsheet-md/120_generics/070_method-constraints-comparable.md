@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: メソッドによる比較制約 (Comparable)
+title: メソッドによる比較制約 (Comparable)
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型制約", "type constraint", "interface", "メソッドセット", "comparable", "比較"]

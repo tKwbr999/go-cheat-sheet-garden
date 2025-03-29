@@ -2,97 +2,97 @@
   "title": "Error Handling",
   "codeExamples": [
     {
-      "title": "エラー処理: `error` インターフェース",
+      "title": "`error` インターフェース",
       "description": "Goには `try-catch` のような例外処理はなく、\n**エラーを通常の戻り値として**扱います。\nエラー発生可能性のある関数は `error` 型の値を返します。\n\n**`error` インターフェース:**\nGoのエラー処理の中心となる組み込みインターフェースです。",
       "code": "package main\n\nimport \"fmt\"\n\n// 独自のエラー型\ntype MyError struct {\n\tOperation string\n\tCode      int\n\tMessage   string\n}\n\n// Error() メソッドを実装し、error インターフェースを満たす\nfunc (e *MyError) Error() string {\n\treturn fmt.Sprintf(\"Op:'%s' Code:%d Msg:'%s'\", e.Operation, e.Code, e.Message)\n}\n\n// エラーを返す可能性のある関数\nfunc performOperation(fail bool) error { // 戻り値は error\n\tif fail {\n\t\t// *MyError は error を満たすので返せる\n\t\treturn &MyError{\"データ処理\", 500, \"内部エラー\"}\n\t}\n\treturn nil // 成功時は nil を返す\n}\n\nfunc main() {\n\t// 成功ケース\n\terr1 := performOperation(false)\n\tif err1 != nil {\n\t\tfmt.Println(\"エラー:\", err1.Error()) // Error() でメッセージ取得\n\t} else {\n\t\tfmt.Println(\"成功\")\n\t}\n\n\t// 失敗ケース\n\terr2 := performOperation(true)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2.Error()) // 実装した Error() が呼ばれる\n\t\tfmt.Printf(\"エラーの型: %T\\n\", err2) // *main.MyError\n\t} else {\n\t\tfmt.Println(\"成功\")\n\t}\n}"
     },
     {
-      "title": "エラー処理: 簡単なエラーの作成 `errors.New`",
+      "title": "簡単なエラーの作成 `errors.New`",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\" // errors パッケージ\n\t\"fmt\"\n)\n\n// 失敗したら errors.New でエラーを返す関数\nfunc checkValue(value int) error {\n\tif value < 0 {\n\t\treturn errors.New(\"値が負数です\") // エラーメッセージを指定\n\t}\n\t// 成功時は nil\n\treturn nil\n}\n\nfunc main() {\n\t// 成功ケース\n\terr1 := checkValue(10)\n\tif err1 == nil {\n\t\tfmt.Println(\"checkValue(10): 成功\")\n\t}\n\n\t// 失敗ケース\n\terr2 := checkValue(-5)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // err2.Error() と同じ\n\t\tfmt.Printf(\"エラー型: %T\\n\", err2) // *errors.errorString\n\t}\n}"
     },
     {
-      "title": "エラー処理: フォーマットされたエラーの作成 `fmt.Errorf`",
+      "title": "フォーマットされたエラーの作成 `fmt.Errorf`",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\" // errors.Is を使う\n\t\"fmt\"\n\t\"os\"\n)\n\n// ファイルを開く処理をラップし、エラー時に %w を使う関数\nfunc openFileWrapped(filename string) error {\n\tfile, err := os.Open(filename)\n\tif err != nil {\n\t\t// %w で元のエラー err をラップする\n\t\treturn fmt.Errorf(\"ファイル '%s' オープン失敗: %w\", filename, err)\n\t}\n\tfile.Close()\n\treturn nil\n}\n\nfunc main() {\n\terr := openFileWrapped(\"non_existent.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err) // ラップされたメッセージ\n\n\t\t// errors.Is でラップされたエラーを確認できる\n\t\tif errors.Is(err, os.ErrNotExist) {\n\t\t\tfmt.Println(\"-> 原因: ファイルが存在しない\")\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: エラーを返す関数",
+      "title": "エラーを返す関数",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// ゼロ除算をチェックし、エラーを返す関数\nfunc divide(a, b int) (int, error) { // 戻り値に error を含める\n\tif b == 0 {\n\t\t// 失敗: ゼロ値とエラーを返す\n\t\treturn 0, errors.New(\"ゼロによる除算\")\n\t}\n\t// 成功: 結果と nil を返す\n\treturn a / b, nil\n}\n\nfunc main() {\n\t// 呼び出し側でエラーをチェック\n\tresult1, err1 := divide(10, 2)\n\tif err1 != nil {\n\t\tfmt.Println(\"エラー:\", err1)\n\t} else {\n\t\tfmt.Println(\"10 / 2 =\", result1)\n\t}\n\n\tresult2, err2 := divide(10, 0)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // エラー発生\n\t} else {\n\t\tfmt.Println(\"10 / 0 =\", result2)\n\t}\n}"
     },
     {
-      "title": "エラー処理: 基本的なエラーハンドリング (`if err != nil`)",
+      "title": "基本的なエラーハンドリング (`if err != nil`)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"strconv\"\n)\n\n// 文字列を整数に変換。失敗したらエラーをラップして返す。\nfunc parseAndDescribe(s string) (string, error) {\n\tvalue, err := strconv.Atoi(s)\n\tif err != nil {\n\t\t// ★ エラーチェックと早期リターン\n\t\treturn \"\", fmt.Errorf(\"変換失敗 '%s': %w\", s, err)\n\t}\n\n\t// --- 正常系の処理 ---\n\tdesc := fmt.Sprintf(\"数値 %d は\", value)\n\tif value%2 == 0 { desc += \"偶数\" } else { desc += \"奇数\" }\n\treturn desc, nil // 成功時は nil を返す\n}\n\nfunc main() {\n\tinputs := []string{\"123\", \"abc\", \"-4\"}\n\tfor _, input := range inputs {\n\t\tfmt.Printf(\"入力 '%s':\\n\", input)\n\t\tdesc, err := parseAndDescribe(input)\n\n\t\t// ★ 呼び出し側でのエラーチェック\n\t\tif err != nil {\n\t\t\tlog.Printf(\"  エラー: %v\\n\", err)\n\t\t\tcontinue // エラーなら次の入力へ\n\t\t}\n\n\t\t// --- 正常系の処理 ---\n\t\tfmt.Printf(\"  -> 結果: %s\\n\", desc)\n\t}\n}"
     },
     {
-      "title": "エラー処理: エラーラッピング (`%w`)",
+      "title": "エラーラッピング (`%w`)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n)\n\n// 下位の処理 (エラーを返す可能性)\nfunc openDataFile(filename string) (*os.File, error) {\n\treturn os.Open(filename) // 元のエラーを返す\n}\n\n// 上位の処理 (エラーをラップする)\nfunc processFile(filename string) error {\n\tfile, err := openDataFile(filename)\n\tif err != nil {\n\t\t// ★ %w で元のエラー err をラップする\n\t\treturn fmt.Errorf(\"ファイル処理失敗 (%s): %w\", filename, err)\n\t}\n\tdefer file.Close()\n\tfmt.Printf(\"ファイル '%s' 処理成功\\n\", filename)\n\treturn nil\n}\n\nfunc main() {\n\terr := processFile(\"non_existent.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err) // ラップされたメッセージ\n\n\t\t// errors.Is でラップされた根本原因をチェック\n\t\tif errors.Is(err, os.ErrNotExist) {\n\t\t\tfmt.Println(\"-> 原因: ファイルが存在しない\")\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: エラーは値 (`errors.Is`)",
+      "title": "エラーは値 (`errors.Is`)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\" // os.ErrNotExist\n)\n\n// センチネルエラー (パッケージレベルで定義される特定のエラー値)\nvar ErrItemNotFound = errors.New(\"アイテムが見つかりません\")\nvar ErrPermissionDenied = errors.New(\"権限がありません\")\n\n// エラーを返す関数 (センチネルエラーまたはラップされたエラー)\nfunc getItem(id int) (string, error) {\n\tif id == 1 { return \"Apple\", nil }\n\tif id == 2 { return \"\", ErrItemNotFound } // センチネルエラーを返す\n\tif id == 3 { return \"\", ErrPermissionDenied }\n\toriginalErr := errors.New(\"DB接続エラー\")\n\treturn \"\", fmt.Errorf(\"ID %d 取得失敗: %w\", id, originalErr) // ラップされたエラー\n}\n\nfunc main() {\n\tfor _, id := range []int{2, 3, 4} {\n\t\tfmt.Printf(\"\\nアイテム %d 取得:\\n\", id)\n\t\t_, err := getItem(id)\n\t\tif err != nil {\n\t\t\tfmt.Printf(\" エラー: %v\\n\", err)\n\t\t\t// errors.Is でエラーの種類を判定\n\t\t\tif errors.Is(err, ErrItemNotFound) {\n\t\t\t\tfmt.Println(\"  -> 原因: アイテムなし\")\n\t\t\t} else if errors.Is(err, ErrPermissionDenied) {\n\t\t\t\tfmt.Println(\"  -> 原因: 権限なし\")\n\t\t\t} else {\n\t\t\t\tfmt.Println(\"  -> 原因: その他\")\n\t\t\t}\n\t\t}\n\t}\n\t// _, errOpen := os.Open(\"no.txt\")\n\t// if errors.Is(errOpen, os.ErrNotExist) { /* ... */ }\n}"
     },
     {
-      "title": "エラー処理: カスタムエラー型の定義",
+      "title": "カスタムエラー型の定義",
       "description": "`errors.New` や `fmt.Errorf` では不十分な、\nより詳細なエラー情報（エラーコード、発生時刻など）を\n保持したり、エラーの種類を**型**として区別したい場合は、\n**カスタムエラー型**を定義します。\n\n通常は**構造体 (struct)** を使い、`error` インターフェースを\n満たすようにします。\n\n**定義方法:**\n1. エラー情報を保持するフィールドを持つ**構造体**を定義する。\n   (例: `OperationError` 構造体)\n2. その構造体（通常はポインタレシーバ `*MyError`）に対して\n   **`Error() string` メソッドを実装**する。\n   このメソッド内で、構造体のフィールドを使って\n   人間が読めるエラーメッセージ文字列を生成して返す。\n\nコード例では `OperationError` 構造体を定義し、\n`Error()` メソッドを実装しています。これにより\n`*OperationError` は `error` インターフェースを満たします。\n\n**(オプション) エラーラッピング:**\nGo 1.13以降、`Unwrap() error` メソッドを実装すると、\n`errors.Is` や `errors.As` がラップされたエラー (`Err` フィールド等) を\n辿れるようになります。",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// カスタムエラー型 (構造体)\ntype OperationError struct {\n\tTimestamp time.Time\n\tOp        string\n\tCode      int\n\tMessage   string\n\tErr       error // ラップされたエラー (オプション)\n}\n\n// Error() メソッドを実装し、error インターフェースを満たす\nfunc (e *OperationError) Error() string {\n\t// フィールドを使って詳細なメッセージを生成\n\tmsg := fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n\tif e.Err != nil {\n\t\tmsg += fmt.Sprintf(\" (Cause: %v)\", e.Err)\n\t}\n\treturn msg\n}\n\n// (Unwrap() error メソッドを実装するとエラーラッピングをサポート)\n\nfunc main() {\n\t// カスタムエラーを生成 (例)\n\terr := &OperationError{\n\t\tTimestamp: time.Now(), Op: \"Update\", Code: 501, Message: \"Failed\",\n\t}\n\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err) // 実装した Error() が呼ばれる\n\t\tfmt.Printf(\"型: %T\\n\", err) // *main.OperationError\n\t\t// if opErr, ok := err.(*OperationError); ok { /* フィールドアクセス */ }\n\t}\n}"
     },
     {
-      "title": "エラー処理: カスタムエラーを返す",
+      "title": "カスタムエラーを返す",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// カスタムエラー型 (前のセクションで定義)\ntype OperationError struct {\n\tTimestamp time.Time; Op string; Code int; Message string\n}\nfunc (e *OperationError) Error() string { /* ... 実装 ... */\n\treturn fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n}\n\n\n// カスタムエラーを返す関数\nfunc performAction(action string, shouldFail bool) error { // 戻り値は error\n\tfmt.Printf(\"アクション '%s' 実行...\\n\", action)\n\tif shouldFail {\n\t\t// 失敗時: *OperationError を error として返す\n\t\treturn &OperationError{\n\t\t\tTimestamp: time.Now(), Op: action, Code: 400, Message: \"無効な入力\",\n\t\t}\n\t}\n\t// 成功時: nil を返す\n\treturn nil\n}\n\nfunc main() {\n\t// 成功ケース\n\terr1 := performAction(\"登録\", false)\n\tif err1 == nil { fmt.Println(\"-> 成功\") }\n\n\t// 失敗ケース\n\terr2 := performAction(\"削除\", true)\n\tif err2 != nil {\n\t\tfmt.Println(\"エラー:\", err2) // 実装した Error() が呼ばれる\n\t\tfmt.Printf(\"型: %T\\n\", err2) // *main.OperationError\n\t}\n}"
     },
     {
-      "title": "エラー処理: カスタムエラーの判定 (型アサーション)",
+      "title": "カスタムエラーの判定 (型アサーション)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// カスタムエラー型 (例)\ntype OperationError struct {\n\tTimestamp time.Time; Op string; Code int; Message string\n}\nfunc (e *OperationError) Error() string { /* ... 実装 ... */\n\treturn fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n}\n\n// カスタムエラーを返す関数 (例)\nfunc performAction(action string, failCode int) error {\n\tif failCode != 0 {\n\t\treturn &OperationError{ time.Now(), action, failCode, \"問題発生\" }\n\t}\n\treturn nil\n}\n\nfunc main() {\n\terr := performAction(\"読込\", 404) // エラーを発生させる\n\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\n\t\t// ★ 型アサーションで *OperationError かチェック ★\n\t\topErr, ok := err.(*OperationError)\n\t\tif ok {\n\t\t\t// 成功: opErr は *OperationError 型\n\t\t\tfmt.Println(\"-> OperationError です\")\n\t\t\tfmt.Printf(\"   コード: %d\\n\", opErr.Code) // フィールドにアクセス\n\t\t\tif opErr.Code == 404 { fmt.Println(\"   -> Not Found\") }\n\t\t} else {\n\t\t\tfmt.Println(\"-> OperationError ではありません\")\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: 特定の型のエラーの取得 (`errors.As`)",
+      "title": "特定の型のエラーの取得 (`errors.As`)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n\t\"time\"\n)\n\n// カスタムエラー型\ntype OperationError struct {\n\tTimestamp time.Time; Op string; Code int; Message string; Err error\n}\nfunc (e *OperationError) Error() string { /* ... 実装 ... */\n\tmsg := fmt.Sprintf(\"[%s] Op:%s Code:%d Msg:%s\",\n\t\te.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)\n\tif e.Err != nil { msg += fmt.Sprintf(\" (Cause: %v)\", e.Err) }\n\treturn msg\n}\n// エラーラッピングのために Unwrap を実装\nfunc (e *OperationError) Unwrap() error { return e.Err }\n\n// エラーをラップして返す関数\nfunc openFileWrapped(filename string) error {\n\t_, err := os.Open(filename)\n\tif err != nil {\n\t\t// os.Open のエラー err を OperationError でラップ\n\t\treturn &OperationError{ time.Now(), \"open\", 500, \"失敗\", err }\n\t}\n\treturn nil\n}\n\nfunc main() {\n\terr := openFileWrapped(\"non_existent.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\n\t\t// errors.As で *OperationError 型を探す\n\t\tvar opErr *OperationError // 対象の型のポインタ変数を用意\n\t\t// 第2引数に opErr のアドレス (&opErr) を渡す\n\t\tif errors.As(err, &opErr) {\n\t\t\t// 見つかった場合、opErr に値が設定される\n\t\t\tfmt.Println(\"-> OperationError です\")\n\t\t\tfmt.Printf(\"   コード: %d\\n\", opErr.Code) // フィールドにアクセス\n\t\t\tif opErr.Err != nil {\n\t\t\t\tfmt.Printf(\"   ラップされたエラー: %v\\n\", opErr.Err)\n\t\t\t\t// if errors.Is(opErr.Err, os.ErrNotExist) { ... }\n\t\t\t}\n\t\t} else {\n\t\t\tfmt.Println(\"-> OperationError ではありません\")\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: ラップされたエラーの判定 (`errors.Is`)",
+      "title": "ラップされたエラーの判定 (`errors.Is`)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n)\n\n// 下位の処理 (os.Open のエラーをラップ)\nfunc loadConfig(path string) error {\n\t_, err := os.Open(path)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"設定読込失敗 '%s': %w\", path, err) // %w でラップ\n\t}\n\treturn nil\n}\n\n// 上位の処理 (loadConfig のエラーをさらにラップ)\nfunc setup(configPath string) error {\n\terr := loadConfig(configPath)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"初期設定失敗: %w\", err) // %w でラップ\n\t}\n\treturn nil\n}\n\nfunc main() {\n\terr := setup(\"config.yaml\") // 存在しないファイル\n\tif err != nil {\n\t\tfmt.Println(\"エラー:\", err)\n\n\t\t// errors.Is でラップされた根本原因 (os.ErrNotExist) をチェック\n\t\tif errors.Is(err, os.ErrNotExist) {\n\t\t\tfmt.Println(\"-> 原因: 設定ファイルが存在しない\")\n\t\t} else {\n\t\t\tfmt.Println(\"-> その他のエラー\")\n\t\t}\n\n\t\t// if err == os.ErrNotExist { ... } // これは false になる\n\t}\n}"
     },
     {
-      "title": "エラー処理: センチネルエラー (Sentinel Errors)",
+      "title": "センチネルエラー (Sentinel Errors)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// パッケージレベルでセンチネルエラーを定義\nvar ErrResourceNotFound = errors.New(\"リソースが見つかりません\")\nvar ErrInvalidInput = errors.New(\"入力が無効です\")\n\n// センチネルエラーを返す可能性のある関数\nfunc fetchData(id int) (string, error) {\n\tif id <= 0 { return \"\", ErrInvalidInput }\n\tif id == 404 { return \"\", ErrResourceNotFound }\n\treturn fmt.Sprintf(\"データ %d\", id), nil\n}\n\nfunc main() {\n\tid := 404\n\tfmt.Printf(\"ID %d 取得:\\n\", id)\n\t_, err := fetchData(id)\n\n\tif err != nil {\n\t\tfmt.Printf(\" エラー: %v\\n\", err)\n\t\t// errors.Is でセンチネルエラーを判定\n\t\tif errors.Is(err, ErrResourceNotFound) {\n\t\t\tfmt.Println(\"  -> 原因: リソースなし\")\n\t\t} else if errors.Is(err, ErrInvalidInput) {\n\t\t\tfmt.Println(\"  -> 原因: 無効入力\")\n\t\t} else {\n\t\t\tfmt.Println(\"  -> 原因: その他\")\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: 早期リターンパターン (Early Return)",
+      "title": "早期リターンパターン (Early Return)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\n// ダミーの処理ステップ関数 (エラーを返す可能性あり)\nfunc step1() error { fmt.Println(\"Step 1\"); return nil }\nfunc step2(s string) error { fmt.Println(\"Step 2\", s); if s == \"\" { return errors.New(\"step 2 error\") }; return nil }\nfunc step3() error { fmt.Println(\"Step 3\"); return nil }\n\n\n// 複数のステップを実行し、エラーがあれば早期リターン\nfunc processSequence() error {\n\tfmt.Println(\"Process Start\")\n\n\terr := step1()\n\tif err != nil {\n\t\treturn fmt.Errorf(\"step 1 failed: %w\", err) // 早期リターン\n\t}\n\n\tintermediate := \"step1 ok\" // step1 の結果を使う例\n\n\terr = step2(intermediate)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"step 2 failed: %w\", err) // 早期リターン\n\t}\n\n\terr = step3()\n\tif err != nil {\n\t\treturn fmt.Errorf(\"step 3 failed: %w\", err) // 早期リターン\n\t}\n\n\tfmt.Println(\"Process Success\")\n\treturn nil // すべて成功\n}\n\nfunc main() {\n\terr := processSequence()\n\tif err != nil {\n\t\tfmt.Println(\"\\n最終エラー:\", err)\n\t} else {\n\t\tfmt.Println(\"\\n最終結果: 成功\")\n\t}\n}"
     },
     {
-      "title": "エラー処理: HTTPミドルウェアによるエラーハンドリング",
+      "title": "HTTPミドルウェアによるエラーハンドリング",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"log\"\n\t\"net/http\"\n)\n\n// エラーを返すカスタムハンドラ型\ntype AppHandler func(http.ResponseWriter, *http.Request) error\n\n// ServeHTTP でエラー処理ミドルウェアを実装\nfunc (fn AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {\n\t// Panic Recovery\n\tdefer func() {\n\t\tif rcv := recover(); rcv != nil {\n\t\t\tlog.Printf(\"Panic: %v\", rcv)\n\t\t\thttp.Error(w, \"Internal Server Error\", http.StatusInternalServerError)\n\t\t}\n\t}()\n\n\t// ハンドラ実行とエラー処理\n\terr := fn(w, r)\n\tif err != nil {\n\t\tlog.Printf(\"Error: %v\", err)\n\t\t// errors.Is や errors.As でエラーの種類を判別し、\n\t\t// 適切な statusCode を設定する (例はデフォルト 500)\n\t\tstatusCode := http.StatusInternalServerError\n\t\thttp.Error(w, err.Error(), statusCode)\n\t}\n}\n\n// ハンドラ関数の例 (error を返す)\nfunc handleExample(w http.ResponseWriter, r *http.Request) error {\n\tif r.URL.Query().Get(\"fail\") == \"true\" {\n\t\treturn errors.New(\"処理失敗\") // エラーを返す\n\t}\n\tif r.URL.Query().Get(\"panic\") == \"true\" {\n\t\tpanic(\"パニック発生\") // パニックを起こす\n\t}\n\tfmt.Fprintln(w, \"成功\")\n\treturn nil // 成功時は nil\n}\n\nfunc main() {\n\tmux := http.NewServeMux()\n\t// AppHandler 型にキャストして登録\n\tmux.Handle(\"/example\", AppHandler(handleExample))\n\n\tfmt.Println(\"Listening on :8080...\")\n\tlog.Fatal(http.ListenAndServe(\":8080\", mux))\n}"
     },
     {
-      "title": "エラー処理: 構造化エラー (Structured Errors)",
+      "title": "構造化エラー (Structured Errors)",
       "description": "エラーメッセージ文字列だけでなく、エラーに関する**追加情報**\n(エラーコード、発生箇所、関連データ等) をプログラムで扱える形で\n保持したい場合、**構造化エラー (Structured Error)** を使います。\n\nGoでは**カスタムエラー型**（通常は構造体）を定義することで実装します。\n\n**定義と利点:**\n1. エラー情報を保持するフィールドを持つ**構造体**を定義。\n2. その構造体に **`Error() string` メソッドを実装**し、\n   `error` インターフェースを満たす。\n   `Error()` メソッド内でフィールドを使いメッセージを生成。",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"strings\"\n)\n\n// 構造化エラー型 (例: バリデーションエラー)\ntype ValidationError struct {\n\tFieldName string; ErrValue any; Message string\n}\nfunc (e *ValidationError) Error() string {\n\treturn fmt.Sprintf(\"Validation Error (Field: %s, Value: '%v'): %s\",\n\t\te.FieldName, e.ErrValue, e.Message)\n}\n\n// バリデーション関数 (構造化エラーを返す)\nfunc validateUsername(username string) error {\n\tif len(username) < 3 {\n\t\treturn &ValidationError{\"username\", username, \"短すぎ\"}\n\t}\n\tif strings.Contains(username, \" \") {\n\t\treturn &ValidationError{\"username\", username, \"空白不可\"}\n\t}\n\treturn nil\n}\n\nfunc main() {\n\tnames := []string{\"gopher\", \"go\", \"user name\"}\n\tfor _, name := range names {\n\t\tfmt.Printf(\"\\n検証 '%s':\\n\", name)\n\t\terr := validateUsername(name)\n\t\tif err != nil {\n\t\t\tfmt.Println(\" エラー:\", err)\n\t\t\t// errors.As で ValidationError 型かチェック\n\t\t\tvar valErr *ValidationError\n\t\t\tif errors.As(err, &valErr) {\n\t\t\t\t// 型が一致すればフィールドにアクセスできる\n\t\t\t\tfmt.Printf(\"  -> Field: %s, Detail: %s\\n\", valErr.FieldName, valErr.Message)\n\t\t\t}\n\t\t} else {\n\t\t\tfmt.Println(\" -> OK\")\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: 複数のエラーの結合 `errors.Join` (Go 1.20+)",
+      "title": "複数のエラーの結合 `errors.Join` (Go 1.20+)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"strings\"\n)\n\nvar ErrValueRequired = errors.New(\"値が必要\")\nvar ErrValueTooShort = errors.New(\"短すぎ\")\n\nfunc validateName(name string) error {\n\tif name == \"\" { return fmt.Errorf(\"名前: %w\", ErrValueRequired) }\n\tif len(name) < 3 { return fmt.Errorf(\"名前 '%s': %w\", name, ErrValueTooShort) }\n\treturn nil\n}\nfunc validateEmail(email string) error {\n\tif email == \"\" { return fmt.Errorf(\"メール: %w\", ErrValueRequired) }\n\tif !strings.Contains(email, \"@\") { return fmt.Errorf(\"メール '%s': 無効\", email) }\n\treturn nil\n}\n\n// 複数のバリデーションを行い、エラーを errors.Join で結合\nfunc validateForm(name, email string) error {\n\t// 各バリデーション結果 (error または nil) を Join に渡す\n\treturn errors.Join(\n\t\tvalidateName(name),\n\t\tvalidateEmail(email),\n\t) // nil は無視され、エラーがあれば結合される\n}\n\nfunc main() {\n\t// 複数のエラーが発生するケース\n\terr := validateForm(\"Go\", \"invalid-email\")\n\tif err != nil {\n\t\t// Error() は結合されたメッセージを改行区切りで返す\n\t\tfmt.Printf(\"エラー:\\n%v\\n\", err)\n\n\t\t// errors.Is で特定のエラーが含まれるか確認できる\n\t\tif errors.Is(err, ErrValueTooShort) {\n\t\t\tfmt.Println(\"-> 短すぎるエラーあり\")\n\t\t}\n\t\tif errors.Is(err, ErrValueRequired) {\n\t\t\tfmt.Println(\"-> 必須エラーあり\") // これは含まれない\n\t\t}\n\t}\n}"
     },
     {
-      "title": "エラー処理: 結合されたエラーの検査 (Go 1.20+)",
+      "title": "結合されたエラーの検査 (Go 1.20+)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"os\"\n\t// \"strings\" // strings.Split を使う場合\n)\n\n// --- エラー定義やエラーを返す関数は省略 (前のセクション参照) ---\nvar ErrValueRequired = errors.New(\"値が必要\")\nvar ErrValueTooShort = errors.New(\"短すぎ\")\ntype ConfigError struct { FileName string; Err error }\nfunc (e *ConfigError) Error() string { return fmt.Sprintf(\"設定 '%s': %v\", e.FileName, e.Err) }\nfunc (e *ConfigError) Unwrap() error { return e.Err }\nfunc validateName(name string) error { if len(name) < 3 { return fmt.Errorf(\"名前 '%s': %w\", name, ErrValueTooShort) }; return nil }\nfunc validateEmail(email string) error { if email == \"\" { return fmt.Errorf(\"メール: %w\", ErrValueRequired) }; return nil }\nfunc loadConfigFile(filename string) error { _, err := os.Open(filename); if err != nil { return &ConfigError{filename, err} }; return nil }\n// --- ここまで省略 ---\n\n\nfunc main() {\n\t// 複数のエラーを結合 (例)\n\tjoinedErr := errors.Join(\n\t\tvalidateName(\"Go\"),             // ErrValueTooShort をラップ\n\t\tvalidateEmail(\"\"),              // ErrValueRequired をラップ\n\t\tloadConfigFile(\"config.txt\"), // ConfigError (os.ErrNotExist をラップ)\n\t)\n\n\tif joinedErr != nil {\n\t\tfmt.Printf(\"結合エラー:\\n%v\\n\", joinedErr)\n\n\t\t// errors.Is で特定のエラー値が含まれるか検査\n\t\tif errors.Is(joinedErr, ErrValueTooShort) { fmt.Println(\"-> 短すぎエラーあり\") }\n\t\tif errors.Is(joinedErr, os.ErrNotExist) { fmt.Println(\"-> ファイルなしエラーあり\") }\n\n\t\t// errors.As で特定の型のエラーが含まれるか検査\n\t\tvar configErr *ConfigError\n\t\tif errors.As(joinedErr, &configErr) {\n\t\t\tfmt.Println(\"-> ConfigError あり (ファイル:\", configErr.FileName, \")\")\n\t\t}\n\n\t\t// 個々のエラーメッセージ取得 (参考: Error() を分割)\n\t\t// for _, line := range strings.Split(joinedErr.Error(), \"\\n\") { ... }\n\t}\n}"
     },
     {
-      "title": "エラー処理: `defer` と組み合わせたエラーハンドリング",
+      "title": "`defer` と組み合わせたエラーハンドリング",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// ファイル処理関数 (defer 内で Close のエラーも考慮)\n// ★ 戻り値 error に名前 'err' を付ける\nfunc processFile(filename string) (err error) {\n\tfmt.Printf(\"\\n処理開始: %s\\n\", filename)\n\tf, openErr := os.Open(filename)\n\tif openErr != nil {\n\t\terr = fmt.Errorf(\"オープン失敗: %w\", openErr)\n\t\treturn // err が返る\n\t}\n\n\t// ★ defer でクローズ処理とエラーハンドリング\n\tdefer func() {\n\t\tfmt.Println(\" defer: クローズ処理...\")\n\t\tcloseErr := f.Close()\n\t\tif closeErr != nil {\n\t\t\tfmt.Printf(\" defer: クローズエラー: %v\\n\", closeErr)\n\t\t\t// ★ 関数本体でエラーが発生していなければ (err == nil)、\n\t\t\t//    クローズエラーを関数の最終エラーとする\n\t\t\tif err == nil {\n\t\t\t\terr = fmt.Errorf(\"クローズ失敗: %w\", closeErr)\n\t\t\t}\n\t\t\t// (本体エラーがあればそちらを優先)\n\t\t} else {\n\t\t\tfmt.Println(\" defer: クローズ成功\")\n\t\t}\n\t}() // defer func() { ... }()\n\n\t// --- ファイル処理 (例) ---\n\tfmt.Println(\" ファイル処理中...\")\n\t// if someCondition {\n\t//     err = errors.New(\"処理中エラー\")\n\t//     return // この場合でも defer は実行される\n\t// }\n\n\tfmt.Println(\" 処理正常終了\")\n\treturn nil // 成功時は nil (defer で closeErr も nil なら)\n}\n\nfunc main() {\n\t// 正常ケース (ファイル作成・削除は省略)\n\t// os.WriteFile(\"test.txt\", []byte(\"data\"), 0644)\n\tprocessFile(\"test.txt\") // 存在しないファイルでオープンエラーを試す\n\n\t// os.Remove(\"test.txt\")\n}"
     }

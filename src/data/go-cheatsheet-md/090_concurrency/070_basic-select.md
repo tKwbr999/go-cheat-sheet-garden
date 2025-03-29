@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: `select` 文による複数チャネル操作の待機
+title: `select` 文による複数チャネル操作の待機
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "select", "case", "同期", "通信"]

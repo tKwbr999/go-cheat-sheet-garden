@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `if` 文を使ったエラーチェック
+title: `if` 文を使ったエラーチェック
 
 ## タグ
 tags: ["flow-control", "if", "エラー処理", "error", "nil"]

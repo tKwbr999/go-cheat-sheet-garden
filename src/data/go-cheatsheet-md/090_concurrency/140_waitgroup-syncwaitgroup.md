@@ -1,5 +1,5 @@
 ## タイトル
-title: "並行処理: sync.WaitGroup (再確認)"
+title: "sync.WaitGroup (再確認)"
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "WaitGroup", "同期", "Add", "Done", "Wait"]

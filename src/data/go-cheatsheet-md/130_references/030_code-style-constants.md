@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: 定数 (Constants)"
+title: 定数 (Constants)
 
 ## タグ
 tags: ["references", "code style", "constants", "const", "naming", "iota"]

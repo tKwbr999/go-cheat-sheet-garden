@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)
+title: Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "context", "Done", "Err", "select", "キャンセル", "タイムアウト", "デッドライン"]

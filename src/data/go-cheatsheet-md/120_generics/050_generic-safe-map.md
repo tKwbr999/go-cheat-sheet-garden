@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: スレッドセーフなジェネリックマップ
+title: スレッドセーフなジェネリックマップ
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型パラメータ", "type parameter", "データ構造", "struct", "マップ", "map", "sync", "RWMutex", "スレッドセーフ", "comparable"]

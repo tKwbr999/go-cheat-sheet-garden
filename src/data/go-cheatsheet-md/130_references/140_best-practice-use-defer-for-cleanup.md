@@ -1,5 +1,5 @@
 ## タイトル
-title: "ベストプラクティス: クリーンアップに `defer` を使う"
+title: クリーンアップに `defer` を使う
 
 ## タグ
 tags: ["references", "best practice", "defer", "cleanup", "Close", "Unlock", "リソース管理"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ファイル全体を読み込む (`os.ReadFile`)
+title: ファイル全体を読み込む (`os.ReadFile`)
 
 ## タグ
 tags: ["io-operations", "io", "os", "file", "read", "ReadFile", "ファイル読み込み"]

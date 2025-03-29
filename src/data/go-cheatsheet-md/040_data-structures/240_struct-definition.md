@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 構造体 (Struct) の定義
+title: 構造体 (Struct) の定義
 
 ## タグ
 tags: ["data-structures", "構造体", "struct", "type", "フィールド", "値型"]

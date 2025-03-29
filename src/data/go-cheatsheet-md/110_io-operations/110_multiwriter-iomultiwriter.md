@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: 複数への同時書き込み (`io.MultiWriter`)
+title: 複数への同時書き込み (`io.MultiWriter`)
 
 ## タグ
 tags: ["io-operations", "io", "MultiWriter", "Writer", "同時書き込み", "ログ"]

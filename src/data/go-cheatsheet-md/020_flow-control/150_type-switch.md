@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: 型スイッチ (Type Switch)
+title: 型スイッチ (Type Switch)
 
 ## タグ
 tags: ["flow-control", "switch", "case", "type", "インターフェース", "interface", "any", "型アサーション"]

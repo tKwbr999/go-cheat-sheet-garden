@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: 複数の `init()` 関数
+title: 複数の `init()` 関数
 
 ## タグ
 tags: ["packages", "package", "init", "初期化", "実行順序"]

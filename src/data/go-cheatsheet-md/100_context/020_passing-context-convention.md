@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: Context の受け渡し規約
+title: Context の受け渡し規約
 
 ## タグ
 tags: ["context", "concurrency", "規約", "関数シグネチャ", "第一引数"]

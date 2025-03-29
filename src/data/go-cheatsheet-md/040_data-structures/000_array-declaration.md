@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 配列 (Array) の宣言
+title: 配列 (Array) の宣言
 
 ## タグ
 tags: ["data-structures", "配列", "array", "固定長", "ゼロ値"]
