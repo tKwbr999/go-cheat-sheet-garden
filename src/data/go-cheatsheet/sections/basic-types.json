@@ -1,0 +1,95 @@
+{
+  "title": "Basic Types",
+  "codeExamples": [
+    {
+      "title": "整数 (Integer)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar i int = -100\n\tfmt.Printf(\"int 型変数 i: 値=%d\\n\", i)\n\n\tvar r rune = 'あ'\n\tfmt.Printf(\"rune 型変数 r: 値=%c (数値=%d)\\n\", r, r)\n\n\tvar r2 rune = 12354 // 'あ' の Unicode コードポイント\n\tfmt.Printf(\"rune 型変数 r2: 値=%c\\n\", r2)\n}"
+    },
+    {
+      "title": "符号なし整数 (Unsigned Integer)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar u uint = 100\n\tfmt.Printf(\"uint: %d\\n\", u)\n\n\tvar u8 uint8 = 255\n\tfmt.Printf(\"uint8: %d\\n\", u8)\n\n\tvar u16 uint16 = 65535\n\tfmt.Printf(\"uint16: %d\\n\", u16)\n\n\tvar u32 uint32 = 4294967295\n\tfmt.Printf(\"uint32: %d\\n\", u32)\n\n\tvar u64 uint64 = 18446744073709551615\n\tfmt.Printf(\"uint64: %d\\n\", u64)\n\n\tvar b byte = 'A' // uint8 の別名\n\tfmt.Printf(\"byte: %d ('%c')\\n\", b, b)\n\n\tvar ptr uintptr = 0xdeadbeef // 通常は使わない\n\tfmt.Printf(\"uintptr: %x\\n\", ptr)\n}"
+    },
+    {
+      "title": "浮動小数点数 (Floating-Point)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// float64 (デフォルト)\n\tvar pi float64 = 3.14159\n\tradius := 5.0 // 型推論で float64\n\tarea := pi * radius * radius\n\tfmt.Printf(\"Area (float64): %.5f\\n\", area)\n\n\t// float32\n\tvar gravity float32 = 9.81\n\tmass := float32(10.0) // 型変換\n\tforce := mass * gravity\n\tfmt.Printf(\"Force (float32): %.3f\\n\", force)\n\n\t// 誤差の注意点\n\tsum := 0.1 + 0.2\n\tfmt.Printf(\"0.1 + 0.2 = %.17f\\n\", sum) // 正確に 0.3 にならない可能性\n\tfmt.Printf(\"sum == 0.3 is %t\\n\", sum == 0.3)\n}"
+    },
+    {
+      "title": "複素数 (Complex)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// complex128 (デフォルト)\n\tvar c1 complex128 = 1.5 + 2.5i\n\tc2 := 3 + 4i // 型推論\n\tc3 := complex(0.5, -1.2)\n\n\tfmt.Printf(\"c1: %v (%T)\\n\", c1, c1)\n\tfmt.Printf(\"c2: %v\\n\", c2)\n\tfmt.Printf(\"c3: %v\\n\", c3)\n\n\t// 演算\n\taddResult := c1 + c2\n\tmulResult := c1 * c2\n\tfmt.Printf(\"c1 + c2 = %v\\n\", addResult)\n\tfmt.Printf(\"c1 * c2 = %v\\n\", mulResult)\n\n\t// 実部と虚部\n\tfmt.Printf(\"real(c1): %f\\n\", real(c1))\n\tfmt.Printf(\"imag(c1): %f\\n\", imag(c1))\n}"
+    },
+    {
+      "title": "文字列 (String)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar greeting string = \"Hello, Go!\"\n\tvar name = \"Gopher\"\n\tmessage := \"Welcome!\"\n\n\temptyStr1 := \"\"\n\tvar emptyStr2 string // ゼロ値は \"\"\n\n\tfmt.Println(greeting)\n\tfmt.Println(\"名前:\", name)\n\tfmt.Println(message)\n\tfmt.Println(\"空文字列1:\", emptyStr1)\n\tfmt.Println(\"空文字列2:\", emptyStr2)\n\n\t// greeting[0] = 'h' // コンパイルエラー (不変のため)\n\n\tnewGreeting := \"Hi, Go!\" // 新しい文字列を作成\n\tfmt.Println(\"新しい挨拶:\", newGreeting)\n}"
+    },
+    {
+      "title": "生文字列リテラル (Raw String Literal)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tnormalString := \"通常文字列:\\n改行と C:\\\\Path\"\n\tfmt.Println(\"--- 通常の文字列 ---\")\n\tfmt.Println(normalString)\n\n\trawString := `生文字列リテラル:\n改行と C:\\Path (エスケープ不要)\nダブルクォート \" もそのまま書ける。`\n\tfmt.Println(\"\\n--- 生文字列 ---\")\n\tfmt.Println(rawString)\n}"
+    },
+    {
+      "title": "文字列の基本操作 (長さ, アクセス, 部分文字列)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts := \"abcdefg\"\n\n\tsub1 := s[1:3] // \"bc\"\n\tfmt.Printf(\"s[1:3] = \\\"%s\\\"\\n\", sub1)\n\n\tsub2 := s[:4] // \"abcd\"\n\tfmt.Printf(\"s[:4]  = \\\"%s\\\"\\n\", sub2)\n\n\tsub3 := s[2:] // \"cdefg\"\n\tfmt.Printf(\"s[2:]  = \\\"%s\\\"\\n\", sub3)\n\n\tsub4 := s[:] // \"abcdefg\"\n\tfmt.Printf(\"s[:]   = \\\"%s\\\"\\n\", sub4)\n\n\tfmt.Printf(\"元の文字列 s = \\\"%s\\\"\\n\", s) // 元は不変\n}"
+    },
+    {
+      "title": "文字列の連結 (結合)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts1 := \"Hello\"\n\ts2 := \"World\"\n\tspace := \" \"\n\n\tgreeting := s1 + space + s2 + \"!\"\n\tfmt.Println(greeting) // Hello World!\n\n\tfmt.Println(\"元の s1:\", s1) // 元の文字列は不変\n\tfmt.Println(\"元の s2:\", s2)\n\n\tmessage := \"Go is \"\n\tmessage += \"fun!\" // += も使える\n\tfmt.Println(message) // Go is fun!\n}"
+    },
+    {
+      "title": "文字列と UTF-8 / Rune",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"unicode/utf8\"\n)\n\nfunc main() {\n\ts := \"Go言語\" // 4文字\n\n\tfmt.Printf(\"文字列: \\\"%s\\\"\\n\", s)\n\tfmt.Printf(\"バイト長 (len): %d\\n\", len(s)) // 8\n\n\truneCount := utf8.RuneCountInString(s)\n\tfmt.Printf(\"文字数 (RuneCount): %d\\n\", runeCount) // 4\n\n\tfmt.Println(\"\\n--- バイト単位アクセス (for i) ---\")\n\tfor i := 0; i < len(s); i++ {\n\t\tfmt.Printf(\" %d:%x\", i, s[i])\n\t}\n\tfmt.Println()\n\n\tfmt.Println(\"\\n--- 文字(Rune)単位アクセス (for range) ---\")\n\tfor i, r := range s {\n\t\tfmt.Printf(\" %d:'%c'(%U)\", i, r, r)\n\t}\n\tfmt.Println()\n}"
+    },
+    {
+      "title": "真偽値 (Boolean)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar isGoFun bool = true\n\tvar isLearning bool // ゼロ値は false\n\n\tisEnabled := true\n\thasError := false\n\n\tfmt.Println(\"Goは楽しい？:\", isGoFun)\n\tfmt.Println(\"学習中？:\", isLearning)\n\tfmt.Println(\"有効フラグ:\", isEnabled)\n\tfmt.Println(\"エラーあり？:\", hasError)\n\n\tif isEnabled {\n\t\tfmt.Println(\"機能が有効です。\")\n\t} else {\n\t\tfmt.Println(\"機能が無効です。\")\n\t}\n\n\tif !hasError { // ! は否定演算子\n\t\tfmt.Println(\"エラーはありません。\")\n\t}\n}"
+    },
+    {
+      "title": "真偽値の演算 (論理演算)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := true\n\tb := false\n\n\t// && (AND)\n\tfmt.Printf(\"%t && %t = %t\\n\", a, b, a && b) // false\n\n\t// || (OR)\n\tfmt.Printf(\"%t || %t = %t\\n\", a, b, a || b) // true\n\n\t// ! (NOT)\n\tfmt.Printf(\"!%t = %t\\n\", a, !a) // false\n\tfmt.Printf(\"!%t = %t\\n\", b, !b) // true\n\n\t// 組み合わせ\n\tresult1 := (a || b) && a // true\n\tresult2 := !(a && b)   // true\n\tfmt.Printf(\"(%t || %t) && %t = %t\\n\", a, b, a, result1)\n\tfmt.Printf(\"!(%t && %t) = %t\\n\", a, b, result2)\n}"
+    },
+    {
+      "title": "真偽値になる式 (比較演算)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tage := 25\n\tscore := 85\n\tname := \"Alice\"\n\n\tif age >= 20 {\n\t\tfmt.Println(\"成人です。\")\n\t}\n\n\tif name == \"Alice\" {\n\t\tfmt.Println(\"こんにちは、Alice さん！\")\n\t}\n\n\t// 複数の条件を && (AND) で組み合わせる\n\tif age >= 20 && score >= 70 {\n\t\tfmt.Println(\"あなたは条件を満たしています。\")\n\t}\n}"
+    },
+    {
+      "title": "数値型間の明示的な変換",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar i int = 100\n\tvar f float64 = 3.14\n\n\t// 異なる型同士の演算には変換が必要\n\t// fmt.Println(i + f) // コンパイルエラー\n\n\t// int を float64 に変換\n\tresult1 := float64(i) + f\n\tfmt.Printf(\"float64(%d) + %f = %f\\n\", i, f, result1)\n\n\t// float64 を int に変換 (小数点以下切り捨て)\n\tresult2 := i + int(f) // int(3.14) は 3\n\tfmt.Printf(\"%d + int(%f) = %d\\n\", i, f, result2)\n\n\t// 異なる型への代入にも変換が必要\n\tvar f2 float64 = float64(i)\n\tfmt.Printf(\"int -> float64: %f\\n\", f2)\n\n\t// 精度低下の例\n\tvar largeF float64 = 123.789\n\tvar intFromF int = int(largeF) // 123 になる\n\tfmt.Printf(\"int(%.3f) = %d\\n\", largeF, intFromF)\n\n\t// オーバーフローの可能性 (例: int64 -> int8)\n\t// var big int64 = 1000\n\t// var small int8 = int8(big) // 範囲外だと予期しない値に\n}"
+    },
+    {
+      "title": "文字列と整数の変換 (Itoa, Atoi)",
+      "description": "数値と文字列間の変換には、標準ライブラリの\n`strconv` (\"string conversion\") パッケージを使います。\n\n**整数 (`int`) から 文字列 (`string`) へ: `strconv.Itoa()`**\n`int` 型の整数を10進数表現の文字列に変換します。\n(Itoa: Integer to ASCII)\n例: `s := strconv.Itoa(123)` // s は \"123\" になる\n\n**文字列 (`string`) から 整数 (`int`) へ: `strconv.Atoi()`**\n10進数表現の文字列を `int` 型の整数に変換します。\n(Atoi: ASCII to Integer)\n\n**重要: `Atoi` のエラー処理**\n文字列から数値への変換は、文字列が数値として\n解釈できない場合に**失敗する可能性**があります。\nそのため、`Atoi` は2つの値を返します。\n1.  変換後の `int` 値 (成功時)\n2.  `error` 値 (成功時は `nil`, 失敗時はエラー情報)\n\n**`Atoi` を使う際は、必ずエラーチェックを行います。**",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tstr1 := \"9876\"\n\tstr2 := \" -123 \"\n\tstr3 := \"456abc\" // 変換不可\n\tstr4 := \"123.45\" // 整数ではない\n\n\tnum1, err1 := strconv.Atoi(str1)\n\tif err1 != nil {\n\t\tfmt.Printf(\"エラー(%s): %v\\n\", str1, err1)\n\t} else {\n\t\tfmt.Printf(\"%s -> %d (%T)\\n\", str1, num1, num1)\n\t}\n\n\tnum2, err2 := strconv.Atoi(str2)\n\tif err2 != nil {\n\t\tfmt.Printf(\"エラー(%s): %v\\n\", str2, err2)\n\t} else {\n\t\tfmt.Printf(\"%s -> %d (%T)\\n\", str2, num2, num2)\n\t}\n\n\t_, err3 := strconv.Atoi(str3) // 結果は使わないがエラーはチェック\n\tif err3 != nil {\n\t\tfmt.Printf(\"エラー(%s): %v\\n\", str3, err3)\n\t}\n\n\t_, err4 := strconv.Atoi(str4)\n\tif err4 != nil {\n\t\tfmt.Printf(\"エラー(%s): %v\\n\", str4, err4)\n\t}\n}"
+    },
+    {
+      "title": "文字列とバイトスライス (`[]byte`) の変換",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts := \"Hello Go!\"\n\tfmt.Printf(\"元の文字列: \\\"%s\\\" (%T)\\n\", s, s)\n\n\t// string から []byte へ変換\n\tbyteSlice := []byte(s)\n\tfmt.Printf(\"変換後のバイトスライス: %v (%T)\\n\", byteSlice, byteSlice)\n\n\tfmt.Print(\"バイトスライスの各要素 (ASCII): \")\n\tfor _, b := range byteSlice {\n\t\tfmt.Printf(\"%d \", b)\n\t}\n\tfmt.Println()\n\n\t// バイトスライスは変更可能\n\tif len(byteSlice) > 0 {\n\t\tbyteSlice[0] = 'J' // 'H' (72) -> 'J' (74)\n\t}\n\tfmt.Printf(\"変更後のバイトスライス: %v\\n\", byteSlice)\n\n\t// 元の文字列 s は不変\n\tfmt.Printf(\"元の文字列は不変: \\\"%s\\\"\\n\", s)\n}"
+    },
+    {
+      "title": "数値文字列の解析 (Parse)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n)\n\nfunc main() {\n\t// 10進数\n\ti10, err1 := strconv.ParseInt(\"-123\", 10, 64)\n\tif err1 == nil {\n\t\tfmt.Printf(\"\\\"-123\\\" (10進) -> %d\\n\", i10)\n\t}\n\n\t// 16進数 (base=0 で自動判別)\n\ti16, err2 := strconv.ParseInt(\"0xFF\", 0, 64)\n\tif err2 == nil {\n\t\tfmt.Printf(\"\\\"0xFF\\\" (16進) -> %d\\n\", i16) // 255\n\t}\n\n\t// 2進数 (base=0, bitSize=8)\n\ti2, err3 := strconv.ParseInt(\"0b1011\", 0, 8)\n\tif err3 == nil {\n\t\tfmt.Printf(\"\\\"0b1011\\\" (2進) -> %d (int8: %d)\\n\", i2, int8(i2)) // 11\n\t}\n\n\t// 符号なし整数\n\tu10, err4 := strconv.ParseUint(\"456\", 10, 64)\n\tif err4 == nil {\n\t\tfmt.Printf(\"\\\"456\\\" (10進) -> %d\\n\", u10)\n\t}\n\n\t// エラー例: 範囲外\n\t_, err5 := strconv.ParseInt(\"300\", 10, 8) // int8 は -128~127\n\tif err5 != nil {\n\t\tfmt.Printf(\"エラー (\\\"300\\\" as int8): %v\\n\", err5)\n\t}\n\n\t// エラー例: 不正な文字\n\t_, err6 := strconv.ParseInt(\"12a3\", 10, 64)\n\tif err6 != nil {\n\t\tfmt.Printf(\"エラー (\\\"12a3\\\"): %v\\n\", err6)\n\t}\n}"
+    },
+    {
+      "title": "値の文字列へのフォーマット (Format)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tname := \"Gopher\"\n\tage := 13\n\tpi := 3.14159\n\n\tmessage := fmt.Sprintf(\"名前: %s, 年齢: %d歳\", name, age)\n\tfmt.Println(message)\n\n\tpiStr := fmt.Sprintf(\"円周率: %.2f\", pi)\n\tfmt.Println(piStr)\n\n\tnumStr := fmt.Sprintf(\"商品番号: %06d\", 123)\n\tfmt.Println(numStr)\n\n\ttypeStr := fmt.Sprintf(\"変数 age の型は %T です\", age)\n\tfmt.Println(typeStr)\n\n\ttype Point struct{ X, Y int }\n\tp := Point{10, 20}\n\tstructStr1 := fmt.Sprintf(\"Point: %v\", p)\n\tstructStr2 := fmt.Sprintf(\"Point: %+v\", p)\n\tstructStr3 := fmt.Sprintf(\"Point: %#v\", p)\n\tfmt.Println(structStr1)\n\tfmt.Println(structStr2)\n\tfmt.Println(structStr3)\n}"
+    },
+    {
+      "title": "ゼロ値 (Zero Value)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\ntype Point struct {\n\tX, Y int\n}\n\nfunc main() {\n\tvar i int\n\tvar f float64\n\tvar b bool\n\tvar s string\n\tvar p *int // ポインタ\n\tvar slice []int\n\tvar mp map[string]int\n\tvar pt Point // 構造体\n\n\tfmt.Printf(\"int:     %d\\n\", i)\n\tfmt.Printf(\"float64: %f\\n\", f)\n\tfmt.Printf(\"bool:    %t\\n\", b)\n\tfmt.Printf(\"string:  \\\"%s\\\"\\n\", s)\n\tfmt.Printf(\"pointer: %v\\n\", p)\n\tfmt.Printf(\"slice:   %v (len=%d)\\n\", slice, len(slice))\n\tfmt.Printf(\"map:     %v (len=%d)\\n\", mp, len(mp))\n\tfmt.Printf(\"struct:  %+v\\n\", pt)\n}"
+    }
+  ]
+}

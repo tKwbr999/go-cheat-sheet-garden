@@ -1,0 +1,86 @@
+[
+  {
+    "id": "basics",
+    "title": "Basics",
+    "orderPrefix": "000",
+    "filePath": "/data/sections/basics.json"
+  },
+  {
+    "id": "basic-types",
+    "title": "Basic Types",
+    "orderPrefix": "010",
+    "filePath": "/data/sections/basic-types.json"
+  },
+  {
+    "id": "flow-control",
+    "title": "Flow Control",
+    "orderPrefix": "020",
+    "filePath": "/data/sections/flow-control.json"
+  },
+  {
+    "id": "functions",
+    "title": "Functions",
+    "orderPrefix": "030",
+    "filePath": "/data/sections/functions.json"
+  },
+  {
+    "id": "data-structures",
+    "title": "Data Structures",
+    "orderPrefix": "040",
+    "filePath": "/data/sections/data-structures.json"
+  },
+  {
+    "id": "methods",
+    "title": "Methods",
+    "orderPrefix": "050",
+    "filePath": "/data/sections/methods.json"
+  },
+  {
+    "id": "interfaces",
+    "title": "Interfaces",
+    "orderPrefix": "060",
+    "filePath": "/data/sections/interfaces.json"
+  },
+  {
+    "id": "packages",
+    "title": "Packages",
+    "orderPrefix": "070",
+    "filePath": "/data/sections/packages.json"
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "orderPrefix": "080",
+    "filePath": "/data/sections/error-handling.json"
+  },
+  {
+    "id": "concurrency",
+    "title": "Concurrency",
+    "orderPrefix": "090",
+    "filePath": "/data/sections/concurrency.json"
+  },
+  {
+    "id": "context",
+    "title": "Context",
+    "orderPrefix": "100",
+    "filePath": "/data/sections/context.json"
+  },
+  {
+    "id": "io-operations",
+    "title": "Io Operations",
+    "orderPrefix": "110",
+    "filePath": "/data/sections/io-operations.json"
+  },
+  {
+    "id": "generics",
+    "title": "Generics",
+    "orderPrefix": "120",
+    "filePath": "/data/sections/generics.json"
+  },
+  {
+    "id": "references",
+    "title": "References",
+    "orderPrefix": "130",
+    "filePath": "/data/sections/references.json"
+  }
+]
