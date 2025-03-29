@@ -1,56 +1,36 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+// Theme type is no longer needed as we enforce 'light'
+// type Theme = 'light' | 'dark' | 'system';
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') {
-      return 'system'; // Default for SSR or build time
+  // State is no longer needed, but we keep the hook structure
+  // const [theme, setThemeState] = useState<Theme>('light'); // Always light
+
+  const applyTheme = useCallback(() => {
+    // Always apply 'light' theme
+    if (typeof window !== 'undefined') {
+      const root = window.document.documentElement;
+      root.classList.remove('dark'); // Ensure dark class is removed if present
+      root.classList.add('light'); // Always add light class
+      // localStorage interaction is removed
+      // localStorage.setItem('theme', 'light');
     }
-    return (localStorage.getItem('theme') as Theme) || 'system';
-  });
-
-  const applyTheme = useCallback((selectedTheme: Theme) => {
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-
-    let effectiveTheme: 'light' | 'dark';
-    if (selectedTheme === 'system') {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      effectiveTheme = systemPrefersDark ? 'dark' : 'light';
-    } else {
-      effectiveTheme = selectedTheme;
-    }
-
-    root.classList.add(effectiveTheme);
-    localStorage.setItem('theme', selectedTheme); // Store the user's preference (light, dark, or system)
-    setThemeState(selectedTheme); // Update the hook's state
+    // setThemeState('light'); // State update is removed
   }, []);
 
-  // Effect to apply theme on initial load and when theme state changes
+  // Effect to apply theme on initial load
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme, applyTheme]);
+    applyTheme();
+  }, [applyTheme]);
 
-  // Effect to listen for system theme changes when theme is 'system'
-  useEffect(() => {
-    if (theme !== 'system') {
-      return;
-    }
+  // System theme listener effect is removed
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => {
-      // Re-apply theme which will detect the new system preference
-      applyTheme('system');
-    };
+  // setTheme function is removed as theme is fixed
+  // const setTheme = (newTheme: Theme) => {
+  //   applyTheme(newTheme);
+  // };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme, applyTheme]);
-
-  const setTheme = (newTheme: Theme) => {
-    applyTheme(newTheme);
-  };
-
-  return { theme, setTheme };
+  // Return a fixed theme value and a no-op setter
+  return { theme: 'light' as const /*, setTheme: () => {} */ };
 }

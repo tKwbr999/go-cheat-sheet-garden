@@ -45,47 +45,6 @@
 
     --radius: 0.5rem;
   }
-
-  .dark {
-    /* --- Dark Mode: Twine Theme --- */
-    --background: #321916; /* twine-950 */
-    --foreground: #eee3d3; /* twine-100 */
-
-    --card: #57322c; /* twine-900 */
-    --card-foreground: #eee3d3; /* twine-100 */
-
-    --popover: #321916; /* twine-950 */
-    --popover-foreground: #eee3d3; /* twine-100 */
-
-    /* Keep original colors for syntax highlighting */
-    --primary-syntax: 210 30% 70%;
-    --accent-syntax: 145 30% 60%;
-    --destructive-syntax: 0 60% 55%;
-    --secondary-syntax-fg: 40 15% 80%;
-    --muted-syntax-fg: 40 10% 60%;
-
-    /* UI Colors (Twine Scale) */
-    --primary: #cca378; /* twine-300 */
-    --primary-foreground: #321916; /* twine-950 */
-
-    --secondary: #65392e; /* twine-800 */
-    --secondary-foreground: #dfc7a9; /* twine-200 */
-
-    --muted: #65392e; /* twine-800 */
-    --muted-foreground: #c39265; /* twine-400 */
-
-    --accent: #ad7345; /* twine-500 */
-    --accent-foreground: #321916; /* twine-950 */
-
-    --destructive: #c39265; /* twine-400 */
-    --destructive-foreground: #321916; /* twine-950 */
-
-    --border: #774431; /* twine-700 */
-    --input: #774431; /* twine-700 */
-    --ring: #945a3a; /* twine-600 */
-    /* --radius is inherited from :root */
-  }
-
   * {
     @apply border-border antialiased;
   }
