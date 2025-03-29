@@ -1,73 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator"; // Import Separator
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import hljs from 'highlight.js/lib/core'; // Import highlight.js core
+import go from 'highlight.js/lib/languages/go'; // Import Go language definition
+// Import highlight.js themes - Ideally, these should be imported globally (e.g., in main.tsx or index.css)
+// and managed with Tailwind's dark mode, but importing here for simplicity first.
+import 'highlight.js/styles/atom-one-light.css';
+import 'highlight.js/styles/atom-one-dark.css';
+
+// Register the Go language
+hljs.registerLanguage('go', go);
 
 interface CodeBlockProps {
   title: string;
   code: string;
-  description?: string; // Added description prop
-  language?: string;
+  description?: string;
+  language?: string; // Keep language prop, though hljs might auto-detect
   className?: string;
 }
 
 const CodeBlock: React.FC<CodeBlockProps> = ({
   title,
   code,
-  description, // Receive description
-  // language = "go",
+  description,
+  language = "go", // Default language hint for hljs
   className = "",
 }) => {
   const [hasCopied, setHasCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const codeRef = useRef<HTMLElement>(null); // Ref for the <code> element
   const { toast } = useToast();
+  const [themeClass, setThemeClass] = useState('hljs-light'); // State to manage theme class
 
-  // Simple syntax highlighting
-  const highlightCode = (codeLine: string): React.ReactNode => {
-    if (!codeLine) return null;
+  // --- highlight.js Highlighting Logic ---
+  useEffect(() => {
+    // Function to apply highlighting
+    const applyHighlight = () => {
+      if (codeRef.current) {
+        hljs.highlightElement(codeRef.current);
+      }
+    };
 
-    // Handle comments first
-    if (codeLine.trim().startsWith("//")) {
-      return <span className="comment">{codeLine}</span>;
-    }
+    // Apply highlight when component mounts or code/language changes
+    applyHighlight();
 
-    let highlighted = codeLine;
-    const stringLiterals: string[] = [];
+    // Determine theme based on dark mode class
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setThemeClass(isDarkMode ? 'hljs-dark' : 'hljs-light'); // Use generic classes for switching
 
-    // 1. Replace string literals with placeholders
-    highlighted = highlighted.replace(/"([^"]*)"/g, (match) => {
-      const placeholder = `__STRING_LITERAL_${stringLiterals.length}__`;
-      stringLiterals.push(match);
-      return placeholder;
+    // Optional: Observer for theme changes
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      setThemeClass(isDark ? 'hljs-dark' : 'hljs-light');
+      // Re-apply highlighting might be needed if themes drastically change structure
+      // applyHighlight(); // Usually not needed if themes only change colors
     });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-    // 2. Apply other highlights
-    const keywords = ["func", "package", "import", "type", "struct", "interface", "map", "chan", "const", "var", "return", "if", "else", "for", "range", "switch", "case", "default", "go", "defer", "select"];
-    keywords.forEach(kw => {
-      highlighted = highlighted.replace(new RegExp(`\\b${kw}\\b`, 'g'), `<span class="keyword">${kw}</span>`);
-    });
-    highlighted = highlighted.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\(/g, '<span class="function">$1</span>(');
-    highlighted = highlighted.replace(/\b([0-9]+)\b/g, '<span class="number">$1</span>');
-    const types = ["string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "float32", "float64", "complex64", "complex128", "bool", "byte", "rune", "error"];
-    types.forEach(t => {
-      highlighted = highlighted.replace(new RegExp(`\\b${t}\\b`, 'g'), `<span class="type">${t}</span>`);
-    });
+    return () => observer.disconnect(); // Cleanup observer
 
-    // 3. Restore string literals
-    stringLiterals.forEach((literal, index) => {
-      const placeholder = `__STRING_LITERAL_${index}__`;
-      const content = literal.substring(1, literal.length - 1);
-      highlighted = highlighted.replace(placeholder, `<span class="string">"${content}"</span>`);
-    });
+  }, [code, language]); // Rerun effect if code or language changes
+  // --- End highlight.js Highlighting Logic ---
 
-    return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
-  };
+  // Removed the old highlightCode function
 
   const handleCopy = async () => {
     try {
@@ -92,37 +94,34 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
   // Render code block content, including description if available
   const renderCodeContent = () => (
-    <CardContent className="code-content relative pt-2 pb-4 px-4 font-mono rounded-b-lg">
+    // Apply the theme class to the CardContent
+    <CardContent className={`code-content relative p-0 font-mono rounded-b-lg overflow-hidden ${themeClass}`}>
       {/* Copy Button */}
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md z-10"
+        className="absolute top-2 right-2 p-1.5 text-muted-foreground bg-card/80 hover:text-foreground transition-colors rounded-md z-10 backdrop-blur-sm"
         aria-label="Copy code"
       >
         {hasCopied ? <Check size={14} /> : <Copy size={14} />}
       </button>
-      <div className="relative overflow-x-auto overflow-y-auto">
-        <pre className="relative min-w-full text-sm">
-          {code.split('\n').map((line, i) => (
-            <div key={i} className="code-line group flex">
-              <span className="flex-1 pr-8">
-                {highlightCode(line)}
-              </span>
-            </div>
-          ))}
-        </pre>
-        {/* Render description below code if it exists */}
-        {description && (
-          <>
-            <Separator className="my-3 bg-border/50" />
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
-              {description}
-            </p>
-          </>
-        )}
-      </div>
+      {/* Use <pre><code> structure for highlight.js */}
+      <pre className="overflow-x-auto p-4 text-sm"> {/* Added padding here */}
+        <code ref={codeRef} className={`language-${language}`}>
+          {code.trim()} {/* Trim trailing newline */}
+        </code>
+      </pre>
+      {/* Render description below code if it exists */}
+      {description && (
+        <div className="px-4 pb-4 pt-2 border-t border-border/50"> {/* Added border */}
+          <Separator className="my-3 bg-transparent border-0 h-0" /> {/* Hide separator, use border above */}
+          <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
+            {description}
+          </p>
+        </div>
+      )}
     </CardContent>
   );
+
 
   return (
     <Card className={`relative code-block overflow-hidden ${className}`}>
