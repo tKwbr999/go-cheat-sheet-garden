@@ -1,73 +1,86 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator"; // Import Separator
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { codeToHtml } from "shiki"; // Import only codeToHtml
 
 interface CodeBlockProps {
   title: string;
   code: string;
-  description?: string; // Added description prop
-  language?: string;
+  description?: string;
+  language?: string; // Keep language prop
   className?: string;
 }
 
 const CodeBlock: React.FC<CodeBlockProps> = ({
   title,
   code,
-  description, // Receive description
-  // language = "go",
+  description,
+  language = "go", // Default to 'go'
   className = "",
 }) => {
   const [hasCopied, setHasCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [highlightedCodeHtml, setHighlightedCodeHtml] = useState<string>(""); // State for highlighted HTML
   const { toast } = useToast();
 
-  // Simple syntax highlighting
-  const highlightCode = (codeLine: string): React.ReactNode => {
-    if (!codeLine) return null;
+  // --- Shiki Highlighting Logic ---
+  useEffect(() => {
+    let isMounted = true; // Flag to prevent state update on unmounted component
 
-    // Handle comments first
-    if (codeLine.trim().startsWith("//")) {
-      return <span className="comment">{codeLine}</span>;
-    }
+    const highlight = async () => {
+      try {
+        // Determine the theme based on the current document class (requires theme provider setup)
+        const currentTheme = document.documentElement.classList.contains('dark')
+          ? 'github-dark'
+          : 'github-light';
 
-    let highlighted = codeLine;
-    const stringLiterals: string[] = [];
+        // Use codeToHtml directly if highlighter instance is already configured with themes
+        const html = await codeToHtml(code, {
+          lang: language,
+          theme: currentTheme,
+          // Or provide themes directly if not using getHighlighter for preloading
+          // themes: { light: 'github-light', dark: 'github-dark' },
+        });
 
-    // 1. Replace string literals with placeholders
-    highlighted = highlighted.replace(/"([^"]*)"/g, (match) => {
-      const placeholder = `__STRING_LITERAL_${stringLiterals.length}__`;
-      stringLiterals.push(match);
-      return placeholder;
-    });
 
-    // 2. Apply other highlights
-    const keywords = ["func", "package", "import", "type", "struct", "interface", "map", "chan", "const", "var", "return", "if", "else", "for", "range", "switch", "case", "default", "go", "defer", "select"];
-    keywords.forEach(kw => {
-      highlighted = highlighted.replace(new RegExp(`\\b${kw}\\b`, 'g'), `<span class="keyword">${kw}</span>`);
-    });
-    highlighted = highlighted.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\(/g, '<span class="function">$1</span>(');
-    highlighted = highlighted.replace(/\b([0-9]+)\b/g, '<span class="number">$1</span>');
-    const types = ["string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "float32", "float64", "complex64", "complex128", "bool", "byte", "rune", "error"];
-    types.forEach(t => {
-      highlighted = highlighted.replace(new RegExp(`\\b${t}\\b`, 'g'), `<span class="type">${t}</span>`);
-    });
+        if (isMounted) {
+          setHighlightedCodeHtml(html);
+        }
+      } catch (error) {
+        console.error("Shiki highlighting failed:", error);
+        // Fallback: display raw code if highlighting fails
+        if (isMounted) {
+          // Basic preformatted text as fallback
+          setHighlightedCodeHtml(`<pre><code>${escapeHtml(code)}</code></pre>`);
+        }
+      }
+    };
 
-    // 3. Restore string literals
-    stringLiterals.forEach((literal, index) => {
-      const placeholder = `__STRING_LITERAL_${index}__`;
-      const content = literal.substring(1, literal.length - 1);
-      highlighted = highlighted.replace(placeholder, `<span class="string">"${content}"</span>`);
-    });
+    highlight();
 
-    return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
-  };
+    // Cleanup function to set isMounted to false when the component unmounts
+    return () => {
+      isMounted = false;
+    };
+  }, [code, language]); // Re-run effect if code or language changes
+
+  // Helper function to escape HTML for fallback
+  const escapeHtml = (unsafe: string) => {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;") // Corrected replacement
+         .replace(/>/g, "&gt;") // Corrected replacement
+         .replace(/"/g, "&quot;") // Corrected replacement
+         .replace(/'/g, "&#039;");
+ }
+  // --- End Shiki Highlighting Logic ---
 
   const handleCopy = async () => {
     try {
@@ -96,31 +109,25 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       {/* Copy Button */}
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md z-10"
+        className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md z-20" // Increased z-index
         aria-label="Copy code"
       >
         {hasCopied ? <Check size={14} /> : <Copy size={14} />}
       </button>
-      <div className="relative overflow-x-auto overflow-y-auto">
-        <pre className="relative min-w-full text-sm">
-          {code.split('\n').map((line, i) => (
-            <div key={i} className="code-line group flex">
-              <span className="flex-1 pr-8">
-                {highlightCode(line)}
-              </span>
-            </div>
-          ))}
-        </pre>
-        {/* Render description below code if it exists */}
-        {description && (
-          <>
-            <Separator className="my-3 bg-border/50" />
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
-              {description}
-            </p>
-          </>
-        )}
-      </div>
+      {/* Shiki renders its own <pre> tag, so we use a div wrapper */}
+      <div
+        className="shiki-code-container overflow-x-auto text-sm" // Added class for potential styling
+        dangerouslySetInnerHTML={{ __html: highlightedCodeHtml }}
+      />
+      {/* Render description below code if it exists */}
+      {description && (
+        <>
+          <Separator className="my-3 bg-border/50" />
+          <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
+            {description}
+          </p>
+        </>
+      )}
     </CardContent>
   );
 
