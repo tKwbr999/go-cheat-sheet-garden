@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import CodeBlock from "./CodeBlock";
 // 非同期ローダー関数と型をインポート
-import { getCheatSheetSection } from "@/data/markdown-cheatsheet-loader";
+import { getCheatSheetSection } from "@/data/cheatsheet-loader"; // <- 変更
 import type { CheatSheetSection as SectionData, CodeExample } from "@/data/types"; // 型名を SectionData としてインポート
 
 // Propsを更新: codeExamples を削除し、sectionId を追加
@@ -148,7 +148,11 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
             }`}
             style={{ transitionDelay: `${0.05 * index}s` }} // 遅延は transitionDelay で設定
           >
-            <CodeBlock title={example.title} code={example.code} />
+            <CodeBlock
+              title={example.title}
+              code={example.code}
+              description={example.description} // <- 追加
+            />
           </div>
         ))}
       </div>
