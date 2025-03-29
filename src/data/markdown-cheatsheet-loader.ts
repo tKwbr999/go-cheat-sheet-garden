@@ -61,6 +61,9 @@ function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: 
 
   // タグを抽出
   const tagsMatch = content.match(/## タグ\s*tags:\s*(\[.*\])/); // Regex updated to capture full array
+    // Directly parse the tags string instead of using JSON.parse.
+    // This is necessary because some tags might not be valid JSON strings
+    // (e.g., '[]byte'), causing JSON.parse to fail.
   if (tagsMatch && tagsMatch[1]) {
     const tagsString = tagsMatch[1]
       .slice(1, -1) // Remove leading '[' and trailing ']'
