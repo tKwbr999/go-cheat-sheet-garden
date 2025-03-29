@@ -6,48 +6,68 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* White */
-    --foreground: 222 8% 25%; /* Dark Gray */
-    --card: 0 0% 100%;
-    --card-foreground: 222 8% 25%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 8% 25%;
-    --primary: 195 100% 42%; /* Go Blue */
-    --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 210 40% 96.1%; /* Light Gray-Blue */
-    --secondary-foreground: 210 40% 9.8%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 170 78% 41%; /* Teal Green */
-    --accent-foreground: 0 0% 100%; /* White */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 170 78% 41%; /* Teal Green */
+    /* --- Light Mode: Paper/Craft Theme --- */
+    --background: 40 33% 97%; /* Warm Off-White (Papaya Whip like) */
+    --foreground: 30 25% 25%; /* Dark Brown (Dark Liver like) */
+
+    --card: 35 30% 94%; /* Light Beige (Antique White like) */
+    --card-foreground: 30 25% 25%; /* Dark Brown */
+
+    --popover: 40 33% 96%; /* Slightly lighter than background */
+    --popover-foreground: 30 25% 25%; /* Dark Brown */
+
+    --primary: 210 30% 45%; /* Muted Ink Blue (Steel Blue like) */
+    --primary-foreground: 40 33% 97%; /* Warm Off-White */
+
+    --secondary: 40 20% 92%; /* Lighter Gray-Beige */
+    --secondary-foreground: 30 20% 35%; /* Slightly lighter Dark Brown */
+
+    --muted: 40 20% 92%; /* Lighter Gray-Beige */
+    --muted-foreground: 30 15% 55%; /* Muted Brown */
+
+    --accent: 145 30% 40%; /* Deep Green (Dark Slate Gray like) */
+    --accent-foreground: 40 33% 97%; /* Warm Off-White */
+
+    --destructive: 0 70% 50%; /* Muted Red */
+    --destructive-foreground: 0 0% 100%; /* White */
+
+    --border: 30 15% 88%; /* Light Gray */
+    --input: 30 15% 88%; /* Light Gray */
+    --ring: 210 30% 55%; /* Slightly lighter Muted Ink Blue */
+
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222 47% 11.2%; /* Dark Gray */
-    --foreground: 210 40% 98%; /* Light Gray */
-    --card: 222 47% 11.2%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11.2%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 195 70% 60%; /* Lighter Go Blue */
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 170 70% 50%; /* Lighter Teal Green */
-    --accent-foreground: 0 0% 100%; /* White */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 170 70% 50%; /* Lighter Teal Green */
+    /* --- Dark Mode: Paper/Craft Theme --- */
+    --background: 30 15% 18%; /* Dark Brown */
+    --foreground: 40 20% 88%; /* Light Beige */
+
+    --card: 30 12% 22%; /* Slightly lighter Dark Brown */
+    --card-foreground: 40 20% 88%; /* Light Beige */
+
+    --popover: 30 10% 15%; /* Very Dark Brown */
+    --popover-foreground: 40 20% 88%; /* Light Beige */
+
+    --primary: 210 30% 70%; /* Lighter Muted Ink Blue */
+    --primary-foreground: 30 15% 18%; /* Dark Brown */
+
+    --secondary: 30 10% 25%; /* Dark Gray-Brown */
+    --secondary-foreground: 40 15% 80%; /* Slightly muted Light Beige */
+
+    --muted: 30 10% 25%; /* Dark Gray-Brown */
+    --muted-foreground: 40 10% 60%; /* Muted Beige */
+
+    --accent: 145 30% 60%; /* Lighter Deep Green */
+    --accent-foreground: 30 15% 18%; /* Dark Brown */
+
+    --destructive: 0 60% 55%; /* Muted Red (Dark) */
+    --destructive-foreground: 0 0% 100%; /* White */
+
+    --border: 30 10% 30%; /* Dark Gray */
+    --input: 30 10% 30%; /* Dark Gray */
+    --ring: 210 30% 60%; /* Slightly lighter Muted Ink Blue (Dark) */
+    /* --radius is inherited from :root */
   }
 
   * {
@@ -103,15 +123,18 @@
   }
 
   .function {
-    @apply text-pink-500 dark:text-pink-400; /* Example: Using a distinct color */
+    /* Use destructive color for functions */
+    @apply text-[hsl(var(--destructive))] dark:text-[hsl(var(--destructive))];
   }
 
   .number {
-    @apply text-blue-600 dark:text-blue-400; /* Example: Using a distinct color */
+    /* Use secondary foreground for numbers */
+    @apply text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--secondary-foreground))];
   }
 
   .type {
-    @apply text-teal-600 dark:text-teal-400; /* Example: Using a distinct color */
+    /* Use a slightly muted foreground for types */
+    @apply text-foreground/90 dark:text-foreground/90;
   }
 
   .variable {
