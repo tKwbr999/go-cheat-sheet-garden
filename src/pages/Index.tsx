@@ -38,7 +38,7 @@ const Index = () => {
       <Header />
 
       {/* Main content section with Table of Contents */}
-      <section className="pt-32 pb-16 px-6">
+      <section className="pt-32 pb-16">
         {/* Use flex container for main content and TOC */}
         <div className="container mx-auto max-w-10xl flex gap-4">
           {" "}
@@ -66,7 +66,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="bg-secondary py-12 border-t border-border">
-        <div className="container mx-auto max-w-7xl px-6">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-6 md:mb-0">
               <GoLogo size={28} className="mr-3 text-muted-foreground" />
