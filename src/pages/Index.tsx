@@ -3,17 +3,11 @@ import Header from "@/components/Header";
 import CheatSheetSection from "@/components/CheatSheetSection";
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
-// getCheatSheetData をインポート
 import { getCheatSheetData } from "@/data/cheatsheet-loader";
-// 必要であれば CheatSheetSection 型もインポート
-// import type { CheatSheetSection as SectionData } from "@/data/types";
-
-// SectionIndexItem 型は不要になったので削除
+import TableOfContents from "@/components/TableOfContents"; // Import TableOfContents
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
-  // getCheatSheetData を呼び出してセクションデータを取得
-  // 型は getCheatSheetData の返り値 (CheatSheetSection & { id: string })[] になる
   const cheatSheetData = getCheatSheetData();
 
   useEffect(() => {
@@ -40,39 +34,44 @@ const Index = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen"> {/* Updated background */}
+    <div className="bg-background min-h-screen">
       <Header />
 
-      {/* Hero Section - Consider adding content or styling later */}
+      {/* Main content section with Table of Contents */}
       <section className="pt-32 pb-16 px-6">
-        <div className="container mx-auto max-w-7xl"> {/* Changed max-w-5xl to max-w-7xl */}
-          {/* Main Content */}
-          <div className="mt-16">
-            {/* cheatSheetData をループ */}
-            {cheatSheetData.map((sectionInfo) => (
-              <CheatSheetSection
-                key={sectionInfo.id} // key は一意な id を使う
-                title={sectionInfo.title}
-                // codeExamples は渡さず、代わりに sectionId を渡す
-                sectionId={sectionInfo.id}
-              />
-            ))}
-          </div>
+        {/* Use flex container for main content and TOC */}
+        <div className="container mx-auto max-w-7xl flex gap-8"> {/* Adjust gap as needed */}
+          {/* Main Content Area */}
+          <main className="flex-1"> {/* Takes up remaining space */}
+            <div className="mt-16">
+              {/* cheatSheetData をループ */}
+              {cheatSheetData.map((sectionInfo) => (
+                <CheatSheetSection
+                  key={sectionInfo.id} // key は一意な id を使う
+                  title={sectionInfo.title}
+                  sectionId={sectionInfo.id}
+                />
+              ))}
+            </div>
+          </main>
+          {/* Table of Contents Sidebar */}
+          {/* Pass sections data to TOC if needed, or let TOC fetch it itself */}
+          <TableOfContents className="hidden lg:block" /> {/* Hide on smaller screens */}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-secondary py-12 border-t border-border"> {/* Updated background and border */}
-        <div className="container mx-auto max-w-7xl px-6"> {/* Changed max-w-5xl to max-w-7xl */}
+      <footer className="bg-secondary py-12 border-t border-border">
+        <div className="container mx-auto max-w-7xl px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-6 md:mb-0">
-              <GoLogo size={28} className="mr-3 text-muted-foreground" /> {/* Adjusted logo color */}
-              <p className="text-muted-foreground"> {/* Updated text color */}
+              <GoLogo size={28} className="mr-3 text-muted-foreground" />
+              <p className="text-muted-foreground">
                 Go Cheatsheet © {new Date().getFullYear()}
               </p>
             </div>
             <div>
-              <p className="text-muted-foreground text-sm"> {/* Updated text color */}
+              <p className="text-muted-foreground text-sm">
                 Go is an open source programming language supported by Google
               </p>
             </div>
@@ -83,7 +82,7 @@ const Index = () => {
       {/* Scroll to top button */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 bg-gradient-primary text-primary-foreground p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 active:scale-95 ${ // Updated background and text color, added hover/active effects
+        className={`fixed bottom-8 right-8 bg-gradient-primary text-primary-foreground p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 active:scale-95 ${
           showScrollButton
             ? "opacity-100 scale-100"
             : "opacity-0 scale-90 pointer-events-none"
