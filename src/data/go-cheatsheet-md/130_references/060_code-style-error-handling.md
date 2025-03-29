@@ -1,25 +1,46 @@
----
+## タイトル
 title: "コードスタイル: エラーハンドリング (Error Handling)"
-tags: ["references", "code style", "error handling", "error", "if err != nil", "panic", "recover", "%w"]
----
 
+## タグ
+tags: ["references", "code style", "error handling", "error", "if err != nil", "panic", "recover", "%w"]
+
+## コード
+```go
+import (
+	"fmt"
+	"log" // log.Printf を使うため
+)
+
+// エラーを返す可能性のある関数の例 (仮)
+func potentiallyFailingFunction() (string, error) {
+	// return "", errors.New("何か問題が発生") // エラーの場合
+	return "成功時の値", nil // 成功の場合
+}
+
+func main() { // main 関数内で実行する例
+	value, err := potentiallyFailingFunction()
+	if err != nil {
+		// エラー処理 (例: ログ出力、エラーをラップして return)
+		log.Printf("エラーが発生しました: %v", err)
+		// main 関数なので return せずに終了する例
+		// return fmt.Errorf("処理失敗: %w", err) // 通常の関数ならこのようにラップして返す
+		return
+	}
+	// 正常系の処理 (err == nil が保証される)
+	fmt.Println("成功:", value)
+}
+
+```
+
+## 解説
+```text
 Go言語のエラーハンドリングは、他の多くの言語の例外処理 (`try-catch`) とは異なり、**エラーを通常の戻り値として扱う**ことを基本としています。このアプローチは、コードの制御フローを明確にし、エラー処理を強制する効果があります。
 
 ## 基本原則: エラーは値、明示的にチェックする
 
 *   **エラーは値:** `error` は組み込みのインターフェース型であり、他の値と同様に扱われます。
 *   **明示的なチェック:** エラーを返す可能性のある関数を呼び出した後は、**必ず戻り値のエラーをチェック**します。Goには例外がないため、チェックを怠るとエラーが見過ごされ、プログラムが予期せぬ動作をする可能性があります。
-*   **`if err != nil` パターン:** 最も基本的なエラーチェックの方法です。関数呼び出しの直後に `if err != nil` ブロックを書き、エラーが発生した場合の処理（ログ出力、エラーのラップ、早期リターンなど）を記述します。
-    ```go
-    value, err := potentiallyFailingFunction()
-    if err != nil {
-        // エラー処理 (例: ログ出力、エラーをラップして return)
-        log.Printf("エラーが発生しました: %v", err)
-        return fmt.Errorf("処理失敗: %w", err)
-    }
-    // 正常系の処理 (err == nil が保証される)
-    fmt.Println("成功:", value)
-    ```
+*   **`if err != nil` パターン:** 最も基本的なエラーチェックの方法です。関数呼び出しの直後に `if err != nil` ブロックを書き、エラーが発生した場合の処理（ログ出力、エラーのラップ、早期リターンなど）を記述します。（上記「コード」セクション参照）
 *   **早期リターン:** エラーが発生した場合は、できるだけ早く関数から `return` する（早期リターン）ことで、正常系のコードのネストを浅く保ち、可読性を高めます。
 
 ## エラーメッセージとコンテキスト
@@ -27,11 +48,18 @@ Go言語のエラーハンドリングは、他の多くの言語の例外処理
 *   **エラーメッセージは明確に:** `errors.New` や `fmt.Errorf` でエラーを作成する際は、何が問題だったのかが分かるような明確なメッセージを記述します。
 *   **コンテキストの追加 (`%w`):** 下位の関数から返されたエラーを上位の関数でラップして返す場合、**`fmt.Errorf` の `%w` 動詞を使って元のエラーをラップ**します。これにより、エラーの原因を追跡しやすくなり、`errors.Is` や `errors.As` による判定が可能になります。
     ```go
-    // 悪い例: 元のエラー情報が失われる
-    // return fmt.Errorf("設定読み込み失敗: %v", err)
+    import "fmt" // fmt.Errorf を使うため
 
-    // 良い例: %w で元のエラーをラップする
-    return fmt.Errorf("設定読み込み失敗: %w", err)
+    func wrapError(err error) error { // err は下位関数から返されたエラーと仮定
+        if err == nil {
+            return nil
+        }
+        // 悪い例: 元のエラー情報が失われる
+        // return fmt.Errorf("設定読み込み失敗: %v", err)
+
+        // 良い例: %w で元のエラーをラップする
+        return fmt.Errorf("設定読み込み失敗: %w", err)
+    }
     ```
 *   **エラーの種類:** 必要に応じて、センチネルエラー (`var ErrNotFound = ...`) やカスタムエラー型（構造体）を定義して、エラーの種類を区別できるようにします。
 

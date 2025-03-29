@@ -1,8 +1,19 @@
----
+## タイトル
 title: "リファレンス: テーブル駆動テスト (Table-Driven Tests)"
-tags: ["references", "testing", "go test", "table-driven", "t.Run", "サブテスト"]
----
 
+## タグ
+tags: ["references", "testing", "go test", "table-driven", "t.Run", "サブテスト"]
+
+## コード
+```go
+// テスト対象のコード (例: mathutil/add.go)
+package mathutil
+
+func Add(a, b int) int { return a + b }
+```
+
+## 解説
+```text
 Goのテストにおいて、同じ関数に対して複数の異なる入力と期待される出力でテストを行いたい場合、**テーブル駆動テスト (Table-Driven Tests)** というパターンが広く使われ、推奨されています。
 
 これは、テストケース（入力値、期待される出力、テスト名など）をテーブル（通常は構造体のスライス）として定義し、ループを使って各テストケースを反復処理する書き方です。
@@ -22,17 +33,11 @@ Goのテストにおいて、同じ関数に対して複数の異なる入力と
 4.  **`t.Run` によるサブテストの実行:** ループ内で `t.Run(テストケース名, func(t *testing.T) { ... })` を呼び出します。
     *   第一引数には、テストケースを識別するためのユニークな名前（通常はテストケース構造体の名前フィールド）を渡します。
     *   第二引数には、実際のテストロジック（テスト対象関数の呼び出し、結果の比較、`t.Errorf`/`t.Fatalf` による失敗報告）を含む無名関数を渡します。
-    *   **注意:** ループ変数をサブテストの無名関数内で直接使う場合は、クロージャの落とし穴を避けるために、ループ内で変数をコピーする必要があります（例: `tt := tt`）。
+    *   **注意:** ループ変数をサブテストの無名関数内で直接使う場合は、クロージャの落とし穴を避けるために、ループ内で変数をコピーする必要があります（例: `tt := tt`）。(Go 1.22以降では不要になる場合があります)
 
-## コード例: `Add` 関数のテーブル駆動テスト
+## テストコード例: `Add` 関数のテーブル駆動テスト
 
 前のセクションで使った `Add` 関数をテーブル駆動テストで書き直してみます。
-
-**テスト対象のコード (`mathutil/add.go` - 例):** (再掲)
-```go
-package mathutil
-func Add(a, b int) int { return a + b }
-```
 
 **テストコード (`mathutil/add_test.go` - 例):**
 ```go
@@ -65,7 +70,7 @@ func TestAdd_TableDriven(t *testing.T) {
 	// 3. ループによる反復処理
 	for _, tt := range tests {
 		// ループ変数をサブテスト内で安全に使うためのコピー (Go 1.22 より前で推奨)
-		// tt := tt
+		tt := tt
 		// Go 1.22 以降ではループ変数が各反復で新しく束縛されるため、このコピーは不要になる場合がある
 
 		// 4. t.Run でサブテストを実行
@@ -103,7 +108,7 @@ ok  	myproject/mathutil	0.XXXs
 === RUN   TestAdd_TableDriven/正の数同士
 === RUN   TestAdd_TableDriven/負の数同士
 === RUN   TestAdd_TableDriven/正と負の数
-    add_test.go:33: Add(-5, 5) = 1; want 0  <- 失敗したサブテストのエラーが表示される
+    add_test.go:78: Add(-5, 5) = 1; want 0  <- 失敗したサブテストのエラーが表示される
 === RUN   TestAdd_TableDriven/ゼロを含む
 --- FAIL: TestAdd_TableDriven (0.00s)
     --- PASS: TestAdd_TableDriven/正の数同士 (0.00s)

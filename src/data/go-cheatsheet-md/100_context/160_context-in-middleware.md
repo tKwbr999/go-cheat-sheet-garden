@@ -1,23 +1,11 @@
----
+## タイトル
 title: "Context パッケージ: ミドルウェアでの Context 利用"
+
+## タグ
 tags: ["context", "concurrency", "http", "middleware", "WithValue", "WithContext"]
----
 
-HTTPサーバーにおけるミドルウェアは、リクエスト固有の情報（リクエストID、認証情報、トレース情報など）を Context に追加し、後続のハンドラや関数で利用できるようにするための一般的な場所です。
-
-ミドルウェアで `context.WithValue` を使って Context に値を追加し、`r.WithContext()` で更新された Context を持つリクエストを次に渡す方法については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に説明しました。
-
-ここでは、その基本的なパターンを再確認します。
-
-## ミドルウェアでの Context 値追加パターン（再確認）
-
-1.  ミドルウェア関数 (`func(http.Handler) http.Handler`) を定義します。
-2.  ミドルウェア内の `http.HandlerFunc` で、引数の `http.Request` (`r`) から `ctx := r.Context()` で現在の Context を取得します。
-3.  `context.WithValue(ctx, key, value)` を使って、新しいキーと値を持つ子 Context を生成します。キーには独自型を使うことを忘れないでください。
-4.  `r.WithContext(newCtx)` を使って、新しい Context を持つリクエストのコピーを作成します。
-5.  `next.ServeHTTP(w, r.WithContext(newCtx))` のように、新しい Context を持つリクエストを次のハンドラ (`next`) に渡します。
-
-```go title="ミドルウェアで Context に値を追加する例"
+## コード
+```go
 package main
 
 import (
@@ -72,7 +60,11 @@ func main() {
 	http.Handle("/", loggingMiddleware(finalHandler))
 
 	fmt.Println("サーバーをポート :8080 で起動します...")
-	http.ListenAndServe(":8080", nil)
+	// エラーハンドリングを追加
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Printf("サーバー起動エラー: %v\n", err)
+	}
 }
 
 /*
@@ -84,6 +76,22 @@ func main() {
 [req-1711644000123456789] ミドルウェア: 処理完了 (/, duration: 50.XXXms)
 */
 ```
+
+## 解説
+```text
+HTTPサーバーにおけるミドルウェアは、リクエスト固有の情報（リクエストID、認証情報、トレース情報など）を Context に追加し、後続のハンドラや関数で利用できるようにするための一般的な場所です。
+
+ミドルウェアで `context.WithValue` を使って Context に値を追加し、`r.WithContext()` で更新された Context を持つリクエストを次に渡す方法については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に説明しました。
+
+ここでは、その基本的なパターンを再確認します。
+
+## ミドルウェアでの Context 値追加パターン（再確認）
+
+1.  ミドルウェア関数 (`func(http.Handler) http.Handler`) を定義します。
+2.  ミドルウェア内の `http.HandlerFunc` で、引数の `http.Request` (`r`) から `ctx := r.Context()` で現在の Context を取得します。
+3.  `context.WithValue(ctx, key, value)` を使って、新しいキーと値を持つ子 Context を生成します。キーには独自型を使うことを忘れないでください。
+4.  `r.WithContext(newCtx)` を使って、新しい Context を持つリクエストのコピーを作成します。
+5.  `next.ServeHTTP(w, r.WithContext(newCtx))` のように、新しい Context を持つリクエストを次のハンドラ (`next`) に渡します。
 
 **コード解説:**
 

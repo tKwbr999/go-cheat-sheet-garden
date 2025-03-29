@@ -5,23 +5,6 @@ title: パッケージ: Go Modules によるプロジェクト初期化 (`go mod
 tags: ["packages", "package", "go modules", "go mod init", "モジュールパス", "依存関係管理"]
 
 ## コード
-```bash
-# 1. プロジェクトディレクトリを作成し移動
-mkdir myproject
-cd myproject
-
-# 2. go mod init を実行 (モジュールパスを指定)
-# モジュールパスは通常リポジトリパスなど一意なものにする
-go mod init github.com/your-username/myproject
-
-# 3. go.mod ファイルが生成される
-# cat go.mod
-```
-```go.mod
-module github.com/your-username/myproject
-
-go 1.21 // 使用 Go バージョン (例)
-```
 ```go
 // 4. main.go などを作成して開発開始
 package main
@@ -63,3 +46,23 @@ Go Modules が自動で依存関係を `go.mod` に追加・管理します
 (`go get` で明示的追加も可)。
 
 `go mod init` は Go Modules 開発の最初のステップです。
+
+**参考コード (Bash & go.mod):**
+
+```bash
+# 1. プロジェクトディレクトリを作成し移動
+mkdir myproject
+cd myproject
+
+# 2. go mod init を実行 (モジュールパスを指定)
+# モジュールパスは通常リポジトリパスなど一意なものにする
+go mod init github.com/your-username/myproject
+
+# 3. go.mod ファイルが生成される
+# cat go.mod
+```
+```go.mod
+module github.com/your-username/myproject
+
+go 1.21 // 使用 Go バージョン (例)
+```

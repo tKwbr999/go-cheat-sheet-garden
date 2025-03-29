@@ -1,8 +1,18 @@
----
+## タイトル
 title: "コードスタイル: 関数とメソッド (Functions and Methods)"
-tags: ["references", "code style", "functions", "methods", "naming", "camel case", "error handling", "return values", "documentation"]
----
 
+## タグ
+tags: ["references", "code style", "functions", "methods", "naming", "camel case", "error handling", "return values", "documentation"]
+
+## コード
+```go
+// 同じ型の引数が続く場合は型をまとめることができる
+func process(id int, name string, age int, city string) // OK
+func process(id, age int, name, city string)       // より簡潔
+```
+
+## 解説
+```text
 関数とメソッドは Go プログラムの基本的な構成要素です。読みやすく、保守しやすいコードを書くために、以下のスタイルガイドラインに従うことが推奨されます。
 
 ## 名前付け
@@ -22,44 +32,67 @@ tags: ["references", "code style", "functions", "methods", "naming", "camel case
 
 ## 引数と戻り値
 
-*   **引数の型:** 同じ型の引数が続く場合は、最後の引数にだけ型を指定してまとめることができます。
-    ```go
-    func process(id int, name string, age int, city string) // OK
-    func process(id, age int, name, city string)       // より簡潔
-    ```
+*   **引数の型:** （上記「コード」セクション参照）
 *   **エラー処理:** エラーが発生する可能性のある関数は、通常、**最後の戻り値**として `error` 型を返します。成功した場合は `nil` を返します。
     ```go
+    import "errors" // errors.New や fmt.Errorf を使う場合
+
+    // User 型の定義 (例)
+    type User struct {
+        ID   int
+        Name string
+    }
+
+    // センチネルエラーの例
+    var ErrNotFound = errors.New("user not found")
+
     func FindUser(id int) (*User, error) {
-        // ...
+        // ... ユーザーを探す処理 ...
+        userNotFound := false // 仮のフラグ
+        var user *User = nil // 仮のユーザーデータ
+
         if userNotFound {
             return nil, ErrNotFound // 結果のゼロ値とエラーを返す
         }
+        // user = &User{ID: id, Name: "Taro"} // 成功した場合の例
         return user, nil // 結果と nil エラーを返す
     }
     ```
 *   **名前付き戻り値:** 戻り値に名前を付けることができます。これにより、`return` 文で値を省略できたり (`naked return`)、`defer` から戻り値を変更できたりしますが、短い関数以外では可読性を損なう可能性があるため、**使いすぎに注意**が必要です。特に `naked return` は避けるのが一般的です。
     ```go
+    import "os" // os.Open, f.Close を使う場合
+    import "errors" // errors.New を使う場合
+
     // あまり推奨されない例 (naked return)
     func getLocation() (lat, lon float64, err error) {
-        lat = // ...
-        lon = // ...
+        lat = 35.68
+        lon = 139.76
+        someError := false // 仮のフラグ
         if someError {
-            err = errors.New("...")
+            err = errors.New("failed to get location")
             return // lat, lon, err が暗黙的に返される
         }
         return // lat, lon, err が暗黙的に返される
     }
 
     // defer で戻り値を変更する例 (080_error-handling/180 参照)
-    func readFile() (err error) {
-        f, _ := os.Open(...)
+    func readFile(path string) (err error) {
+        f, openErr := os.Open(path)
+        if openErr != nil {
+            return openErr // 開けなかった場合はそのエラーを返す
+        }
         defer func() {
             closeErr := f.Close()
-            if err == nil { // 元のエラーがなければ close のエラーを返す
-                err = closeErr
+            if err == nil && closeErr != nil { // 元のエラーがなく、closeでエラーが発生した場合
+                err = closeErr // closeのエラーを返す
             }
+            // 元々 err があれば、closeErr は無視される（またはログに出力するなど）
         }()
-        // ... file processing ...
+
+        // ... ファイル f を使った処理 ...
+        // もし処理中にエラーが発生したら err に代入する
+        // err = someProcessingError
+
         return // err の最終的な値が返る
     }
     ```

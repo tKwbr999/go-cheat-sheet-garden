@@ -1,8 +1,22 @@
----
+## タイトル
 title: "リファレンス: 基本的なテスト関数"
-tags: ["references", "testing", "go test", "TestXxx", "t.Errorf", "t.Fatalf"]
----
 
+## タグ
+tags: ["references", "testing", "go test", "TestXxx", "t.Errorf", "t.Fatalf"]
+
+## コード
+```go
+// テスト対象のコード (例: mathutil/add.go)
+package mathutil
+
+// Add は 2 つの整数を加算します。
+func Add(a, b int) int {
+	return a + b
+}
+```
+
+## 解説
+```text
 Go言語は、標準で**テスト**の仕組みを言語とツールチェーンに組み込んでいます。これにより、コードの品質を維持し、リグレッション（意図しない変更によるバグの再発）を防ぐことが容易になります。
 
 ## テストファイルの規約
@@ -32,19 +46,9 @@ Go言語は、標準で**テスト**の仕組みを言語とツールチェー�
 *   **`t.Fatal(args ...any)`**: `Error` と同様に引数をフォーマットし、エラーとして記録した後、テスト関数を終了させます（`Fatalf` の簡易版）。
 *   **`t.Logf(format string, args ...any)` / `t.Log(args ...any)`**: テストに関する情報をログとして記録します。テストが失敗した場合や `-v` フラグ付きで実行された場合に表示されます。
 
-## コード例
+## テストコード例
 
 簡単な足し算関数 `Add` をテストする例です。
-
-**テスト対象のコード (`mathutil/add.go` - 例):**
-```go
-package mathutil
-
-// Add は 2 つの整数を加算します。
-func Add(a, b int) int {
-	return a + b
-}
-```
 
 **テストコード (`mathutil/add_test.go` - 例):**
 ```go
@@ -105,7 +109,7 @@ ok  	myproject/mathutil	0.XXXs
 
 実行結果 (-v フラグ付き、すべて成功する場合):
 === RUN   TestAdd
-    add_test.go:36: TestAdd は正常に完了しました (すべてのケースがパスした場合)
+    add_test.go:90: TestAdd は正常に完了しました (すべてのケースがパスした場合)
 --- PASS: TestAdd (0.00s)
 === RUN   TestAdd_Zero
 --- PASS: TestAdd_Zero (0.00s)
@@ -114,8 +118,8 @@ ok  	myproject/mathutil	0.XXXs
 
 実行結果 (テストケース1が失敗する場合):
 === RUN   TestAdd
-    add_test.go:24: Add(2, 3) = 6; want 5  <- Errorf によるエラー出力
-    add_test.go:36: TestAdd は正常に完了しました (すべてのケースがパスした場合)
+    add_test.go:70: Add(2, 3) = 6; want 5  <- Errorf によるエラー出力
+    add_test.go:90: TestAdd は正常に完了しました (すべてのケースがパスした場合)
 --- FAIL: TestAdd (0.00s)
 === RUN   TestAdd_Zero
 --- PASS: TestAdd_Zero (0.00s)
