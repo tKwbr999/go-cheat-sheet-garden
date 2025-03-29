@@ -40,15 +40,15 @@ export async function getCheatSheetSection(sectionId: string): Promise<CheatShee
     return undefined;
   }
   try {
-    // 動的インポートを使用して対応するJSONファイルを読み込む
-    // Vite/Webpackなどはこれをコード分割の対象とする
-    // IMPORTANT: Adjust the import path based on the final structure.
-    // Assuming the loader is in src/data/ and generated files are in src/data/generated/
-    const sectionDataModule = await import(/* @vite-ignore */ `./generated/${indexItem.filePath.replace('./', '')}`);
-    // デフォルトエクスポートされたデータを返す (JSON.parseは不要)
-    return sectionDataModule.default as CheatSheetSection;
+    // fetch API を使用して public ディレクトリのJSONファイルを取得
+    const response = await fetch(indexItem.filePath); // filePath は /data/sections/xxx.json 形式のはず
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const sectionData = await response.json();
+    return sectionData as CheatSheetSection;
   } catch (error) {
-    console.error(`Error loading section ${sectionId} from ${indexItem.filePath}:`, error);
+    console.error(`Error fetching section ${sectionId} from ${indexItem.filePath}:`, error);
     return undefined;
   }
 }

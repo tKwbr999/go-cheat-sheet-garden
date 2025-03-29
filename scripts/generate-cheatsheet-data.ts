@@ -89,7 +89,7 @@ function extractDescriptionAndCode(markdownContent: string): {
 // --- メイン処理 ---
 async function generateCheatSheetData() {
   const markdownDir = path.join(process.cwd(), 'src/data/go-cheatsheet-md');
-  const outputBaseDir = path.join(process.cwd(), 'src/data/generated'); // ベース出力ディレクトリ
+  const outputBaseDir = path.join(process.cwd(), 'public/data'); // 出力先を public/data に変更
   const sectionsOutputDir = path.join(outputBaseDir, 'sections'); // セクション別JSONの出力先
   const indexOutputFile = path.join(outputBaseDir, 'index.json'); // インデックスファイルの出力先
 
@@ -187,7 +187,8 @@ async function generateCheatSheetData() {
       id: sectionId,
       title: section.title,
       orderPrefix: section.orderPrefix,
-      filePath: `./sections/${sectionId}.json`, // フロントエンドからの相対パス
+      // fetch 用のパスに変更 (public ディレクトリからの絶対パス)
+      filePath: `/data/sections/${sectionId}.json`,
     });
   }
 
