@@ -41,6 +41,9 @@ const Index = () => {
       <section className="pt-32 pb-16 px-6">
         {/* Use flex container for main content and TOC */}
         <div className="container mx-auto max-w-7xl flex gap-8"> {/* Adjust gap as needed */}
+          {/* Table of Contents Sidebar (Moved to the left) */}
+          <TableOfContents className="hidden lg:block" /> {/* Hide on smaller screens */}
+
           {/* Main Content Area */}
           <main className="flex-1"> {/* Takes up remaining space */}
             <div className="mt-16">
@@ -54,9 +57,6 @@ const Index = () => {
               ))}
             </div>
           </main>
-          {/* Table of Contents Sidebar */}
-          {/* Pass sections data to TOC if needed, or let TOC fetch it itself */}
-          <TableOfContents className="hidden lg:block" /> {/* Hide on smaller screens */}
         </div>
       </section>
 
