@@ -1,24 +1,7 @@
 ## タイトル
 title: "コードスタイル: 変数 (Variables)"
-
 ## タグ
 tags: ["references", "code style", "variables", "naming", "var", ":=", "ゼロ値", "エラー変数"]
-
-## コード
-```go
-import "os" // os.Open を使うため
-
-count := 0
-message := "Hello"
-file, err := os.Open("file.txt") // os パッケージのインポートが必要な例
-// エラーチェックは省略 (例示のため)
-if err == nil {
-	defer file.Close() // ファイルを閉じるのを忘れない
-}
-```
-
-## 解説
-```text
 Goのコードスタイルは、読みやすさと簡潔さを重視します。変数に関する一般的な慣習とスタイルガイドラインは以下の通りです。
 
 ## 変数名

@@ -1,19 +1,7 @@
 ## タイトル
 title: "リファレンス: テーブル駆動テスト (Table-Driven Tests)"
-
 ## タグ
 tags: ["references", "testing", "go test", "table-driven", "t.Run", "サブテスト"]
-
-## コード
-```go
-// テスト対象のコード (例: mathutil/add.go)
-package mathutil
-
-func Add(a, b int) int { return a + b }
-```
-
-## 解説
-```text
 Goのテストにおいて、同じ関数に対して複数の異なる入力と期待される出力でテストを行いたい場合、**テーブル駆動テスト (Table-Driven Tests)** というパターンが広く使われ、推奨されています。
 
 これは、テストケース（入力値、期待される出力、テスト名など）をテーブル（通常は構造体のスライス）として定義し、ループを使って各テストケースを反復処理する書き方です。

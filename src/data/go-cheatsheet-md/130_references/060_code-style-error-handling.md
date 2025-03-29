@@ -1,39 +1,7 @@
 ## タイトル
 title: "コードスタイル: エラーハンドリング (Error Handling)"
-
 ## タグ
 tags: ["references", "code style", "error handling", "error", "if err != nil", "panic", "recover", "%w"]
-
-## コード
-```go
-import (
-	"fmt"
-	"log" // log.Printf を使うため
-)
-
-// エラーを返す可能性のある関数の例 (仮)
-func potentiallyFailingFunction() (string, error) {
-	// return "", errors.New("何か問題が発生") // エラーの場合
-	return "成功時の値", nil // 成功の場合
-}
-
-func main() { // main 関数内で実行する例
-	value, err := potentiallyFailingFunction()
-	if err != nil {
-		// エラー処理 (例: ログ出力、エラーをラップして return)
-		log.Printf("エラーが発生しました: %v", err)
-		// main 関数なので return せずに終了する例
-		// return fmt.Errorf("処理失敗: %w", err) // 通常の関数ならこのようにラップして返す
-		return
-	}
-	// 正常系の処理 (err == nil が保証される)
-	fmt.Println("成功:", value)
-}
-
-```
-
-## 解説
-```text
 Go言語のエラーハンドリングは、他の多くの言語の例外処理 (`try-catch`) とは異なり、**エラーを通常の戻り値として扱う**ことを基本としています。このアプローチは、コードの制御フローを明確にし、エラー処理を強制する効果があります。
 
 ## 基本原則: エラーは値、明示的にチェックする

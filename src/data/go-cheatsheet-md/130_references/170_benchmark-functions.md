@@ -1,37 +1,7 @@
 ## タイトル
 title: "リファレンス: ベンチマーク関数 (Benchmark Functions)"
-
 ## タグ
 tags: ["references", "testing", "benchmark", "go test -bench", "performance", "b.N"]
-
-## コード
-```go
-// テスト対象のコード (例: stringutil/join.go)
-package stringutil
-
-import "strings"
-
-// JoinWithPlus は + 演算子で文字列を結合します。
-func JoinWithPlus(strs []string) string {
-	result := ""
-	for _, s := range strs {
-		result += s // + 演算子は毎回新しい文字列を生成するため非効率な場合がある
-	}
-	return result
-}
-
-// JoinWithBuilder は strings.Builder で文字列を結合します。
-func JoinWithBuilder(strs []string) string {
-	var sb strings.Builder
-	for _, s := range strs {
-		sb.WriteString(s) // Builder は効率的にメモリを管理
-	}
-	return sb.String()
-}
-```
-
-## 解説
-```text
 Goの `testing` パッケージは、ユニットテストだけでなく、コードの**パフォーマンスを測定**するための**ベンチマークテスト**の機能も提供しています。ベンチマークテストを使うことで、特定の関数の実行時間を計測し、最適化の効果を確認したり、異なる実装のパフォーマンスを比較したりすることができます。
 
 ## ベンチマークファイルの規約

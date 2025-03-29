@@ -1,6 +1,5 @@
 ## タイトル
-title: "リファレンス: Example 関数 (テスト可能なドキュメント)"
-
+title: リファレンス: Example 関数 (テスト可能なドキュメント)
 ## タグ
 tags: ["references", "testing", "example", "godoc", "documentation", "go test"]
 

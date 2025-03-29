@@ -1,11 +1,25 @@
 ## タイトル
-title: "並行処理: sync.WaitGroup (再確認)"
-
+title: "並行処理: `sync.WaitGroup` (再確認)"
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "WaitGroup", "同期", "Add", "Done", "Wait"]
+`sync.WaitGroup` は、複数の Goroutine の完了を待ち合わせるための基本的な同期プリミティブです。
 
-## コード
-```go
+基本的な使い方や、ループで複数の Goroutine を起動する際の注意点については、以下のセクションで既に説明しました。
+
+*   **「Goroutine の終了を待つ (`sync.WaitGroup`)」** (`090_concurrency/010_waiting-with-syncwaitgroup.md`)
+*   **「複数の Goroutine と WaitGroup」** (`090_concurrency/020_multiple-goroutines-with-waitgroup.md`)
+
+ここでは、その基本的な使い方を簡単な例で再確認します。
+
+## `WaitGroup` の基本メソッド（再確認）
+
+*   **`Add(delta int)`**: 待機する Goroutine の数をカウンターに追加します。
+*   **`Done()`**: Goroutine が完了したときに呼び出し、カウンターを1減らします。通常 `defer wg.Done()` として使います。
+*   **`Wait()`**: カウンターが 0 になるまで、呼び出し元の Goroutine をブロックします。
+
+## コード例 (再掲)
+
+```go title="WaitGroup の基本的な使い方 (3つの Goroutine)"
 package main
 
 import (

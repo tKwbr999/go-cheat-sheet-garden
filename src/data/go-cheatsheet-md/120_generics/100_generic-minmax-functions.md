@@ -1,11 +1,18 @@
 ## タイトル
 title: "ジェネリクス: ジェネリックな Min/Max 関数"
-
 ## タグ
 tags: ["generics", "ジェネリクス", "型制約", "type constraint", "cmp", "Ordered", "Min", "Max"]
+ジェネリクスと型制約を使うことで、様々な型に対して動作する汎用的なユーティリティ関数を簡単に作成できます。その典型的な例が、任意の順序付け可能な型の最小値や最大値を求める関数です。
 
-## コード
-```go
+Go 1.21 以降で標準ライブラリの `cmp` パッケージで提供される **`cmp.Ordered`** 制約を使うことで、`<` や `>` 演算子を使える型（整数、浮動小数点数、文字列）に限定したジェネリック関数を定義できます。
+
+`cmp.Ordered` 制約については、**「定義済みの型制約 (`comparable`, `cmp.Ordered`)」** (`120_generics/030_predefined-constraints-constraintsordered.md`) で既に説明しました。
+
+ここでは、`cmp.Ordered` を使った `Min` 関数と `Max` 関数の実装例を再掲します。
+
+## コード例: `Min` と `Max` 関数 (再掲)
+
+```go title="ジェネリックな Min と Max 関数"
 package main
 
 import (

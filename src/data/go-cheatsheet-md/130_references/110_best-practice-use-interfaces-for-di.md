@@ -1,11 +1,85 @@
 ## タイトル
 title: "ベストプラクティス: 依存性注入 (DI) にインターフェースを使う"
-
 ## タグ
 tags: ["references", "best practice", "dependency injection", "di", "interfaces", "疎結合", "テスト容易性"]
+**依存性注入 (Dependency Injection, DI)** は、あるコンポーネント（例: `UserService`）が依存する別のコンポーネント（例: `UserRepository`）を、自身で生成するのではなく、**外部から与えられる（注入される）**ように設計する手法です。
 
-## コード
-```go
+Goでは、この依存関係を表現するために**インターフェース**を使うことが非常に効果的であり、ベストプラクティスとされています。
+
+## なぜ DI にインターフェースを使うのか？
+
+*   **疎結合 (Loose Coupling):** コンポーネントが具体的な実装（例: `PostgresUserRepository`）ではなく、抽象的なインターフェース (`UserRepository`) に依存することで、両者の間の結合度が低くなります。`UserRepository` インターフェースを満たすものであれば、将来的に別の実装（例: `MySQLUserRepository`, `InMemoryUserRepository`）に**簡単に差し替える**ことができます。
+*   **テスト容易性 (Testability):** テスト時には、本番用の実装（例: 実際のデータベースにアクセスする `PostgresUserRepository`）の代わりに、テスト用の**モック実装 (Mock/Stub)** を注入することができます。これにより、外部依存なしにコンポーネント単体のロジックを簡単にテストできます。
+*   **柔軟性と拡張性:** 新しいデータストア実装を追加する場合でも、インターフェースを満たしていれば、既存の `UserService` コードを変更する必要がありません。
+
+## インターフェースを使った DI の実装パターン
+
+1.  **依存される側の機能をインターフェースとして定義:** 依存されるコンポーネントが提供すべきメソッドをインターフェースとして定義します（通常は利用側で定義します）。
+    ```go
+    // user/service.go
+    package service
+
+    // UserRepository はユーザーデータの永続化を担当するインターフェース
+    type UserRepository interface {
+        FindByID(id string) (*User, error)
+        Save(user *User) error
+    }
+    ```
+2.  **依存する側のコンポーネントを定義:** 依存するコンポーネント（例: `UserService`）は、具体的な実装ではなく、**インターフェース型**のフィールドを持ちます。
+    ```go
+    // user/service.go
+    type UserService struct {
+        repo UserRepository // ★ インターフェース型のフィールドを持つ
+    }
+    ```
+3.  **コンストラクタでインターフェースを受け取る:** 依存する側のコンストラクタ関数で、インターフェース型の引数を受け取り、それをフィールドに設定します。
+    ```go
+    // user/service.go
+    func NewUserService(repo UserRepository) *UserService {
+        return &UserService{repo: repo}
+    }
+
+    // UserService のメソッドはインターフェース経由で依存機能を利用
+    func (s *UserService) GetUserName(id string) (string, error) {
+        user, err := s.repo.FindByID(id) // ★ インターフェースのメソッドを呼び出す
+        if err != nil {
+            return "", err
+        }
+        return user.Name, nil
+    }
+    ```
+4.  **具体的な実装を作成:** 依存される側の具体的な実装（例: `PostgresRepo`, `InMemoryRepo`）を作成し、インターフェース (`UserRepository`) が要求するメソッドを実装します。
+    ```go
+    // user/postgres/repo.go
+    package postgres
+    type PostgresRepo struct { /* ... DB接続など ... */ }
+    func (r *PostgresRepo) FindByID(id string) (*service.User, error) { /* ... DBアクセス ... */ }
+    func (r *PostgresRepo) Save(user *service.User) error { /* ... DBアクセス ... */ }
+
+    // user/memory/repo.go
+    package memory
+    type InMemoryRepo struct { data map[string]*service.User }
+    func (r *InMemoryRepo) FindByID(id string) (*service.User, error) { /* ... mapアクセス ... */ }
+    func (r *InMemoryRepo) Save(user *service.User) error { /* ... mapアクセス ... */ }
+    ```
+5.  **組み立て (Wiring):** アプリケーションの初期化時など（例: `main` 関数）で、具体的な実装のインスタンスを生成し、それをコンストラクタに渡して依存関係を注入します。
+    ```go
+    // main.go
+    func main() {
+        // 本番環境では PostgresRepo を注入
+        dbRepo := postgres.NewPostgresRepo(...)
+        userService := service.NewUserService(dbRepo)
+        // userService を使った処理...
+
+        // テスト環境では InMemoryRepo を注入できる
+        // testRepo := memory.NewInMemoryRepo()
+        // testUserService := service.NewUserService(testRepo)
+    }
+    ```
+
+## コード例
+
+```go title="インターフェースを使った依存性注入"
 package main
 
 import (

@@ -1,11 +1,26 @@
 ## タイトル
 title: "Context パッケージ: Context の伝播"
-
 ## タグ
 tags: ["context", "concurrency", "関数呼び出し", "伝播"]
+`context.Context` を受け取る関数が、内部でさらに別の `context.Context` を受け取る関数を呼び出す場合、**受け取った Context をそのまま下位の関数に渡す**のが基本です。
 
-## コード
-```go
+この規約については、**「Context の受け渡し規約」** (`100_context/020_passing-context-convention.md`) でも触れました。
+
+## Context を伝播させる理由
+
+*   **キャンセル/デッドラインの伝播:** 親の Context がキャンセルされたり、デッドラインに達したりした場合、そのシグナルが子や孫の Context にも伝わります。Context をそのまま渡すことで、上位の処理からのキャンセル要求が、下位の処理（例: データベースクエリ、外部API呼び出し）にも正しく伝わり、処理全体を適切に中断させることができます。
+*   **値の継承:** `context.WithValue` で設定された値は、子 Context にも引き継がれます。Context をそのまま渡すことで、リクエストスコープの値などを呼び出し階層全体で利用できます。
+
+**やってはいけないこと:**
+
+*   下位の関数を呼び出す際に、`context.Background()` や `context.TODO()` を新しく生成して渡すこと。これは、上位からのキャンセルシグナルなどを遮断してしまいます。
+*   `nil` を Context として渡すこと。Context は `nil` であってはなりません。
+
+## コード例 (再掲)
+
+`020_passing-context-convention.md` の例を再掲します。
+
+```go title="Context の伝播例"
 package main
 
 import (

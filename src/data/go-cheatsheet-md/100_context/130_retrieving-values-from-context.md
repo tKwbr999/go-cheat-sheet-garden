@@ -1,11 +1,23 @@
 ## タイトル
 title: "Context パッケージ: Context からの値の取得 (`Value`)"
-
 ## タグ
 tags: ["context", "concurrency", "Value", "型アサーション", "リクエストスコープ", "値伝達"]
+`context.WithValue` で Context に関連付けられた値を取得するには、**`Value()`** メソッドを使います。
 
-## コード
-```go
+`Value()` メソッドの使い方や注意点については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に説明しました。
+
+ここでは、その基本的な使い方を再確認します。
+
+## `ctx.Value()` の基本（再確認）
+
+*   **`value := ctx.Value(key)`**:
+    *   Context `ctx` に対してキー `key` を使って `Value()` を呼び出すと、関連付けられた値が `any` 型で返されます。
+    *   `key` が見つからない場合や、値が `nil` の場合は `nil` が返ります。
+    *   `Value()` は親 Context を再帰的に遡ってキーを探します。
+*   **型アサーション:** `Value()` は `any` 型を返すため、通常は**型アサーション**を使って元の型に戻す必要があります。値が存在し、かつ期待した型であることを安全に確認するために、**カンマOKイディオム** (`v, ok := value.(ExpectedType)`) を使うのが一般的です。
+*   **キーの型:** `Value()` に渡すキーは、`WithValue` で使ったキーと**同じ型**かつ**同じ値**である必要があります。キーの衝突を避けるため、**独自に定義した非公開の型**をキーとして使うことが強く推奨されます。
+
+```go title="Value() と型アサーションによる値の取得"
 package main
 
 import (

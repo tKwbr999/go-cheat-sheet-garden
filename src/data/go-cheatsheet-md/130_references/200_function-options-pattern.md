@@ -1,11 +1,54 @@
 ## タイトル
 title: "デザインパターン: 関数オプションパターン (Function Options Pattern)"
-
 ## タグ
 tags: ["references", "design pattern", "function options", "constructor", "可読性", "柔軟性"]
+Goで構造体のインスタンスを生成する際、特にその構造体が多くの設定可能なフィールド（オプション）を持つ場合、コンストラクタ関数に多数の引数を渡す必要が出てきて、コードが読みにくくなったり、将来的なオプション追加が難しくなったりすることがあります。
 
-## コード
-```go
+このような問題を解決するための一般的なデザインパターンが**関数オプションパターン (Function Options Pattern)** です。これは、オプションを設定するための関数（オプション関数）を定義し、コンストラクタに可変長引数として渡す方法です。
+
+## 関数オプションパターンの仕組み
+
+1.  **オプション関数の型を定義:** オプションを設定したい対象の構造体（例: `*MyType`）へのポインタを引数に取り、戻り値のない関数型を定義します。
+    ```go
+    type Option func(*MyType)
+    ```
+2.  **オプション設定関数を作成:** 各オプションを設定するための具体的な関数を作成します。これらの関数は、上記で定義したオプション関数の型 (`Option`) を**返す**ようにします。通常、これらの関数は `WithXxx` という名前になります。
+    ```go
+    func WithFieldA(value int) Option {
+        return func(mt *MyType) {
+            mt.fieldA = value
+        }
+    }
+    func WithFieldB(flag bool) Option {
+        return func(mt *MyType) {
+            mt.fieldB = flag
+        }
+    }
+    ```
+3.  **コンストラクタ関数を定義:** コンストラクタ関数は、必須の引数（もしあれば）に加えて、オプション関数のスライスを**可変長引数 (`...Option`)** として受け取ります。
+    ```go
+    func NewMyType(requiredArg string, opts ...Option) *MyType {
+        // 1. デフォルト値でインスタンスを作成
+        instance := &MyType{
+            required: requiredArg,
+            fieldA:   defaultValueA, // デフォルト値
+            fieldB:   defaultValueB, // デフォルト値
+        }
+        // 2. 渡されたオプション関数を順番に適用
+        for _, opt := range opts {
+            opt(instance) // オプション関数を実行して instance を変更
+        }
+        // 3. 設定済みのインスタンスを返す
+        return instance
+    }
+    ```
+4.  **呼び出し:** コンストラクタを呼び出す際に、必須の引数の後に、設定したいオプションに対応する関数 (`WithFieldA(...)`, `WithFieldB(...)` など) を必要なだけカンマ区切りで渡します。
+
+## コード例: HTTPサーバーの設定
+
+タイムアウトやTLS設定など、複数のオプションを持つHTTPサーバーを構築する例です。
+
+```go title="関数オプションパターンを使ったサーバー設定"
 package main
 
 import (

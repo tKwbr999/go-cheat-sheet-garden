@@ -1,18 +1,7 @@
 ## タイトル
 title: "コードスタイル: 関数とメソッド (Functions and Methods)"
-
 ## タグ
 tags: ["references", "code style", "functions", "methods", "naming", "camel case", "error handling", "return values", "documentation"]
-
-## コード
-```go
-// 同じ型の引数が続く場合は型をまとめることができる
-func process(id int, name string, age int, city string) // OK
-func process(id, age int, name, city string)       // より簡潔
-```
-
-## 解説
-```text
 関数とメソッドは Go プログラムの基本的な構成要素です。読みやすく、保守しやすいコードを書くために、以下のスタイルガイドラインに従うことが推奨されます。
 
 ## 名前付け

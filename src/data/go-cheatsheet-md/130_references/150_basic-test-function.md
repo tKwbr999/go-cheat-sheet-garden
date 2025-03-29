@@ -1,22 +1,7 @@
 ## タイトル
 title: "リファレンス: 基本的なテスト関数"
-
 ## タグ
 tags: ["references", "testing", "go test", "TestXxx", "t.Errorf", "t.Fatalf"]
-
-## コード
-```go
-// テスト対象のコード (例: mathutil/add.go)
-package mathutil
-
-// Add は 2 つの整数を加算します。
-func Add(a, b int) int {
-	return a + b
-}
-```
-
-## 解説
-```text
 Go言語は、標準で**テスト**の仕組みを言語とツールチェーンに組み込んでいます。これにより、コードの品質を維持し、リグレッション（意図しない変更によるバグの再発）を防ぐことが容易になります。
 
 ## テストファイルの規約
