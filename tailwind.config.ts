@@ -3,7 +3,7 @@ import tailwindcssAnimate from "tailwindcss-animate";
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  // darkMode: ["class"], // This line is removed
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
