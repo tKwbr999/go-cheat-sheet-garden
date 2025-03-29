@@ -51,7 +51,7 @@ interface ParsedFrontMatter {
 
 function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: string } {
   const data: ParsedFrontMatter = {};
-  let markdownContent = content;
+  const markdownContent = content; // Use const as it's not reassigned
 
   // タイトルを抽出
   const titleMatch = content.match(/## タイトル\s*title:\s*(.+?)(?=\n|$)/);
@@ -60,7 +60,7 @@ function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: 
   }
 
   // タグを抽出
-  const tagsMatch = content.match(/## タグ\s*tags:\s*(\[.+?\])/);
+  const tagsMatch = content.match(/## タグ\s*tags:\s*(\[.*\])/); // Regex updated to capture full array
   if (tagsMatch) {
     try {
       const parsedTags = JSON.parse(tagsMatch[1].replace(/'/g, '"'));
