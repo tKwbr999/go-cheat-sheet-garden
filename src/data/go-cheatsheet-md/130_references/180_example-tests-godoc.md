@@ -1,7 +1,7 @@
----
-title: "リファレンス: Example 関数 (テスト可能なドキュメント)"
+## タイトル
+title: リファレンス: Example 関数 (テスト可能なドキュメント)
+## タグ
 tags: ["references", "testing", "example", "godoc", "documentation", "go test"]
----
 
 Goのテストファイル (`_test.go`) には、`TestXxx` (テスト) や `BenchmarkXxx` (ベンチマーク) に加えて、**`ExampleXxx`** という形式の**Example 関数**を書くことができます。
 
