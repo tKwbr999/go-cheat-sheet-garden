@@ -103,7 +103,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
   };
 
   return (
-    <nav className={cn('sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto p-4 border-l hidden lg:block w-64', className)}> {/* Hide on smaller screens, set width */}
+    <nav className={cn('sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto p-4 border-r hidden lg:block w-64', className)}> {/* Changed border-l to border-r */}
       <h3 className="text-lg font-semibold mb-4 text-foreground">Table of Contents</h3> {/* Ensure text color contrast */}
       <ul className="space-y-2">
         {sections.map((section) => (

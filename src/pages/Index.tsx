@@ -40,12 +40,16 @@ const Index = () => {
       {/* Main content section with Table of Contents */}
       <section className="pt-32 pb-16 px-6">
         {/* Use flex container for main content and TOC */}
-        <div className="container mx-auto max-w-7xl flex gap-4"> {/* Reduce gap from 8 to 4 */}
+        <div className="container mx-auto max-w-10xl flex gap-4">
+          {" "}
+          {/* Reduce gap from 8 to 4 */}
           {/* Table of Contents Sidebar (Moved to the left) */}
-          <TableOfContents className="hidden lg:block" /> {/* Hide on smaller screens */}
-
+          <TableOfContents className="hidden lg:block" />{" "}
+          {/* Hide on smaller screens */}
           {/* Main Content Area */}
-          <main className="flex-1"> {/* Takes up remaining space */}
+          <main className="flex-1">
+            {" "}
+            {/* Takes up remaining space */}
             <div className="mt-16">
               {/* cheatSheetData をループ */}
               {cheatSheetData.map((sectionInfo) => (
