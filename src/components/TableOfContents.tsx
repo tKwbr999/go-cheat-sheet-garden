@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getCheatSheetData } from '@/data/cheatsheet-loader';
+// bundled-cheatsheet-data から直接インポート
+import bundledCheatSheetData from '@/data/bundled-cheatsheet-data';
 import { cn } from '@/lib/utils'; // Assuming you have a utility for class names
 
 interface TableOfContentsProps {
@@ -8,7 +9,8 @@ interface TableOfContentsProps {
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
-  const sections = getCheatSheetData(); // Get section data { id: string, title: string, ... }[]
+  // メタデータのみを抽出
+  const sections = bundledCheatSheetData.map(({ id, title }) => ({ id, title }));
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sectionRefs = useRef<Map<string, HTMLElement | null>>(new Map());
 
