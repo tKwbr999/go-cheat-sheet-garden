@@ -44,6 +44,7 @@
     --ring: #c39265; /* twine-400 */
 
     --radius: 0.5rem;
+    --code-block-background: #f3f4f6; /* Added for code block specific background */
   }
   * {
     @apply border-border antialiased;
@@ -73,7 +74,7 @@
   }
 
   .code-block {
-    @apply rounded-lg overflow-hidden shadow-sm border bg-card transition-shadow duration-300 hover:shadow-md; /* Use card background */
+    @apply rounded-lg overflow-hidden shadow-sm border bg-[hsl(var(--code-block-background))] transition-shadow duration-300 hover:shadow-md; /* Use code-block background */
   }
 
   .code-title {
@@ -82,7 +83,7 @@
   }
 
   .code-content {
-    @apply p-4 font-mono text-sm overflow-x-auto bg-card; /* Use card background */
+    @apply p-4 font-mono text-sm overflow-x-auto bg-[hsl(var(--code-block-background))]; /* Use code-block background */
   }
 
   /* Syntax Highlighting - Use dedicated variables to preserve colors */
