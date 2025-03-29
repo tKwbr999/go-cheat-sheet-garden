@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator"; // Import Separator
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'; // Import SyntaxHighlighter
+import { oneLight, vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Import styles
 
 interface CodeBlockProps {
   title: string;
   code: string;
-  description?: string; // Added description prop
+  description?: string;
   language?: string;
   className?: string;
 }
@@ -20,54 +22,37 @@ interface CodeBlockProps {
 const CodeBlock: React.FC<CodeBlockProps> = ({
   title,
   code,
-  description, // Receive description
-  // language = "go",
+  description,
+  language = "go", // Default to 'go'
   className = "",
 }) => {
   const [hasCopied, setHasCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [currentStyle, setCurrentStyle] = useState(oneLight); // Default to light style
   const { toast } = useToast();
 
-  // Simple syntax highlighting
-  const highlightCode = (codeLine: string): React.ReactNode => {
-    if (!codeLine) return null;
+  // --- Style selection based on theme ---
+  useEffect(() => {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setCurrentStyle(isDarkMode ? vscDarkPlus : oneLight);
 
-    // Handle comments first
-    if (codeLine.trim().startsWith("//")) {
-      return <span className="comment">{codeLine}</span>;
-    }
-
-    let highlighted = codeLine;
-    const stringLiterals: string[] = [];
-
-    // 1. Replace string literals with placeholders
-    highlighted = highlighted.replace(/"([^"]*)"/g, (match) => {
-      const placeholder = `__STRING_LITERAL_${stringLiterals.length}__`;
-      stringLiterals.push(match);
-      return placeholder;
+    // Optional: Add observer for theme changes if using a theme provider like next-themes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDark = document.documentElement.classList.contains('dark');
+          setCurrentStyle(isDark ? vscDarkPlus : oneLight);
+        }
+      });
     });
 
-    // 2. Apply other highlights
-    const keywords = ["func", "package", "import", "type", "struct", "interface", "map", "chan", "const", "var", "return", "if", "else", "for", "range", "switch", "case", "default", "go", "defer", "select"];
-    keywords.forEach(kw => {
-      highlighted = highlighted.replace(new RegExp(`\\b${kw}\\b`, 'g'), `<span class="keyword">${kw}</span>`);
-    });
-    highlighted = highlighted.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\(/g, '<span class="function">$1</span>(');
-    highlighted = highlighted.replace(/\b([0-9]+)\b/g, '<span class="number">$1</span>');
-    const types = ["string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "float32", "float64", "complex64", "complex128", "bool", "byte", "rune", "error"];
-    types.forEach(t => {
-      highlighted = highlighted.replace(new RegExp(`\\b${t}\\b`, 'g'), `<span class="type">${t}</span>`);
-    });
+    observer.observe(document.documentElement, { attributes: true });
 
-    // 3. Restore string literals
-    stringLiterals.forEach((literal, index) => {
-      const placeholder = `__STRING_LITERAL_${index}__`;
-      const content = literal.substring(1, literal.length - 1);
-      highlighted = highlighted.replace(placeholder, `<span class="string">"${content}"</span>`);
-    });
+    return () => observer.disconnect(); // Cleanup observer on unmount
+  }, []);
+  // --- End Style selection ---
 
-    return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
-  };
+  // Removed the old highlightCode function
 
   const handleCopy = async () => {
     try {
@@ -92,35 +77,34 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
   // Render code block content, including description if available
   const renderCodeContent = () => (
-    <CardContent className="code-content relative pt-2 pb-4 px-4 font-mono rounded-b-lg">
+    <CardContent className="code-content relative p-0 font-mono rounded-b-lg overflow-hidden"> {/* Adjusted padding */}
       {/* Copy Button */}
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md z-10"
+        className="absolute top-2 right-2 p-1.5 text-muted-foreground bg-card/80 hover:text-foreground transition-colors rounded-md z-10 backdrop-blur-sm" // Added background for visibility
         aria-label="Copy code"
       >
         {hasCopied ? <Check size={14} /> : <Copy size={14} />}
       </button>
-      <div className="relative overflow-x-auto overflow-y-auto">
-        <pre className="relative min-w-full text-sm">
-          {code.split('\n').map((line, i) => (
-            <div key={i} className="code-line group flex">
-              <span className="flex-1 pr-8">
-                {highlightCode(line)}
-              </span>
-            </div>
-          ))}
-        </pre>
-        {/* Render description below code if it exists */}
-        {description && (
-          <>
-            <Separator className="my-3 bg-border/50" />
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
-              {description}
-            </p>
-          </>
-        )}
-      </div>
+      {/* Use SyntaxHighlighter */}
+      <SyntaxHighlighter
+        language={language}
+        style={currentStyle}
+        customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }} // Reset margin/padding, make background transparent
+        wrapLongLines={false} // Optional: prevent line wrapping
+        showLineNumbers={false} // Optional: hide line numbers
+      >
+        {code.trim()} {/* Trim trailing newline if any */}
+      </SyntaxHighlighter>
+      {/* Render description below code if it exists */}
+      {description && (
+        <div className="px-4 pb-4 pt-2"> {/* Add padding for description */}
+          <Separator className="my-3 bg-border/50" />
+          <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
+            {description}
+          </p>
+        </div>
+      )}
     </CardContent>
   );
 
