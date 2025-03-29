@@ -4,8 +4,11 @@ import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader,
 // import { Separator } from "@/components/ui/separator"; // Separator might not be needed
 import { useToast } from "@/hooks/use-toast";
 // Collapsible imports removed
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneLight, vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {
+  oneLight,
+  vscDarkPlus,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface CodeBlockProps {
   title: string; // Will be used as filename/identifier
@@ -28,12 +31,12 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   const { toast } = useToast();
 
   useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains('dark');
+    const isDarkMode = document.documentElement.classList.contains("dark");
     setCurrentStyle(isDarkMode ? vscDarkPlus : oneLight);
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          const isDark = document.documentElement.classList.contains('dark');
+        if (mutation.attributeName === "class") {
+          const isDark = document.documentElement.classList.contains("dark");
           setCurrentStyle(isDark ? vscDarkPlus : oneLight);
         }
       });
@@ -66,18 +69,19 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   // renderCodeContent function removed, JSX integrated directly into return
 
   return (
-    <Card className={`code-block overflow-hidden ${className} mb-6`}> {/* Added margin-bottom */}
+    <Card className={`code-block overflow-hidden ${className} mb-6`}>
+      {" "}
+      {/* Added margin-bottom */}
       {/* Header: Display filename/title, language, and copy button */}
       <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/40">
-        <div className="flex items-center gap-2 overflow-hidden"> {/* Added overflow-hidden */}
+        <div className="flex items-center gap-2 overflow-hidden">
+          {" "}
+          {/* Added overflow-hidden */}
           {/* Display Title (Filename) */}
-          <span className="text-sm font-medium text-foreground truncate">{title}</span> {/* Added truncate */}
-          {/* Display Language */}
-          {language && (
-            <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded border"> {/* Added border */}
-              {language}
-            </span>
-          )}
+          <span className="text-sm font-medium text-foreground truncate">
+            {title}
+          </span>{" "}
+          {/* Added truncate */}
         </div>
         {/* Copy Button */}
         <button
@@ -88,18 +92,19 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           {hasCopied ? <Check size={14} /> : <Copy size={14} />}
         </button>
       </div>
-
       {/* Content: SyntaxHighlighter and Description */}
-      <CardContent className="p-0 font-mono"> {/* Removed rounded-b-lg, overflow-hidden */}
+      <CardContent className="p-0 font-mono">
+        {" "}
+        {/* Removed rounded-b-lg, overflow-hidden */}
         <SyntaxHighlighter
           language={language}
           style={currentStyle}
           customStyle={{
             margin: 0,
-            padding: '1rem', // Keep padding for code
-            background: 'transparent', // Ensure highlighter background doesn't conflict
-            fontSize: '0.875rem', // Consistent font size
-            lineHeight: '1.5', // Improve readability
+            padding: "1rem", // Keep padding for code
+            background: "transparent", // Ensure highlighter background doesn't conflict
+            fontSize: "0.875rem", // Consistent font size
+            lineHeight: "1.5", // Improve readability
           }}
           wrapLongLines={false} // Keep line wrapping off for code clarity
           // showLineNumbers={false} // Line numbers explicitly not shown per user request
@@ -108,7 +113,9 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         </SyntaxHighlighter>
         {/* Description Section */}
         {description && (
-          <div className="px-4 pb-4 pt-3 border-t bg-background"> {/* Added bg-background, adjusted padding */}
+          <div className="px-4 pb-4 pt-3 border-t bg-background">
+            {" "}
+            {/* Added bg-background, adjusted padding */}
             <p className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
               {description}
             </p>
