@@ -1,8 +1,7 @@
----
+## タイトル
 title: "リファレンス: Go 環境変数"
+## タグ
 tags: ["references", "environment variables", "go env", "GOPATH", "GOROOT", "GOOS", "GOARCH", "GO111MODULE"]
----
-
 Go のツールチェーン (`go` コマンドなど) の動作は、いくつかの**環境変数**によって制御・カスタマイズできます。これらの環境変数は、OS の設定や `go env -w` コマンドで設定できます。
 
 現在の設定値は **`go env`** コマンドで一覧表示できます。特定の変数の値だけを表示するには `go env <変数名>` を使います（例: `go env GOPATH`）。

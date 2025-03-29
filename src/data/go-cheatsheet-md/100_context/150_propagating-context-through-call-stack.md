@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: 呼び出しスタックを通じた Context の伝播"
+## タグ
 tags: ["context", "concurrency", "関数呼び出し", "伝播", "http"]
----
-
 `context.Context` の重要な役割の一つは、キャンセルシグナル、デッドライン、リクエストスコープの値を、一連の関数呼び出し（呼び出しスタック）を通じて伝達することです。
 
 Context を関数間でどのように渡すべきか（第一引数としてそのまま渡す）という規約については、**「Context の受け渡し規約」** (`100_context/020_passing-context-convention.md`) や **「Context の伝播」** (`100_context/030_chaining-context-aware-functions.md`) で説明しました。

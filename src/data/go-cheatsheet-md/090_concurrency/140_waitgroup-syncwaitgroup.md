@@ -1,8 +1,7 @@
----
+## タイトル
 title: "並行処理: `sync.WaitGroup` (再確認)"
+## タグ
 tags: ["concurrency", "goroutine", "sync", "WaitGroup", "同期", "Add", "Done", "Wait"]
----
-
 `sync.WaitGroup` は、複数の Goroutine の完了を待ち合わせるための基本的な同期プリミティブです。
 
 基本的な使い方や、ループで複数の Goroutine を起動する際の注意点については、以下のセクションで既に説明しました。

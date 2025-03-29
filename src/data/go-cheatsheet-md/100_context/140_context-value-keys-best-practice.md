@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: 値のキーに関するベストプラクティス"
+## タグ
 tags: ["context", "concurrency", "WithValue", "Value", "キー", "独自型", "ベストプラクティス"]
----
-
 `context.WithValue` を使って Context に値を関連付ける際、キーの選択には注意が必要です。異なるパッケージ間でキーが衝突するのを防ぐために、**独自に定義した型**をキーとして使うことが強く推奨されています。
 
 このベストプラクティスについては、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) でも触れました。

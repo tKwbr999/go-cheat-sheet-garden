@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: 基本的な Context の生成"
+## タグ
 tags: ["context", "concurrency", "Background", "TODO"]
----
-
 すべての `context.Context` は、2つの基本的な Context のいずれかから派生します。これらの基本的な Context は `context` パッケージによって提供されます。
 
 これらの基本的な Context と、そこから派生 Context を生成する方法については、**「並行処理」**セクションの**「Context の生成 (`context` パッケージ)」** (`090_concurrency/190_creating-contexts.md`) で既に説明しました。

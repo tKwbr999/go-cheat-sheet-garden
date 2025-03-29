@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: Context への値の追加 (`WithValue`)"
+## タグ
 tags: ["context", "concurrency", "WithValue", "リクエストスコープ", "値伝達"]
----
-
 `context` パッケージは、キャンセルやデッドラインだけでなく、リクエスト処理の過程で必要となる**リクエストスコープの値**（リクエストID、ユーザーID、トレース情報など）を関数呼び出し間で伝達する手段も提供します。これは **`context.WithValue`** 関数を使って行います。
 
 `WithValue` の使い方や注意点については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に詳しく説明しました。

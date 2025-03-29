@@ -1,8 +1,7 @@
----
+## タイトル
 title: "Context パッケージ: Context からの値の取得 (`Value`)"
+## タグ
 tags: ["context", "concurrency", "Value", "型アサーション", "リクエストスコープ", "値伝達"]
----
-
 `context.WithValue` で Context に関連付けられた値を取得するには、**`Value()`** メソッドを使います。
 
 `Value()` メソッドの使い方や注意点については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に説明しました。

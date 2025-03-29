@@ -1,8 +1,7 @@
----
+## タイトル
 title: "コードスタイル: インデント (Indentation)"
+## タグ
 tags: ["references", "code style", "indentation", "tabs", "gofmt", "go fmt"]
----
-
 Go言語のコードスタイルにおいて、インデント（字下げ）に関するルールは非常にシンプルかつ厳格です。
 
 ## ルール: インデントにはタブを使う

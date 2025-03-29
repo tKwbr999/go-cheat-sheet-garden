@@ -1,8 +1,7 @@
----
+## タイトル
 title: "コードスタイル: コメント (Comments)"
+## タグ
 tags: ["references", "code style", "comments", "documentation", "godoc"]
----
-
 Goのコードにおけるコメントは、コードの意図を伝え、可読性を高めるために重要です。Goでは主に2種類のコメントが使われます。
 
 ## ドキュメンテーションコメント (Documentation Comments)

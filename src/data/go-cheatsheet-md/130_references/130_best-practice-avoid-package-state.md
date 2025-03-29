@@ -1,8 +1,7 @@
----
+## タイトル
 title: "ベストプラクティス: パッケージレベルの状態を避ける"
+## タグ
 tags: ["references", "best practice", "package state", "global variables", "dependency injection", "struct"]
----
-
 Goのコードをクリーンで保守しやすく、テストしやすく保つための重要なベストプラクティスの一つが、**パッケージレベルの変数（特に可変な状態を持つもの）を可能な限り避ける**ことです。
 
 パッケージレベルの変数の問題点については、**「パッケージ: パッケージ変数」** (`070_packages/080_package-variables.md`) で既に説明しました。

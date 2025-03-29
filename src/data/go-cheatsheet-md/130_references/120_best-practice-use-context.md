@@ -1,8 +1,7 @@
----
+## タイトル
 title: "ベストプラクティス: Context を使う"
+## タグ
 tags: ["references", "best practice", "context", "concurrency", "cancel", "timeout", "deadline"]
----
-
 Goの並行処理や、外部リソースとのやり取りを含むプログラムにおいて、**`context.Context` を適切に利用する**ことは非常に重要なベストプラクティスです。
 
 Context の概要、生成方法、使い方、キャンセルやタイムアウトの処理方法などについては、**「Context パッケージ」** (`100_context/`) ディレクトリ内の各ファイルで詳しく説明しました。
