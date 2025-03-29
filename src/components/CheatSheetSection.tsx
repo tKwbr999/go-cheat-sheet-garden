@@ -142,8 +142,9 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
 
   return (
     <section
+      id={sectionId} // Add id attribute
       ref={sectionRef}
-      className={`mb-12 ${className} transition-opacity duration-500 ${ // mb-2 から mb-12 に変更して間隔調整
+      className={`mb-6 ${className} transition-opacity duration-500 ${ // Reduce bottom margin from mb-12 to mb-6
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
