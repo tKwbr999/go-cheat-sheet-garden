@@ -41,8 +41,18 @@ export async function getCheatSheetSection(sectionId: string): Promise<CheatShee
   }
   try {
     // fetch API を使用して public ディレクトリのJSONファイルを取得
-    const response = await fetch(indexItem.filePath); // filePath は /data/sections/xxx.json 形式のはず
+    // Acceptヘッダーを追加してJSONを期待することを明示
+    const response = await fetch(indexItem.filePath, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    }); // filePath は /data/sections/xxx.json 形式のはず
     if (!response.ok) {
+      // レスポンスがJSONでない場合のエラーハンドリングを追加
+      const contentType = response.headers.get('content-type');
+      if (contentType && !contentType.includes('application/json')) {
+         throw new Error(`Expected JSON but received ${contentType}`);
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const sectionData = await response.json();
