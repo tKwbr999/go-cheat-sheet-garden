@@ -29,4 +29,4 @@ dist-ssr
 
 
 # Generated data
-src/data/generated/
+public/data/

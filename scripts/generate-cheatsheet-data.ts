@@ -187,8 +187,8 @@ async function generateCheatSheetData() {
       id: sectionId,
       title: section.title,
       orderPrefix: section.orderPrefix,
-      // fetch 用のパスに変更 (public ディレクトリからの絶対パス)
-      filePath: `/data/sections/${sectionId}.json`,
+      // fetch 用のパスを修正 (public ディレクトリからの絶対パス)
+      filePath: `/data/sections/${sectionId}.json`, // /data プレフィックスを確認
     });
   }
 

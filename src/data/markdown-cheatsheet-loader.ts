@@ -39,6 +39,8 @@ export async function getCheatSheetSection(sectionId: string): Promise<CheatShee
   if (!indexItem) {
     return undefined;
   }
+  const fetchUrl = indexItem.filePath; // この値を確認
+  console.log(`Fetching section data from: ${fetchUrl}`); // デバッグログ追加
   try {
     // fetch API を使用して public ディレクトリのJSONファイルを取得
     // Acceptヘッダーを追加してJSONを期待することを明示
@@ -58,7 +60,7 @@ export async function getCheatSheetSection(sectionId: string): Promise<CheatShee
     const sectionData = await response.json();
     return sectionData as CheatSheetSection;
   } catch (error) {
-    console.error(`Error fetching section ${sectionId} from ${indexItem.filePath}:`, error);
+    console.error(`Error fetching section ${sectionId} from ${fetchUrl}:`, error); // fetchUrl をログに出力
     return undefined;
   }
 }
