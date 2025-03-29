@@ -61,14 +61,25 @@ function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: 
 
   // タグを抽出
   const tagsMatch = content.match(/## タグ\s*tags:\s*(\[.*\])/); // Regex updated to capture full array
-  if (tagsMatch) {
-    try {
-      const parsedTags = JSON.parse(tagsMatch[1].replace(/'/g, '"'));
-      if (Array.isArray(parsedTags)) {
-        data.tags = parsedTags.map(String);
-      }
-    } catch (e) {
-      console.warn(`Could not parse tags: ${tagsMatch[1]}`, e);
+  if (tagsMatch && tagsMatch[1]) {
+    const tagsString = tagsMatch[1]
+      .slice(1, -1) // Remove leading '[' and trailing ']'
+      .trim(); // Remove potential whitespace around the content
+
+    if (tagsString) { // Avoid processing empty strings like "[]"
+      data.tags = tagsString
+        .split(',') // Split by comma
+        .map(tag => {
+          const trimmedTag = tag.trim();
+          // Remove surrounding quotes (' or ") if present
+          if ((trimmedTag.startsWith('"') && trimmedTag.endsWith('"')) || (trimmedTag.startsWith("'") && trimmedTag.endsWith("'"))) {
+            return trimmedTag.slice(1, -1);
+          }
+          return trimmedTag;
+        })
+        .filter(tag => tag); // Remove any empty strings resulting from consecutive commas or trailing comma
+    } else {
+      data.tags = []; // Handle empty array case like "[]"
     }
   }
 
