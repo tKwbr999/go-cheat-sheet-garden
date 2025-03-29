@@ -72,6 +72,20 @@ main: 終了
 */
 ```
 
+## 解説
+```text
+`context.Context` を受け取る関数や Goroutine は、その Context がキャンセルされたかどうかを**定期的にチェック**し、キャンセルされていれば**速やかに処理を中断**する必要があります。
+
+キャンセルを検知する基本的な方法は、`ctx.Done()` が返すチャネルを `select` 文で使うことです。この方法については、**「並行処理」**セクションの**「Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)」** (`090_concurrency/210_using-context-in-functions-checking-done.md`) で既に説明しました。
+
+ここでは、その基本的なパターンを再確認します。
+
+## `select` と `ctx.Done()` によるキャンセルチェック（再確認）
+
+*   時間のかかるループ処理や、ブロッキングする可能性のある操作を行う前に、`select` 文を使って `ctx.Done()` チャネルからの受信を試みます。
+*   `case <-ctx.Done():` が実行された場合、Context がキャンセルされたことを意味します。この `case` ブロック内で、必要なクリーンアップ処理（もしあれば）を行い、関数や Goroutine から `return` します。
+*   `ctx.Err()` を呼び出すことで、キャンセルの理由（`context.Canceled` または `context.DeadlineExceeded`）を取得できます。
+
 **コード解説:**
 
 *   `longRunningTask` は `for { select { ... } }` ループを持ちます。

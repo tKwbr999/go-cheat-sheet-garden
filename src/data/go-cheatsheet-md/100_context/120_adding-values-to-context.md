@@ -68,6 +68,22 @@ sessionID 追加後: context.Background.WithValue(type main.contextKey, val user
 */
 ```
 
+## 解説
+```text
+`context` パッケージは、キャンセルやデッドラインだけでなく、リクエスト処理の過程で必要となる**リクエストスコープの値**（リクエストID、ユーザーID、トレース情報など）を関数呼び出し間で伝達する手段も提供します。これは **`context.WithValue`** 関数を使って行います。
+
+`WithValue` の使い方や注意点については、**「並行処理」**セクションの**「Context による値の伝達 (`context.WithValue`)」** (`090_concurrency/200_context-with-values.md`) で既に詳しく説明しました。
+
+ここでは、その基本的な使い方を再確認します。
+
+## `context.WithValue` の基本（再確認）
+
+*   **`context.WithValue(parent Context, key, val any) Context`**:
+    *   親 Context (`parent`) を基に、キー (`key`) と値 (`val`) を関連付けた新しい子 Context を返します。
+    *   `key` は比較可能 (`comparable`) である必要があり、通常は**独自に定義した非公開の型**を使います（キー衝突を避けるため）。
+    *   `val` には任意の型の値を格納できます。
+*   `WithValue` を呼び出すたびに新しい Context が生成され、値は親から子へと**不変**な形で引き継がれます。
+
 **コード解説:**
 
 *   `context.WithValue` を呼び出すたびに、新しい Context が生成され、既存の Context をラップする形で値が追加されていきます。

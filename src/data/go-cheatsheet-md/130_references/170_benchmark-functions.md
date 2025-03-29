@@ -32,34 +32,9 @@ Goの `testing` パッケージは、ユニットテストだけでなく、コ�
 *   **`go test -bench=. -benchmem`**: `-benchmem` フラグを付けると、1操作あたりのメモリ割り当て回数と割り当てバイト数も表示されます。
 *   **`go test -bench=. -count=5`**: `-count` フラグで各ベンチマークの実行回数を指定できます。
 
-## コード例
+## ベンチマークコード例
 
 簡単な文字列結合関数のベンチマーク例です。
-
-**テスト対象のコード (`stringutil/join.go` - 例):**
-```go
-package stringutil
-
-import "strings"
-
-// JoinWithPlus は + 演算子で文字列を結合します。
-func JoinWithPlus(strs []string) string {
-	result := ""
-	for _, s := range strs {
-		result += s // + 演算子は毎回新しい文字列を生成するため非効率な場合がある
-	}
-	return result
-}
-
-// JoinWithBuilder は strings.Builder で文字列を結合します。
-func JoinWithBuilder(strs []string) string {
-	var sb strings.Builder
-	for _, s := range strs {
-		sb.WriteString(s) // Builder は効率的にメモリを管理
-	}
-	return sb.String()
-}
-```
 
 **ベンチマークコード (`stringutil/join_test.go` - 例):**
 ```go

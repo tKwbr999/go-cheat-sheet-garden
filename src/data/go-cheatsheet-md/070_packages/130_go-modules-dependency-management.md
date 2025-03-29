@@ -5,26 +5,9 @@ title: パッケージ: 依存関係の管理 (Go Modules コマンド)
 tags: ["packages", "package", "go modules", "依存関係管理", "go get", "go mod tidy", "go mod vendor", "go mod why", "go list"]
 
 ## コード
-```bash
-# 依存関係の追加・更新 (go get)
-
-# 最新安定版を追加/更新
-go get github.com/gin-gonic/gin
-
-# 特定バージョンを指定
-go get github.com/google/uuid@v1.3.0
-
-# 依存関係の整理 (go mod tidy)
-# コードを分析し、go.mod を整理 (不足追加、未使用削除)
-go mod tidy
-
-# 依存関係のベンダー化 (go mod vendor)
-# 依存パッケージのソースを vendor/ ディレクトリにコピー
-# go mod vendor
-
-# 依存関係の調査 (go mod why, go list)
-# go mod why golang.org/x/text
-# go list -m all
+```go
+// このセクションにはGoのコード例はありません。
+// 依存関係管理コマンドはターミナル (bashなど) で実行します。
 ```
 
 ## 解説
@@ -59,3 +42,27 @@ Go Modules は `go` コマンドで依存関係を管理します。
 *   `go list -m -json <パッケージパス>`: 詳細情報を JSON で表示。
 
 これらのコマンドで Go Modules の依存関係を管理します。
+
+**参考コマンド (Bash):**
+
+```bash
+# 依存関係の追加・更新 (go get)
+
+# 最新安定版を追加/更新
+go get github.com/gin-gonic/gin
+
+# 特定バージョンを指定
+go get github.com/google/uuid@v1.3.0
+
+# 依存関係の整理 (go mod tidy)
+# コードを分析し、go.mod を整理 (不足追加、未使用削除)
+go mod tidy
+
+# 依存関係のベンダー化 (go mod vendor)
+# 依存パッケージのソースを vendor/ ディレクトリにコピー
+# go mod vendor
+
+# 依存関係の調査 (go mod why, go list)
+# go mod why golang.org/x/text
+# go list -m all
+```

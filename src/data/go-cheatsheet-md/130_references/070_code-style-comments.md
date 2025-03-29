@@ -15,8 +15,9 @@ Goのコードにおけるコメントは、コードの意図を伝え、可読
 *   **パッケージコメント:** パッケージ全体の説明は、`package` 宣言の直前に記述します (`// Package mypkg は ...`)。 (`070_packages/020_package-documentation.md` 参照)
 *   **`godoc`:** ドキュメンテーションコメントは `go doc` コマンドや `pkg.go.dev` によって自動的に抽出・整形され、APIドキュメントとして利用されます。
 
+## コード
 ```go
-package user
+package user // 例として user パッケージ
 
 import "fmt"
 
@@ -33,6 +34,7 @@ func NewUser(name string, age int) (*User, error) {
 	if name == "" {
 		return nil, fmt.Errorf("ユーザー名は空にできません")
 	}
+	// 実装コメント: 年齢チェックはここでは行わない (将来追加するかも)
 	return &User{Name: name, Age: age}, nil
 }
 
@@ -44,6 +46,21 @@ func (u *User) String() string {
 	return fmt.Sprintf("%s (%d歳)", u.Name, u.Age)
 }
 ```
+
+## 解説
+```text
+Goのコードにおけるコメントは、コードの意図を伝え、可読性を高めるために重要です。Goでは主に2種類のコメントが使われます。
+
+## ドキュメンテーションコメント (Documentation Comments)
+
+*   **目的:** パッケージ、型、関数、メソッド、定数、変数など、**エクスポートされる（公開される）識別子**の役割や使い方を説明するために使われます。
+*   **形式:** コメント対象の識別子の**直前**に、空行を挟まずに `//` で始まるコメント行を記述します。
+*   **書き出し:** コメントの最初の文は、**コメント対象の識別子名で始まる**完全な文（主語＋述語）にするのが強い慣習です。これにより `godoc` が生成するドキュメントが読みやすくなります。
+    *   例: `// User はシステム内のユーザーを表します。`
+    *   例: `// CalculateTotal はアイテムの合計金額を計算して返します。`
+*   **内容:** 何をするのか (What)、なぜそうするのか (Why)、どのように使うのか (How) を簡潔に説明します。自明なことを繰り返すコメントは避けます。
+*   **パッケージコメント:** パッケージ全体の説明は、`package` 宣言の直前に記述します (`// Package mypkg は ...`)。 (`070_packages/020_package-documentation.md` 参照)
+*   **`godoc`:** ドキュメンテーションコメントは `go doc` コマンドや `pkg.go.dev` によって自動的に抽出・整形され、APIドキュメントとして利用されます。（上記「コード」セクション参照）
 
 ## 実装コメント (Implementation Comments)
 

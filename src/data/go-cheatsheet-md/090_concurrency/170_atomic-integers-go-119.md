@@ -78,6 +78,22 @@ StoreInt64(-100): 現在値: -100
 */
 ```
 
+## 解説
+```text
+**注意:** このセクションで説明する方法は、Go 1.19 より前のバージョンで使われていた `sync/atomic` パッケージの関数群です。**Go 1.19 以降**では、前のセクション (`160_atomic-integers-go-119.md`) で説明した**アトミック型 (`atomic.Int64` など) を使うことが推奨されます**。アトミック型の方が型安全で使いやすいためです。
+
+ここでは、古いコードやライブラリで使われている可能性のある、Go 1.19 未満の関数ベースのアトミック操作について参考として示します。
+
+## `sync/atomic` の関数 (Go 1.19 未満)
+
+Go 1.19 より前では、`sync/atomic` パッケージは主に以下のような関数を提供していました。これらの関数は、操作対象の変数の**ポインタ**を第一引数に取ります。
+
+*   `atomic.AddInt64(addr *int64, delta int64) (new int64)`: `*addr` の値に `delta` をアトミックに加算し、加算後の値を返します。(`Uint32`, `Uint64`, `Int32` 版もあります)
+*   `atomic.LoadInt64(addr *int64) (val int64)`: `*addr` の値をアトミックに読み取ります。(`Uint32`, `Uint64`, `Int32`, `Pointer` 版などもあります)
+*   `atomic.StoreInt64(addr *int64, val int64)`: `*addr` に `val` をアトミックに書き込みます。(`Uint32`, `Uint64`, `Int32`, `Pointer` 版などもあります)
+*   `atomic.SwapInt64(addr *int64, new int64) (old int64)`: `*addr` に `new` をアトミックに書き込み、書き込む前の古い値を返します。(`Uint32`, `Uint64`, `Int32`, `Pointer` 版などもあります)
+*   `atomic.CompareAndSwapInt64(addr *int64, old, new int64) (swapped bool)`: `*addr` の現在の値が `old` と等しければ、値を `new` にアトミックに更新し `true` を返します。等しくなければ何もせず `false` を返します。(`Uint32`, `Uint64`, `Int32`, `Pointer` 版などもあります)
+
 **コード解説:**
 
 *   `var counter int64`: カウンター変数は通常の `int64` 型で宣言します。

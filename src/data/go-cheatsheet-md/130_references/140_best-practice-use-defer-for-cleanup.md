@@ -71,9 +71,20 @@ func incrementCounter() {
 
 func main() {
 	// ファイル処理の呼び出し
-	os.WriteFile("temp.txt", []byte("data"), 0644)
-	processFile("temp.txt")
-	os.Remove("temp.txt")
+	// 一時ファイルを作成
+	tempFile, err := os.CreateTemp("", "defer_example_*.txt")
+	if err != nil {
+		log.Fatalf("一時ファイルの作成に失敗: %v", err)
+	}
+	fileName := tempFile.Name()
+	tempFile.WriteString("data")
+	tempFile.Close() // CreateTemp で開かれたファイルを一旦閉じる
+
+	err = processFile(fileName)
+	if err != nil {
+		log.Printf("processFile エラー: %v", err)
+	}
+	os.Remove(fileName) // 後片付け
 
 	fmt.Println("---")
 
@@ -82,16 +93,28 @@ func main() {
 	fmt.Printf("現在のカウンター: %d\n", counter)
 }
 
-/* 実行結果:
-ファイル 'temp.txt' を処理中...
+/* 実行結果 (一時ファイル名は実行ごとに変わる):
+ファイル '/var/folders/.../defer_example_....txt' を処理中...
 ファイルを読み込み中...
 ファイル処理完了。
-defer: 'temp.txt' をクローズします。
+defer: '/var/folders/.../defer_example_....txt' をクローズします。
 ---
 カウンターをインクリメントします...
 defer: アンロックします。
 現在のカウンター: 1
 */
 ```
+
+## 解説
+```text
+ファイルハンドル、ネットワーク接続、ミューテックスロックなど、使用後に**解放 (クリーンアップ)** する必要があるリソースを扱う場合、Goでは **`defer`** 文を使うのが最も一般的で推奨される方法です。
+
+`defer` の基本的な使い方やクリーンアップへの応用については、**「制御構文」**セクションの**「`defer` によるクリーンアップ処理」** (`020_flow-control/160_defer-for-cleanup.md`) で既に説明しました。
+
+## なぜ `defer` が重要か？ (再確認)
+
+*   **確実な実行:** `defer` で登録された関数呼び出しは、`defer` を含む関数が**どのように終了しても**（正常な `return`、エラーによる早期リターン、あるいは `panic`）、その**終了直前に必ず実行**されます。
+*   **リソースリークの防止:** ファイルの `Close()` やミューテックスの `Unlock()` などを `defer` で登録することで、これらの解放処理を**呼び忘れる**というミスを防ぎ、リソースリークを効果的に防止できます。
+*   **コードの局所性:** リソースを取得するコードの**直後**に、そのリソースを解放する `defer` 文を書くことで、取得と解放の処理がコード上で近くにまとまり、可読性が向上します。
 
 リソース（ファイル、ネットワーク接続、ロック、メモリなど）を取得したら、その直後に `defer` を使って解放処理を登録する、というパターンは、Goのコードを安全かつ堅牢にするための基本的なテクニックです。
