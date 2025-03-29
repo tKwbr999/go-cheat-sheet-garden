@@ -3,10 +3,17 @@ import Header from "@/components/Header";
 import CheatSheetSection from "@/components/CheatSheetSection";
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
-import { getCheatSheetData } from "@/data/markdown-cheatsheet-loader";
+// getCheatSheetData をインポート
+import { getCheatSheetData } from "@/data/cheatsheet-loader";
+// 必要であれば CheatSheetSection 型もインポート
+// import type { CheatSheetSection as SectionData } from "@/data/types";
+
+// SectionIndexItem 型は不要になったので削除
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
+  // getCheatSheetData を呼び出してセクションデータを取得
+  // 型は getCheatSheetData の返り値 (CheatSheetSection & { id: string })[] になる
   const cheatSheetData = getCheatSheetData();
 
   useEffect(() => {
@@ -41,11 +48,13 @@ const Index = () => {
         <div className="container mx-auto max-w-5xl"> {/* Added max-w-5xl for consistency */}
           {/* Main Content */}
           <div className="mt-16">
-            {cheatSheetData.map((section, index) => (
+            {/* cheatSheetData をループ */}
+            {cheatSheetData.map((sectionInfo) => (
               <CheatSheetSection
-                key={index}
-                title={section.title}
-                codeExamples={section.codeExamples}
+                key={sectionInfo.id} // key は一意な id を使う
+                title={sectionInfo.title}
+                // codeExamples は渡さず、代わりに sectionId を渡す
+                sectionId={sectionInfo.id}
               />
             ))}
           </div>

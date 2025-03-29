@@ -1,265 +1,92 @@
-// gray-matter の依存を削除
-// import matter from 'gray-matter';
 import { CheatSheetSection, CodeExample } from './types';
+// 生成されたインデックスファイルをインポート
+import sectionIndex from './generated/index.json';
 
-// 型定義 (変更なし)
-interface InternalCodeExample extends CodeExample {
-  tags: string[];
-  filePath: string;
-}
-
-interface InternalCheatSheetSection extends Omit<CheatSheetSection, 'codeExamples'> {
+// 型定義: インデックスファイルの型
+interface SectionIndexItem {
   id: string;
+  title: string;
   orderPrefix: string;
-  codeExamples: InternalCodeExample[];
+  filePath: string; // 遅延読み込み用のファイルパス (例: './sections/basics.json')
 }
 
-// Viteの import.meta.glob (変更なし)
-const modules = import.meta.glob('/src/data/go-cheatsheet-md/**/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}); // eager: true を追加 (重要)
+// --- データ処理 ---
+// インデックスデータは静的に読み込まれる
+const processedIndex: SectionIndexItem[] = sectionIndex as SectionIndexItem[];
+const sectionMapById: Record<string, SectionIndexItem> = {};
+const sectionMapByTitle: Record<string, SectionIndexItem> = {};
+const sectionOrder: string[] = [];
 
-// キャッシュ変数 (変更なし)
-let cachedSections: InternalCheatSheetSection[] | null = null;
-let cachedSectionMap: Record<string, InternalCheatSheetSection> | null = null;
-let cachedSectionOrder: string[] | null = null;
+// 一度だけインデックスを処理
+processedIndex.forEach(item => {
+  sectionMapById[item.id] = item;
+  sectionMapByTitle[item.title] = item; // タイトルでの検索用
+  sectionOrder.push(item.id);
+});
 
-// ファイルパスからの情報抽出 (変更なし)
-function extractInfoFromPath(
-  filePath: string
-): { chapterId: string; chapterPrefix: string; examplePrefix: string; exampleSlug: string } | null {
-  const match = filePath.match(/\/(\d{3})_([^/]+)\/(\d{3})_([^/]+)\.md$/);
-  if (!match) {
-    console.warn(`Could not parse path: ${filePath}`);
-    return null;
-  }
-  return {
-    chapterPrefix: match[1],
-    chapterId: match[2],
-    examplePrefix: match[3],
-    exampleSlug: match[4],
-  };
+// --- Public API (実装を修正) ---
+
+// 全セクションのメタ情報（IDとタイトル）を返すように変更
+// 注意: これは CheatSheetSection[] ではなくなるため、呼び出し元の修正が必要になる可能性がある
+// もしくは、初期表示に必要な最低限の情報（タイトルリストなど）だけを返すようにする
+export function getCheatSheetIndex(): SectionIndexItem[] {
+  return processedIndex;
 }
 
-// --- 自前の簡易Front Matterパーサー (変更なし) ---
-interface ParsedFrontMatter {
-  title?: string;
-  tags?: string[];
-}
-
-function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: string } {
-  const data: ParsedFrontMatter = {};
-  const markdownContent = content; // Use const as it's not reassigned
-
-  // タイトルを抽出
-  const titleMatch = content.match(/## タイトル\s*title:\s*(.+?)(?=\n|$)/);
-  if (titleMatch) {
-    data.title = titleMatch[1].trim();
+// 特定のセクションデータを非同期で読み込む
+export async function getCheatSheetSection(sectionId: string): Promise<CheatSheetSection | undefined> {
+  const indexItem = sectionMapById[sectionId];
+  if (!indexItem) {
+    return undefined;
   }
-
-  // タグを抽出
-  const tagsMatch = content.match(/## タグ\s*tags:\s*(\[.*\])/); // Regex updated to capture full array
-    // Directly parse the tags string instead of using JSON.parse.
-    // This is necessary because some tags might not be valid JSON strings
-    // (e.g., '[]byte'), causing JSON.parse to fail.
-  if (tagsMatch && tagsMatch[1]) {
-    const tagsString = tagsMatch[1]
-      .slice(1, -1) // Remove leading '[' and trailing ']'
-      .trim(); // Remove potential whitespace around the content
-
-    if (tagsString) { // Avoid processing empty strings like "[]"
-      data.tags = tagsString
-        .split(',') // Split by comma
-        .map(tag => {
-          const trimmedTag = tag.trim();
-          // Remove surrounding quotes (' or ") if present
-          if ((trimmedTag.startsWith('"') && trimmedTag.endsWith('"')) || (trimmedTag.startsWith("'") && trimmedTag.endsWith("'"))) {
-            return trimmedTag.slice(1, -1);
-          }
-          return trimmedTag;
-        })
-        .filter(tag => tag); // Remove any empty strings resulting from consecutive commas or trailing comma
-    } else {
-      data.tags = []; // Handle empty array case like "[]"
-    }
-  }
-
-  return { data, content: markdownContent };
-}
-// --- ここまで自前パーサー ---
-
-// Markdownコンテンツからの説明とコード抽出
-function extractDescriptionAndCode(markdownContent: string): {
-  description?: string;
-  code: string;
-} {
-  let code = '';
-  let description = '';
-
-  // コードを抽出
-  const codeMatch = markdownContent.match(/## コード\s*```go\s*([\s\S]*?)```/);
-  if (codeMatch) {
-    code = codeMatch[1].trim();
-  }
-
-  // 解説を抽出
-  const descMatch = markdownContent.match(/## 解説\s*```text\s*([\s\S]*?)```/);
-  if (descMatch) {
-    description = descMatch[1].trim();
-  }
-
-  return { description, code }; // Removed redundant '|| undefined'
-}
-
-// Markdownファイルを解析し、データを構築する関数 (型チェックを追加)
-function loadAndParseCheatSheet(): {
-  sections: InternalCheatSheetSection[];
-  sectionMap: Record<string, InternalCheatSheetSection>;
-  sectionOrder: string[];
-} {
-  if (cachedSections && cachedSectionMap && cachedSectionOrder) {
-    return {
-      sections: cachedSections,
-      sectionMap: cachedSectionMap,
-      sectionOrder: cachedSectionOrder,
-    };
-  }
-
-  const tempSections: Record<string, InternalCheatSheetSection> = {};
-
-  for (const filePath in modules) {
-    const fileContent = modules[filePath]; // as unknown as string を削除
-    const pathInfo = extractInfoFromPath(filePath);
-
-    if (!pathInfo) continue;
-
-    // --- ここから追加 ---
-    // fileContent が文字列であることを確認
-    if (typeof fileContent !== 'string') {
-      console.warn(`Skipping ${filePath}: Content is not a string (type: ${typeof fileContent}).`);
-      continue;
-    }
-    // --- ここまで追加 ---
-
-    const { chapterId, chapterPrefix } = pathInfo;
-    // 自前のパーサーを使用 (ここでは fileContent は string であることが保証される)
-    const { data: frontMatter, content: markdownContent } = parseFrontMatter(fileContent);
-
-    if (!frontMatter.title) {
-      console.warn(`Skipping ${filePath}: Missing or invalid 'title' in front matter.`);
-      continue;
-    }
-
-    const { description, code } = extractDescriptionAndCode(markdownContent);
-
-    if (!code) {
-      console.warn(`Skipping ${filePath}: No Go code block found.`);
-      continue;
-    }
-
-    const defaultTags = [chapterId];
-    const tags = frontMatter.tags
-      ? [...new Set([...defaultTags, ...frontMatter.tags])]
-      : defaultTags;
-
-    const codeExample: InternalCodeExample = {
-      title: frontMatter.title,
-      description,
-      code,
-      tags,
-      filePath,
-    };
-
-    if (!tempSections[chapterId]) {
-      const sectionTitle = chapterId
-        .split('-')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      tempSections[chapterId] = {
-        id: chapterId,
-        title: sectionTitle,
-        orderPrefix: chapterPrefix,
-        codeExamples: [],
-      };
-    }
-    tempSections[chapterId].codeExamples.push(codeExample);
-  }
-
-  // ソート処理 (変更なし)
-  const sortedSections = Object.values(tempSections).sort((a, b) =>
-    a.orderPrefix.localeCompare(b.orderPrefix)
-  );
-  for (const section of sortedSections) {
-    section.codeExamples.sort((a, b) => {
-      const aInfo = extractInfoFromPath(a.filePath);
-      const bInfo = extractInfoFromPath(b.filePath);
-      return aInfo && bInfo ? aInfo.examplePrefix.localeCompare(bInfo.examplePrefix) : 0;
-    });
-  }
-
-  const sectionMap: Record<string, InternalCheatSheetSection> = {};
-  const sectionOrder: string[] = [];
-  for (const section of sortedSections) {
-    sectionMap[section.id] = section;
-    sectionOrder.push(section.id);
-  }
-
-  cachedSections = sortedSections;
-  cachedSectionMap = sectionMap;
-  cachedSectionOrder = sectionOrder;
-
-  return {
-    sections: cachedSections,
-    sectionMap: cachedSectionMap,
-    sectionOrder: cachedSectionOrder,
-  };
-}
-
-// --- Public API (インターフェースは変更なし) ---
-// 実装は変更なし
-export function getCheatSheetData(): CheatSheetSection[] {
-  const { sections } = loadAndParseCheatSheet();
-  return sections.map(({ id, orderPrefix, codeExamples, ...rest }) => ({
-    ...rest,
-    codeExamples: codeExamples.map(({ filePath, ...exRest }) => exRest),
-  }));
-}
-
-export function getCheatSheetSection(sectionId: string): CheatSheetSection | undefined {
-  const { sectionMap } = loadAndParseCheatSheet();
-  const section = sectionMap[sectionId];
-  return section
-    ? {
-        title: section.title,
-        codeExamples: section.codeExamples.map(({ filePath, ...exRest }) => exRest),
+  const fetchUrl = indexItem.filePath; // この値を確認
+  console.log(`Fetching section data from: ${fetchUrl}`); // デバッグログ追加
+  try {
+    // fetch API を使用して public ディレクトリのJSONファイルを取得
+    // Acceptヘッダーを追加してJSONを期待することを明示
+    const response = await fetch(indexItem.filePath, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    }); // filePath は /data/sections/xxx.json 形式のはず
+    if (!response.ok) {
+      // レスポンスがJSONでない場合のエラーハンドリングを追加
+      const contentType = response.headers.get('content-type');
+      if (contentType && !contentType.includes('application/json')) {
+         throw new Error(`Expected JSON but received ${contentType}`);
       }
-    : undefined;
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const sectionData = await response.json();
+    return sectionData as CheatSheetSection;
+  } catch (error) {
+    console.error(`Error fetching section ${sectionId} from ${fetchUrl}:`, error); // fetchUrl をログに出力
+    return undefined;
+  }
 }
 
-export function findSectionById(sectionId: string): CheatSheetSection | undefined {
+// findSectionById は getCheatSheetSection を使う (非同期になる)
+export async function findSectionById(sectionId: string): Promise<CheatSheetSection | undefined> {
   return getCheatSheetSection(sectionId);
 }
 
+// 全セクションのタイトルリストを返す (同期)
 export function getAllSectionTitles(): string[] {
-  const { sections } = loadAndParseCheatSheet();
-  return sections.map((section) => section.title);
+  return processedIndex.map((item) => item.title);
 }
 
+// セクションIDからタイトルを取得 (同期)
 export function getSectionTitle(sectionId: string): string | undefined {
-  const { sectionMap } = loadAndParseCheatSheet();
-  return sectionMap[sectionId]?.title;
+  return sectionMapById[sectionId]?.title;
 }
 
+// タイトルからセクションIDを取得 (同期)
 export function getSectionIdByTitle(title: string): string | undefined {
-  const { sections } = loadAndParseCheatSheet();
-  const section = sections.find((s) => s.title === title);
-  return section?.id;
+  return sectionMapByTitle[title]?.id;
 }
 
+// 隣接セクションのIDを取得 (同期)
 export function getAdjacentSections(sectionId: string): { prev?: string; next?: string } {
-  const { sectionOrder } = loadAndParseCheatSheet();
   const index = sectionOrder.indexOf(sectionId);
   if (index === -1) return {};
   const result: { prev?: string; next?: string } = {};
@@ -268,28 +95,53 @@ export function getAdjacentSections(sectionId: string): { prev?: string; next?: 
   return result;
 }
 
-export function searchSections(keyword: string): CheatSheetSection[] {
-  const { sections } = loadAndParseCheatSheet();
+// 検索機能: インデックス情報（タイトル）のみで検索する (同期)
+// 注意: コンテンツ全体を検索する場合は、全JSONを読み込む非同期処理が必要
+export function searchSections(keyword: string): SectionIndexItem[] {
   const normalizedKeyword = keyword.toLowerCase();
-  if (!normalizedKeyword) return getCheatSheetData();
-  const results = sections.filter((section) => {
-    if (section.title.toLowerCase().includes(normalizedKeyword)) return true;
-    for (const example of section.codeExamples) {
-      if (example.title.toLowerCase().includes(normalizedKeyword)) return true;
-      if (example.description?.toLowerCase().includes(normalizedKeyword)) return true;
-      if (example.code.toLowerCase().includes(normalizedKeyword)) return true;
-      if (example.tags.some((tag) => tag.toLowerCase().includes(normalizedKeyword))) return true;
-    }
+  if (!normalizedKeyword) return getCheatSheetIndex(); // キーワードがなければ全インデックスを返す
+
+  return processedIndex.filter((item) => {
+    if (item.title.toLowerCase().includes(normalizedKeyword)) return true;
+    // IDでの検索も追加する場合
+    // if (item.id.toLowerCase().includes(normalizedKeyword)) return true;
     return false;
   });
-  return results.map(({ id, orderPrefix, codeExamples, ...rest }) => ({
-    ...rest,
-    codeExamples: codeExamples.map(({ filePath, ...exRest }) => exRest),
-  }));
 }
 
-export function clearCache(): void {
-  cachedSections = null;
-  cachedSectionMap = null;
-  cachedSectionOrder = null;
+// 非同期で全セクションデータを読み込んで検索する関数の例 (必要に応じて実装)
+/*
+export async function searchSectionsDeep(keyword: string): Promise<CheatSheetSection[]> {
+  const normalizedKeyword = keyword.toLowerCase();
+  if (!normalizedKeyword) {
+    // 全データを読み込む必要がある
+    const allSections = await Promise.all(processedIndex.map(item => getCheatSheetSection(item.id)));
+    return allSections.filter(s => s !== undefined) as CheatSheetSection[];
+  }
+
+  const results: CheatSheetSection[] = [];
+  for (const item of processedIndex) {
+    // まずタイトルでフィルタリング
+    if (item.title.toLowerCase().includes(normalizedKeyword)) {
+      const section = await getCheatSheetSection(item.id);
+      if (section) results.push(section);
+      continue; // タイトルが一致したらコンテンツは見ない（重複を避ける）
+    }
+
+    // コンテンツを検索するために読み込む
+    const section = await getCheatSheetSection(item.id);
+    if (!section) continue;
+
+    let foundInContent = false;
+    for (const example of section.codeExamples) {
+      if (example.title.toLowerCase().includes(normalizedKeyword)) { foundInContent = true; break; }
+      if (example.description?.toLowerCase().includes(normalizedKeyword)) { foundInContent = true; break; }
+      if (example.code.toLowerCase().includes(normalizedKeyword)) { foundInContent = true; break; }
+    }
+    if (foundInContent) {
+      results.push(section);
+    }
+  }
+  return results;
 }
+*/
