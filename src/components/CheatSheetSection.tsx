@@ -80,8 +80,8 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
       },
       {
         root: null,
-        rootMargin: "0px",
-        threshold: 0.1, // 10%表示されたらロード開始
+        rootMargin: "0px 0px 800px 0px", // 下端から800px手前で検知
+        threshold: 0.01, // わずかでも領域に入ったら検知
       }
     );
 
