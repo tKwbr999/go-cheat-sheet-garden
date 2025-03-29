@@ -1,0 +1,110 @@
+{
+  "title": "Interfaces",
+  "codeExamples": [
+    {
+      "title": "インターフェース: 振る舞いの契約を定義する",
+      "description": "Goの**インターフェース (Interface)** は、具体的な実装を持たず、\n**どのようなメソッドを持っているべきか**という\n**メソッドシグネチャの集まり**だけを定義します。\n型が満たすべき**契約 (Contract)** や**仕様**のようなものです。\n\n**インターフェースとは？**\n*   メソッドシグネチャの集まり (名前, 引数, 戻り値)。\n*   型が「何ができるか」(振る舞い) を定義する。\n*   具体的なデータを持たない**抽象型**。\n*   同じインターフェースを満たす異なる型を統一的に扱う\n    **ポリモーフィズム**を実現する。\n\n**定義構文:**",
+      "code": "package main\n\nimport \"fmt\"\n\n// Shape インターフェース: 振る舞いを定義\ntype Shape interface {\n\tArea() float64      // 面積を返すメソッド\n\tPerimeter() float64 // 周長を返すメソッド\n}\n\n// Shape インターフェース型の引数を受け取る関数\n// 具体的な型 (Rectangle, Circle 等) を知らなくても動作する\nfunc printShapeInfo(s Shape) {\n\tif s == nil {\n\t\tfmt.Println(\"図形が nil です\")\n\t\treturn\n\t}\n\tfmt.Printf(\"図形情報: %T\\n\", s) // 実行時の具体的な型が表示される\n\tfmt.Printf(\"  面積: %.2f\\n\", s.Area())      // インターフェースのメソッドを呼び出す\n\tfmt.Printf(\"  周長: %.2f\\n\", s.Perimeter()) // インターフェースのメソッドを呼び出す\n}\n\nfunc main() {\n\t// インターフェース型のゼロ値は nil\n\tvar s Shape\n\tfmt.Printf(\"初期状態 s: %v (%T)\\n\", s, s) // <nil> (<nil>)\n\t// printShapeInfo(s) // s が nil なので Area() 呼び出しで panic する\n\n\t// (次のセクションで具体的な型を Shape として使う例を示す)\n}"
+    },
+    {
+      "title": "インターフェース: インターフェースの実装 (暗黙的)",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\n// インターフェース定義\ntype Shape interface {\n\tArea() float64\n\tPerimeter() float64\n}\n\n// 具体的な型: Rectangle\ntype Rectangle struct {\n\tWidth, Height float64\n}\n\n// Rectangle が Shape のメソッドを実装\nfunc (r Rectangle) Area() float64      { return r.Width * r.Height }\nfunc (r Rectangle) Perimeter() float64 { return 2 * (r.Width + r.Height) }\n\n// 具体的な型: Circle\ntype Circle struct {\n\tRadius float64\n}\n\n// Circle が Shape のメソッドを実装\nfunc (c Circle) Area() float64      { return math.Pi * c.Radius * c.Radius }\nfunc (c Circle) Perimeter() float64 { return 2 * math.Pi * c.Radius }\n\nfunc main() {\n\t// Rectangle と Circle は Shape のメソッドを全て持つので、\n\t// 暗黙的に Shape インターフェースを実装している\n\tvar s1 Shape = Rectangle{Width: 10, Height: 5}\n\tvar s2 Shape = Circle{Radius: 3}\n\n\tfmt.Printf(\"s1 (%T): Area=%.2f\\n\", s1, s1.Area())\n\tfmt.Printf(\"s2 (%T): Area=%.2f\\n\", s2, s2.Area())\n}"
+    },
+    {
+      "title": "インターフェース: インターフェースを使ったポリモーフィズム",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\n// インターフェース定義\ntype Shape interface {\n\tArea() float64\n\tPerimeter() float64\n}\n\n// 具体的な型 Rectangle\ntype Rectangle struct{ Width, Height float64 }\nfunc (r Rectangle) Area() float64      { return r.Width * r.Height }\nfunc (r Rectangle) Perimeter() float64 { return 2 * (r.Width + r.Height) }\n\n// 具体的な型 Circle\ntype Circle struct{ Radius float64 }\nfunc (c Circle) Area() float64      { return math.Pi * c.Radius * c.Radius }\nfunc (c Circle) Perimeter() float64 { return 2 * math.Pi * c.Radius }\n\n// インターフェースを利用する関数\nfunc printShapeInfo(s Shape) {\n\tfmt.Printf(\"  図形:%T, 面積:%.2f, 周長:%.2f\\n\", s, s.Area(), s.Perimeter())\n}\n\nfunc main() {\n\trect := Rectangle{Width: 10, Height: 5}\n\tcirc := Circle{Radius: 3}\n\n\tfmt.Println(\"--- printShapeInfo 呼び出し ---\")\n\t// Shape を実装する具体的な型 (Rectangle, Circle) を渡せる\n\tprintShapeInfo(rect)\n\tprintShapeInfo(circ)\n\n\t// var s Shape = rect // インターフェース型変数にも代入可\n\t// s = circ\n\t// fmt.Println(s.Area())\n\n\t// shapes := []Shape{rect, circ} // インターフェース型スライスも可\n\t// fmt.Println(totalArea(shapes))\n}\n\n// func totalArea(shapes []Shape) float64 { ... } // (実装略)"
+    },
+    {
+      "title": "インターフェース: `nil` インターフェースと `nil` 値を持つインターフェース",
+      "description": "インターフェース変数が `nil` である状態には2つの意味合いがあり、\n注意が必要です。\n\n**インターフェース変数の内部:**\nインターフェース変数は内部的に2つ持ちます。\n1. **型 (Type):** 格納された具体的な値の型情報。\n2. **値 (Value):** 格納された具体的な値へのポインタ等。\n\n**1. `nil` インターフェース:**\n`var err error` のように宣言しただけの状態。\n内部の**型も値も両方 `nil`** です。\n`err == nil` の比較は **`true`** になります。\n\n**2. `nil` 値を持つインターフェース (非 `nil` インターフェース):**\nインターフェース変数に、**具体的な型**を持つが\nその**値が `nil`** である値 (nilポインタ等) を代入した場合。",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// nil ポインタ (*os.File) を error として返す関数\nfunc getNilPointerAsError() error {\n\tvar ptr *os.File = nil\n\t// 戻り値 error は (型=*os.File, 値=nil) となる\n\treturn ptr\n}\n\nfunc main() {\n\t// nil インターフェース (型=nil, 値=nil)\n\tvar err1 error\n\tfmt.Printf(\"err1: 型=%T, 値=%v\\n\", err1, err1)\n\tif err1 == nil { fmt.Println(\"err1 == nil は true\") }\n\n\tfmt.Println()\n\n\t// nil 値を持つインターフェース (型=*os.File, 値=nil)\n\terr2 := getNilPointerAsError()\n\tfmt.Printf(\"err2: 型=%T, 値=%v\\n\", err2, err2) // 型情報が表示される\n\tif err2 == nil {\n\t\tfmt.Println(\"err2 == nil は true\")\n\t} else {\n\t\t// 型情報を持つため、インターフェースとしては nil ではない\n\t\tfmt.Println(\"err2 == nil は false\")\n\t}\n\n\t// err2 は nil ではないが、値は nil なのでメソッド呼び出しは panic\n\t// err2.Error() // panic: runtime error: invalid memory address or nil pointer dereference\n}"
+    },
+    {
+      "title": "インターフェース: 型アサーション (Type Assertion)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar i any // interface{} と同じ\n\n\ti = \"Hello\"\n\n\t// カンマOKイディオム (安全な方法)\n\tfmt.Println(\"--- カンマOKイディオム ---\")\n\ts2, ok1 := i.(string) // string かチェック\n\tif ok1 {\n\t\tfmt.Printf(\"i は string: \\\"%s\\\"\\n\", s2)\n\t} else {\n\t\tfmt.Println(\"i は string ではない\")\n\t}\n\n\tnum2, ok2 := i.(int) // int かチェック\n\tif ok2 {\n\t\tfmt.Printf(\"i は int: %d\\n\", num2)\n\t} else {\n\t\t// ok2 は false, num2 は int のゼロ値 0\n\t\tfmt.Printf(\"i は int ではない (ok=%t, value=%d)\\n\", ok2, num2)\n\t}\n\n\t// if 文の初期化と組み合わせるのが一般的\n\tfmt.Println(\"\\n--- if 文との組み合わせ ---\")\n\ti = 123 // i に int を代入\n\tif num, ok := i.(int); ok {\n\t\t// アサーション成功時のみ実行\n\t\tfmt.Printf(\"i は int で値は %d\\n\", num)\n\t} else {\n\t\tfmt.Println(\"i は int ではない\")\n\t}\n}"
+    },
+    {
+      "title": "インターフェース: 型スイッチ (Type Switch)",
+      "description": "インターフェース変数に格納された値の**具体的な型**に\n基づいて処理を分岐させたい場合、**型スイッチ**を使います。\nこれは `switch` 文の特殊な形式です。\n\n**構文:**",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Shape interface{ Area() float64 }\ntype Rectangle struct{ Width, Height float64 }\nfunc (r Rectangle) Area() float64 { return r.Width * r.Height }\ntype Circle struct{ Radius float64 }\nfunc (c Circle) Area() float64 { return math.Pi * c.Radius * c.Radius }\n\n// 型スイッチを使う関数\nfunc describeShape(s Shape) {\n\tfmt.Printf(\"入力: %v, \", s)\n\tswitch v := s.(type) { // 型スイッチ構文\n\tcase Rectangle:\n\t\t// v は Rectangle 型\n\t\tfmt.Printf(\"長方形 (W:%.1f, H:%.1f), 面積:%.2f\\n\", v.Width, v.Height, v.Area())\n\tcase Circle:\n\t\t// v は Circle 型\n\t\tfmt.Printf(\"円 (R:%.1f), 面積:%.2f\\n\", v.Radius, v.Area())\n\tcase nil:\n\t\tfmt.Println(\"nil\")\n\tdefault:\n\t\t// v は元の Shape 型\n\t\tfmt.Printf(\"未知の図形 (%T), 面積:%.2f\\n\", v, v.Area())\n\t}\n}\n\nfunc main() {\n\tvar s Shape // nil\n\tdescribeShape(s)\n\n\ts = Rectangle{5, 4}\n\tdescribeShape(s)\n\n\ts = Circle{2.5}\n\tdescribeShape(s)\n}"
+    },
+    {
+      "title": "インターフェース: 空インターフェース (`interface{}` / `any`)",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// any 型 (interface{} と同じ) の変数\n\tvar value any\n\n\t// 様々な型の値を代入可能\n\tvalue = 42\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = \"Hello\"\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = 3.14\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = true\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = []int{1, 2}\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n\n\tvalue = nil\n\tfmt.Printf(\"値: %v (%T)\\n\", value, value)\n}"
+    },
+    {
+      "title": "インターフェース: 空インターフェースと型アサーション",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar data any // 空インターフェース\n\n\tdata = \"Hello\"\n\n\t// カンマOKイディオムで string 型かチェック\n\tstrValue, ok := data.(string)\n\tif ok {\n\t\tfmt.Printf(\"string として取得成功: \\\"%s\\\"\\n\", strValue)\n\t} else {\n\t\tfmt.Println(\"string ではない\")\n\t}\n\n\t// カンマOKイディオムで int 型かチェック\n\tintValue, ok := data.(int)\n\tif ok {\n\t\tfmt.Printf(\"int として取得成功: %d\\n\", intValue)\n\t} else {\n\t\t// data は string なので失敗 (ok=false, intValue=0)\n\t\tfmt.Printf(\"int ではない (ok=%t, zeroValue=%d)\\n\", ok, intValue)\n\t}\n\n\t// パニックする可能性のある形式 (非推奨)\n\t// s := data.(string) // もし data が string でなければ panic\n}"
+    },
+    {
+      "title": "インターフェース: 空インターフェースと型スイッチ",
+      "description": "空インターフェース (`any`/`interface{}`) は\n任意の型の値を保持できるため、その具体的な型に\n応じて処理を分岐させたい場合に\n**型スイッチ (Type Switch)** が役立ちます。\n(`switch` 文の特殊形式)\n\n型スイッチを使うと、複数の型アサーションを\n`if-else if` で繋げるよりも安全かつ簡潔に書けます。\n\n**構文:**",
+      "code": "package main\n\nimport \"fmt\"\n\n// any 型の値を受け取り、型に応じて処理\nfunc processAnything(value any) {\n\tfmt.Printf(\"入力: %v, \", value)\n\tswitch v := value.(type) { // 型スイッチ\n\tcase int:\n\t\tfmt.Printf(\"整数: %d\\n\", v)\n\tcase string:\n\t\tfmt.Printf(\"文字列: %s\\n\", v)\n\tcase bool:\n\t\tfmt.Printf(\"真偽値: %t\\n\", v)\n\tcase nil:\n\t\tfmt.Println(\"nil\")\n\tdefault:\n\t\tfmt.Printf(\"その他 (%T)\\n\", v)\n\t}\n}\n\nfunc main() {\n\tprocessAnything(100)\n\tprocessAnything(\"Go\")\n\tprocessAnything(true)\n\tprocessAnything(nil)\n\tprocessAnything(1.23) // default\n}"
+    },
+    {
+      "title": "インターフェース: 空インターフェース (`any`) の一般的な使い道",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// any 型のスライス (異なる型を混在可能)\n\tmixedSlice := []any{\n\t\t42,\n\t\t\"world\",\n\t\tfalse,\n\t\tstruct{ Name string }{\"Gopher\"},\n\t\tnil,\n\t}\n\n\t// 型スイッチで実際の型を判別して処理\n\tfor i, item := range mixedSlice {\n\t\tfmt.Printf(\"Index %d: \", i)\n\t\tswitch v := item.(type) {\n\t\tcase int:\n\t\t\tfmt.Printf(\"整数 %d\\n\", v)\n\t\tcase string:\n\t\t\tfmt.Printf(\"文字列 \\\"%s\\\"\\n\", v)\n\t\tcase bool:\n\t\t\tfmt.Printf(\"真偽値 %t\\n\", v)\n\t\tdefault:\n\t\t\tfmt.Printf(\"その他 %T (%v)\\n\", v, v)\n\t\t}\n\t}\n}"
+    },
+    {
+      "title": "インターフェース: インターフェースの組み合わせ (コンポジション)",
+      "description": "既存のインターフェースを**埋め込む (Embed)** ことで、\n新しいインターフェースを**組み合わせ (Compose)** て定義できます。\n(構造体の埋め込みと似ている)\n\n**インターフェースコンポジション:**\n複数の小さなインターフェースが持つメソッドセットを\nすべて含んだ、より大きなインターフェースを作成できます。\n\n**構文:**",
+      "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\" // Reader, Writer, ReadWriter など\n)\n\n// io パッケージのインターフェース定義 (例)\n// type Reader interface { Read(p []byte) (n int, err error) }\n// type Writer interface { Write(p []byte) (n int, err error) }\n// type ReadWriter interface {\n//     Reader // Reader インターフェースを埋め込み\n//     Writer // Writer インターフェースを埋め込み\n// }\n\nfunc main() {\n\tvar buffer bytes.Buffer // Read と Write メソッドを持つ\n\n\t// buffer は Writer を満たす\n\tvar writer io.Writer = &buffer\n\twriter.Write([]byte(\"Data \"))\n\tfmt.Printf(\"Writer (%T): OK\\n\", writer)\n\n\t// buffer は Reader を満たす\n\tvar reader io.Reader = &buffer\n\t// reader.Write(...) // エラー: Reader に Write はない\n\tfmt.Printf(\"Reader (%T): OK\\n\", reader)\n\n\t// buffer は Reader と Writer を両方満たすので、\n\t// それらを埋め込んだ ReadWriter も満たす\n\tvar readWriter io.ReadWriter = &buffer\n\treadWriter.Write([]byte(\"More\"))\n\tbuf := make([]byte, 10)\n\tn, _ := readWriter.Read(buf)\n\tfmt.Printf(\"ReadWriter (%T): Read '%s'\\n\", readWriter, string(buf[:n]))\n}"
+    },
+    {
+      "title": "インターフェースのベストプラクティス: 小さく保つ (単一責任)",
+      "description": "",
+      "code": "// 良い例: io.Reader (読み取り責務のみ)\ntype Reader interface {\n\tRead(p []byte) (n int, err error)\n}\n\n// 良い例: io.Writer (書き込み責務のみ)\ntype Writer interface {\n\tWrite(p []byte) (n int, err error)\n}\n\n// 良い例: io.Closer (クローズ責務のみ)\ntype Closer interface {\n\tClose() error\n}\n\n// 組み合わせ例: io.ReadWriter (Reader と Writer を埋め込み)\n// type ReadWriter interface {\n//     Reader\n//     Writer\n// }"
+    },
+    {
+      "title": "インターフェースのベストプラクティス: インターフェースを受け入れ、構造体を返す",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\n// User 構造体 (返す型: 具体的な構造体)\ntype User struct {\n\tID   int\n\tName string\n}\n\n// UserGetter インターフェース (受け入れる型: 振る舞いを定義)\ntype UserGetter interface {\n\tGetUserByID(id int) (*User, error) // 具体的な *User を返す\n}\n\n// --- 実装例 (Database や MockUserGetter などが UserGetter を実装) ---\n// (実装詳細は省略、解説参照)\ntype Database struct { users map[int]*User } // 例\nfunc (db *Database) GetUserByID(id int) (*User, error) { /* ... */ return db.users[id], nil }\n\n// --- インターフェースを利用する関数 ---\n// 引数に UserGetter インターフェースを受け取る\nfunc ProcessUser(getter UserGetter, userID int) {\n\tfmt.Printf(\"\\nProcessUser(%d) 呼び出し\\n\", userID)\n\tuser, err := getter.GetUserByID(userID) // インターフェース経由で呼び出し\n\tif err != nil {\n\t\tfmt.Printf(\"エラー: %v\\n\", err)\n\t\treturn\n\t}\n\t// 戻り値は *User なのでフィールドに直接アクセス可\n\tfmt.Printf(\"取得成功: ID=%d, Name=%s\\n\", user.ID, strings.ToUpper(user.Name))\n}\n\nfunc main() {\n\tdb := &Database{users: map[int]*User{1: {1, \"Alice\"}}} // 実装例\n\n\t// ProcessUser に具体的な実装 (db) をインターフェースとして渡す\n\tProcessUser(db, 1)\n\tProcessUser(db, 3) // エラー例\n}"
+    },
+    {
+      "title": "インターフェースのベストプラクティス: 利用する側でインターフェースを定義する",
+      "description": "",
+      "code": "package userservice // インターフェースを利用する側のパッケージ\n\nimport \"fmt\"\n\n// User 構造体 (例)\ntype User struct{ ID int; Name string }\n\n// ★★★ インターフェースを利用側で定義 ★★★\n// UserStorer: ユーザーの取得・保存に必要な振る舞いを定義\ntype UserStorer interface {\n\tGetUser(id int) (*User, error)\n\tSaveUser(user *User) error\n}\n\n// Service: UserStorer インターフェースに依存する\ntype Service struct {\n\tStore UserStorer // 具体的な実装ではなくインターフェースを持つ\n}\n\n// GetUserName メソッド (UserStorer を利用)\nfunc (s *Service) GetUserName(id int) (string, error) {\n\tuser, err := s.Store.GetUser(id) // インターフェース経由で呼び出し\n\tif err != nil { return \"\", fmt.Errorf(\"取得失敗: %w\", err) }\n\treturn user.Name, nil\n}\n\n// (NewService や SaveNewUser など他のメソッドは省略)"
+    },
+    {
+      "title": "インターフェースのベストプラクティス: 命名規則 (`-er` サフィックス)",
+      "description": "",
+      "code": "// 例: 標準ライブラリのインターフェース\n\n// 読み取るもの\ntype Reader interface {\n\tRead(p []byte) (n int, err error)\n}\n\n// 書き込むもの\ntype Writer interface {\n\tWrite(p []byte) (n int, err error)\n}\n\n// 文字列化するもの\ntype Stringer interface {\n\tString() string\n}\n\n// 閉じるもの\ntype Closer interface {\n\tClose() error\n}\n\n// HTTPリクエストを処理するもの\n// type Handler interface { ServeHTTP(...) } // net/http"
+    },
+    {
+      "title": "インターフェースのベストプラクティス: 空インターフェース (`any`) の乱用を避ける",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\n// 良い例: 具体的な型を使う\ntype UserData struct {\n\tName  string\n\tEmail string\n\tTags  []string\n}\n\n// 具体的な UserData 型を受け取る関数\nfunc processUserDataGood(data UserData) {\n\tfmt.Println(\"\\n--- processUserDataGood ---\")\n\tfmt.Printf(\"ユーザー名: %s\\n\", data.Name)\n\tfmt.Printf(\"メール: %s\\n\", data.Email)\n\tfmt.Printf(\"タグ: %s\\n\", strings.Join(data.Tags, \", \"))\n\t// 型が明確なのでフィールドに安全にアクセスできる\n}\n\nfunc main() {\n\tuserData := UserData{\n\t\tName: \"Gopher\", Email: \"gopher@example.com\", Tags: []string{\"go\", \"dev\"},\n\t}\n\tprocessUserDataGood(userData) // 具体的な型を渡す\n}"
+    },
+    {
+      "title": "インターフェースのベストプラクティス: `nil` インターフェースを正しく返す",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n)\n\ntype MyError struct{ Message string }\nfunc (e *MyError) Error() string { return e.Message }\n\n// 悪い例: 成功時に *MyError 型の nil ポインタを返す\nfunc processDataBad(fail bool) error {\n\tif fail { return &MyError{\"失敗\"} }\n\tvar errPtr *MyError = nil\n\treturn errPtr // (型=*main.MyError, 値=nil) の error が返る\n}\n\n// 良い例: 成功時に明示的に nil を返す\nfunc processDataGood(fail bool) error {\n\tif fail { return &MyError{\"失敗\"} }\n\treturn nil // (型=nil, 値=nil) の error が返る\n}\n\nfunc main() {\n\tfmt.Println(\"--- 悪い例 ---\")\n\terrBad := processDataBad(false) // 成功のはずが...\n\tfmt.Printf(\"errBad: (%T, %v)\\n\", errBad, errBad)\n\tif errBad != nil {\n\t\t// 型情報を持つため nil ではないと判定される！\n\t\tfmt.Println(\" エラー発生と誤判定:\", errBad)\n\t}\n\n\tfmt.Println(\"\\n--- 良い例 ---\")\n\terrGood := processDataGood(false) // 成功\n\tfmt.Printf(\"errGood: (%T, %v)\\n\", errGood, errGood)\n\tif errGood != nil {\n\t\tfmt.Println(\" エラー発生:\", errGood)\n\t} else {\n\t\t// 正しく nil と判定される\n\t\tfmt.Println(\" 処理成功\")\n\t}\n}"
+    },
+    {
+      "title": "インターフェース: ジェネリクスの型制約としての利用",
+      "description": "Go 1.18 で導入された**ジェネリクス**では、\n**型パラメータ** (`[T any]`) が受け入れ可能な型を\n指定する**型制約 (Type Constraint)** として\n**インターフェース**を使います。\n\n**なぜ制約が必要か？**\nジェネリック関数内で型パラメータ `T` の値に対し、\n特定の操作（メソッド呼び出し、演算子 `+` `<` `==` など）を\n行いたい場合、`T` がその操作をサポートすることを\nコンパイラに伝える必要があるためです。\n\n**インターフェースによる型制約:**\n1.  **メソッドセットによる制約:**\n    従来通り、特定のメソッドを持つ型に制約します。",
+      "code": "package main\n\nimport \"fmt\"\n\n// 型リストによる制約: int または float64 を許容\ntype Number interface {\n\tint | float64\n\t// ~int | ~float64 のように ~ を付けると基底型が int/float64 の型も許容\n}\n\n// ジェネリック関数: Number 制約を持つ型 T を受け取る\nfunc Double[T Number](value T) T {\n\t// T は int か float64 なので * 2 が可能\n\treturn value * 2\n}\n\n// 比較可能な型を制約する組み込みの comparable\nfunc AreEqual[T comparable](a, b T) bool {\n\treturn a == b\n}\n\nfunc main() {\n\tfmt.Println(\"Double(5):\", Double(5))       // T=int\n\tfmt.Println(\"Double(3.14):\", Double(3.14)) // T=float64\n\t// Double(\"hello\") // エラー: string は Number 制約を満たさない\n\n\tfmt.Println(\"AreEqual(1, 1):\", AreEqual(1, 1)) // T=int\n\t// AreEqual([]int{1}, []int{1}) // エラー: スライスは比較不可\n}"
+    },
+    {
+      "title": "インターフェース: 制約付きジェネリック関数",
+      "description": "",
+      "code": "package main\n\nimport \"fmt\"\n\n// 型制約インターフェース: int または float64\ntype Number interface {\n\tint | float64\n}\n\n// ジェネリック関数: Number 制約を持つ型 T のスライスの合計を計算\nfunc SumNumbers[T Number](values []T) T {\n\tvar sum T // T のゼロ値で初期化\n\tfor _, v := range values {\n\t\tsum += v // + 演算子が使えることが保証される\n\t}\n\treturn sum\n}\n\nfunc main() {\n\tintSlice := []int{1, 2, 3}\n\tfloatSlice := []float64{1.1, 2.2}\n\n\t// T が int と推論される\n\tintSum := SumNumbers(intSlice)\n\tfmt.Printf(\"Sum(%v) = %v (%T)\\n\", intSlice, intSum, intSum)\n\n\t// T が float64 と推論される\n\tfloatSum := SumNumbers(floatSlice)\n\tfmt.Printf(\"Sum(%v) = %v (%T)\\n\", floatSlice, floatSum, floatSum)\n\n\t// SumNumbers([]string{\"a\"}) // エラー: string は Number 制約を満たさない\n}"
+    },
+    {
+      "title": "インターフェース: ジェネリクスのメソッド制約",
+      "description": "",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n)\n\n// 制約インターフェース: String() メソッドを持つ\ntype Stringer interface {\n\tString() string\n}\n\n// ジェネリック関数: Stringer 制約を持つ T のスライスを連結\nfunc JoinToStrings[T Stringer](values []T, sep string) string {\n\tvar builder strings.Builder\n\tfor i, v := range values {\n\t\tif i > 0 { builder.WriteString(sep) }\n\t\tbuilder.WriteString(v.String()) // v は String() を持つことが保証される\n\t}\n\treturn builder.String()\n}\n\n// Stringer を実装する型 (例)\ntype MyInt int\nfunc (i MyInt) String() string { return \"MyInt:\" + strconv.Itoa(int(i)) }\n\nfunc main() {\n\tmyInts := []MyInt{1, 2, 3}\n\n\t// ジェネリック関数呼び出し (T は MyInt と推論される)\n\tresult := JoinToStrings(myInts, \", \")\n\tfmt.Println(result) // MyInt:1, MyInt:2, MyInt:3\n\n\t// plainInts := []int{4, 5}\n\t// JoinToStrings(plainInts, \"-\") // エラー: int は Stringer ではない\n}"
+    },
+    {
+      "title": "インターフェース: ジェネリックデータ構造",
+      "description": "ジェネリクスは関数だけでなく、**データ構造**\n(構造体やインターフェース) にも適用でき、\n型安全で汎用的なコンテナ等を作成できます。\n\n**ジェネリック型の定義:**\n型名の直後に `[]` で型パラメータと制約を指定します。",
+      "code": "package main\n\nimport \"fmt\"\n\n// ジェネリック型 Stack[T any]: 任意の型 T のスタック\ntype Stack[T any] struct {\n\titems []T\n}\n\n// Push メソッド (レシーバにも型パラメータ [T] が必要)\nfunc (s *Stack[T]) Push(item T) {\n\tif s == nil { return }\n\ts.items = append(s.items, item)\n}\n\n// Pop メソッド\nfunc (s *Stack[T]) Pop() (T, bool) {\n\tif s == nil || len(s.items) == 0 {\n\t\tvar zero T // T のゼロ値を返す\n\t\treturn zero, false\n\t}\n\tlastIndex := len(s.items) - 1\n\titem := s.items[lastIndex]\n\ts.items = s.items[:lastIndex]\n\treturn item, true\n}\n\nfunc main() {\n\t// int 型のスタックをインスタンス化\n\tintStack := Stack[int]{}\n\n\tintStack.Push(10)\n\tintStack.Push(20)\n\tfmt.Printf(\"Push 後 Size: %d\\n\", len(intStack.items)) // (Size() メソッドは省略)\n\n\tval, ok := intStack.Pop()\n\tif ok { fmt.Printf(\"Pop: %d\\n\", val) } // 20\n}"
+    }
+  ]
+}
