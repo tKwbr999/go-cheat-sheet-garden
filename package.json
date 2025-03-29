@@ -9,7 +9,7 @@
     "build:dev": "npm run bundle-data && vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "bundle-data": "bun run scripts/bundle-cheatsheet-data.ts"
+    "bundle-data": "npm run scripts/bundle-cheatsheet-data.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
