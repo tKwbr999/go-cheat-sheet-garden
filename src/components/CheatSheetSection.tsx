@@ -27,7 +27,7 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
 
   // データ読み込み関数
   const loadData = useCallback(async () => {
-    if (hasLoaded || isLoading) return; // 既にロード済み or ロード中なら何もしない
+    if (isLoading) return; // ロード中なら何もしない
 
     setIsLoading(true);
     setError(null);
