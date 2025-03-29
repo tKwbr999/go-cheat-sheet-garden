@@ -51,7 +51,7 @@ interface ParsedFrontMatter {
 
 function parseFrontMatter(content: string): { data: ParsedFrontMatter; content: string } {
   const data: ParsedFrontMatter = {};
-  let markdownContent = content;
+  const markdownContent = content; // Use const as it's not reassigned
 
   // タイトルを抽出
   const titleMatch = content.match(/## タイトル\s*title:\s*(.+?)(?=\n|$)/);
@@ -107,7 +107,7 @@ function extractDescriptionAndCode(markdownContent: string): {
     description = descMatch[1].trim();
   }
 
-  return { description: description || undefined, code };
+  return { description, code }; // Removed redundant '|| undefined'
 }
 
 // Markdownファイルを解析し、データを構築する関数 (型チェックを追加)
