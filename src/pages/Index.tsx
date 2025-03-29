@@ -3,34 +3,27 @@ import Header from "@/components/Header";
 import CheatSheetSection from "@/components/CheatSheetSection";
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
-import { getCheatSheetData } from "@/data/cheatsheet-loader";
-import TableOfContents from "@/components/TableOfContents"; // Import TableOfContents
+// bundled-cheatsheet-data から直接インポート
+import bundledCheatSheetData from "@/data/bundled-cheatsheet-data";
+import TableOfContents from "@/components/TableOfContents";
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const cheatSheetData = getCheatSheetData();
+  // 全データを直接取得
+  const cheatSheetData = bundledCheatSheetData;
 
+  // スクロールボタンの表示制御
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      if (offset > 500) {
-        setShowScrollButton(true);
-      } else {
-        setShowScrollButton(false);
-      }
+      setShowScrollButton(offset > 500);
     };
-
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -39,24 +32,17 @@ const Index = () => {
 
       {/* Main content section with Table of Contents */}
       <section className="pt-32 pb-16">
-        {/* Use flex container for main content and TOC */}
         <div className="container mx-auto max-w-10xl flex gap-4">
-          {" "}
-          {/* Reduce gap from 8 to 4 */}
-          {/* Table of Contents Sidebar (Moved to the left) */}
-          <TableOfContents className="hidden lg:block" />{" "}
-          {/* Hide on smaller screens */}
+          {/* Table of Contents Sidebar */}
+          <TableOfContents className="hidden lg:block" />
           {/* Main Content Area */}
           <main className="flex-1">
-            {" "}
-            {/* Takes up remaining space */}
             <div className="mt-16">
-              {/* cheatSheetData をループ */}
+              {/* 全データを使ってセクションをレンダリング */}
               {cheatSheetData.map((sectionInfo) => (
                 <CheatSheetSection
-                  key={sectionInfo.id} // key は一意な id を使う
-                  title={sectionInfo.title}
-                  sectionId={sectionInfo.id}
+                  key={sectionInfo.id}
+                  sectionData={sectionInfo}
                 />
               ))}
             </div>
