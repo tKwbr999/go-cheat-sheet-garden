@@ -1,147 +1,91 @@
----
-title: "エラー処理: 結合されたエラーの検査 (Go 1.20+)"
+## タイトル
+title: エラー処理: 結合されたエラーの検査 (Go 1.20+)
+
+## タグ
 tags: ["error-handling", "error", "errors", "errors.Join", "errors.Is", "errors.As", "エラーラッピング", "Go1.20"]
----
 
-`errors.Join()` 関数を使うと複数のエラーを一つにまとめることができますが、呼び出し側では、その結合されたエラーの中にどのようなエラーが含まれているかを検査したい場合があります。
-
-## `errors.Is` と `errors.As` による検査
-
-`errors.Join` で結合されたエラーに対しても、**`errors.Is`** や **`errors.As`** を使うことができます。これらの関数は、結合されたエラーの内部に含まれる個々のエラー（エラーチェーン）を辿って、指定したエラー値や型を探してくれます。
-
-*   **`errors.Is(joinedErr, targetErr)`:** `joinedErr` の中に `targetErr` と同じエラー値が含まれていれば `true` を返します。
-*   **`errors.As(joinedErr, &targetVar)`:** `joinedErr` の中に `targetVar` の型に代入可能なエラーがあれば `true` を返し、`targetVar` にそのエラー値を設定します。最初に見つかったものが設定されます。
-
-## 個々のエラーへのアクセス (Go 1.20 時点)
-
-Go 1.20 の時点では、`errors.Join` で結合された個々のエラーを直接スライスなどとして取得するための標準的な関数（例えば `errors.Unwrap` の複数版のようなもの）は提供されていません。
-
-ただし、`errors.Join` が返すエラーの `Error()` メソッドは、結合された各エラーの `Error()` 結果を改行 (`\n`) で連結した文字列を返す仕様になっています。これを利用して、個々のエラーメッセージ文字列を取得することは可能です（ただし、これはあくまで文字列操作であり、元のエラー値そのものを取得するわけではありません）。
-
-## コード例
-
-```go title="結合されたエラーの検査"
+## コード
+```go
 package main
 
 import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
+	// "strings" // strings.Split を使う場合
 )
 
-// --- エラー定義 (再掲) ---
-var ErrValueRequired = errors.New("値が必要です")
-var ErrValueTooShort = errors.New("値が短すぎます")
-
-type ConfigError struct {
-	FileName string
-	Err      error
-}
-
-func (e *ConfigError) Error() string { return fmt.Sprintf("設定 '%s' 処理エラー: %v", e.FileName, e.Err) }
+// --- エラー定義やエラーを返す関数は省略 (前のセクション参照) ---
+var ErrValueRequired = errors.New("値が必要")
+var ErrValueTooShort = errors.New("短すぎ")
+type ConfigError struct { FileName string; Err error }
+func (e *ConfigError) Error() string { return fmt.Sprintf("設定 '%s': %v", e.FileName, e.Err) }
 func (e *ConfigError) Unwrap() error { return e.Err }
+func validateName(name string) error { if len(name) < 3 { return fmt.Errorf("名前 '%s': %w", name, ErrValueTooShort) }; return nil }
+func validateEmail(email string) error { if email == "" { return fmt.Errorf("メール: %w", ErrValueRequired) }; return nil }
+func loadConfigFile(filename string) error { _, err := os.Open(filename); if err != nil { return &ConfigError{filename, err} }; return nil }
+// --- ここまで省略 ---
 
-// --- エラーを返す関数 (再掲) ---
-func validateName(name string) error {
-	if name == "" { return fmt.Errorf("名前: %w", ErrValueRequired) }
-	if len(name) < 3 { return fmt.Errorf("名前 '%s': %w", name, ErrValueTooShort) }
-	return nil
-}
-func validateEmail(email string) error {
-	if email == "" { return fmt.Errorf("メール: %w", ErrValueRequired) }
-	if !strings.Contains(email, "@") { return fmt.Errorf("メール '%s': 無効な形式", email) }
-	return nil
-}
-func loadConfigFile(filename string) error {
-	// 存在しないファイルを指定してエラーを発生させる
-	_, err := os.Open(filename)
-	if err != nil {
-		// os.Open のエラーを ConfigError でラップ
-		return &ConfigError{FileName: filename, Err: err}
-	}
-	return nil
-}
 
 func main() {
-	// 複数の種類のエラーを結合
+	// 複数のエラーを結合 (例)
 	joinedErr := errors.Join(
-		validateName("Go"),             // ErrValueTooShort をラップしたエラー
-		validateEmail(""),              // ErrValueRequired をラップしたエラー
+		validateName("Go"),             // ErrValueTooShort をラップ
+		validateEmail(""),              // ErrValueRequired をラップ
 		loadConfigFile("config.txt"), // ConfigError (os.ErrNotExist をラップ)
 	)
 
 	if joinedErr != nil {
-		fmt.Println("--- 結合されたエラー ---")
-		fmt.Printf("Error():\n%v\n", joinedErr)
+		fmt.Printf("結合エラー:\n%v\n", joinedErr)
 
-		fmt.Println("\n--- errors.Is での検査 ---")
-		// 結合されたエラーの中に ErrValueTooShort が含まれているか？
-		if errors.Is(joinedErr, ErrValueTooShort) {
-			fmt.Println("-> ErrValueTooShort が含まれています。")
-		}
-		// 結合されたエラーの中に ErrValueRequired が含まれているか？
-		if errors.Is(joinedErr, ErrValueRequired) {
-			fmt.Println("-> ErrValueRequired が含まれています。")
-		}
-		// 結合されたエラーの中に os.ErrNotExist が含まれているか？ (ラップされている)
-		if errors.Is(joinedErr, os.ErrNotExist) {
-			fmt.Println("-> os.ErrNotExist が含まれています。")
-		}
+		// errors.Is で特定のエラー値が含まれるか検査
+		if errors.Is(joinedErr, ErrValueTooShort) { fmt.Println("-> 短すぎエラーあり") }
+		if errors.Is(joinedErr, os.ErrNotExist) { fmt.Println("-> ファイルなしエラーあり") }
 
-		fmt.Println("\n--- errors.As での検査 ---")
-		// 結合されたエラーの中に *ConfigError 型のエラーが含まれているか？
+		// errors.As で特定の型のエラーが含まれるか検査
 		var configErr *ConfigError
 		if errors.As(joinedErr, &configErr) {
-			// 見つかった場合、configErr にその値が設定される
-			fmt.Println("-> *ConfigError が含まれています。")
-			fmt.Printf("   ファイル名: %s\n", configErr.FileName)
-			// さらにラップされたエラーも確認できる
-			if configErr.Err != nil {
-				fmt.Printf("   ラップされたエラー: %v\n", configErr.Err)
-			}
-		} else {
-			fmt.Println("-> *ConfigError は含まれていません。")
+			fmt.Println("-> ConfigError あり (ファイル:", configErr.FileName, ")")
 		}
 
-		// --- 個々のエラーメッセージの取得 (参考) ---
-		fmt.Println("\n--- 個々のエラーメッセージ (Error() を分割) ---")
-		// Error() の結果を改行で分割して表示
-		for _, line := range strings.Split(joinedErr.Error(), "\n") {
-			fmt.Printf("  - %s\n", line)
-		}
+		// 個々のエラーメッセージ取得 (参考: Error() を分割)
+		// for _, line := range strings.Split(joinedErr.Error(), "\n") { ... }
 	}
 }
-
-/* 実行結果 (エラーメッセージの細部は環境による):
---- 結合されたエラー ---
-Error():
-名前 'Go': 値が短すぎます
-メール: 値が必要です
-設定 'config.txt' 処理エラー: open config.txt: no such file or directory
-
---- errors.Is での検査 ---
--> ErrValueTooShort が含まれています。
--> ErrValueRequired が含まれています。
--> os.ErrNotExist が含まれています。
-
---- errors.As での検査 ---
--> *ConfigError が含まれています。
-   ファイル名: config.txt
-   ラップされたエラー: open config.txt: no such file or directory
-
---- 個々のエラーメッセージ (Error() を分割) ---
-  - 名前 'Go': 値が短すぎます
-  - メール: 値が必要です
-  - 設定 'config.txt' 処理エラー: open config.txt: no such file or directory
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+`errors.Join()` で結合されたエラーの中に、どのようなエラーが
+含まれているかを検査したい場合があります。
 
-*   `joinedErr` には、`validateName`, `validateEmail`, `loadConfigFile` から返された3つのエラー（または `nil`）が `errors.Join` によって結合されています。
-*   `errors.Is(joinedErr, ErrValueTooShort)` や `errors.Is(joinedErr, ErrValueRequired)` は `true` を返します。これは `errors.Join` が内部のエラーチェーンを正しく辿ってくれるためです。`os.ErrNotExist` も `ConfigError` を経由してラップされているため、`errors.Is` で検出できます。
-*   `errors.As(joinedErr, &configErr)` も `true` を返し、`configErr` 変数に `joinedErr` 内に含まれる `*ConfigError` の値が設定されます。これにより、`configErr.FileName` のようなフィールドにアクセスできます。
-*   `strings.Split(joinedErr.Error(), "\n")` は、結合されたエラーの文字列表現を改行で分割し、個々のエラーメッセージ（の文字列）を取得する一つの方法を示しています。
+**`errors.Is` と `errors.As` による検査:**
+`errors.Join` で結合されたエラーに対しても、
+**`errors.Is`** や **`errors.As`** が利用できます。
+これらの関数は、結合されたエラーの内部に含まれる
+個々のエラー（エラーチェーン）を辿って、指定した
+エラー値や型を探してくれます。
 
-`errors.Join` でエラーを結合しても、`errors.Is` と `errors.As` を使えば、元のエラー情報に基づいて適切にエラーハンドリングを行うことができます。
+*   **`errors.Is(joinedErr, targetErr)`:**
+    `joinedErr` 内に `targetErr` と同じエラー値があれば `true`。
+*   **`errors.As(joinedErr, &targetVar)`:**
+    `joinedErr` 内に `targetVar` の型に代入可能なエラーがあれば
+    `true` を返し、`targetVar` にその値を設定。
+
+コード例では、`validateName`, `validateEmail`, `loadConfigFile` が
+返す可能性のある複数のエラーを `errors.Join` で結合しています。
+その後、`errors.Is` を使って `ErrValueTooShort` や `os.ErrNotExist`
+(ラップされている) が含まれるかを確認し、`errors.As` を使って
+`*ConfigError` 型のエラーが含まれるかを確認し、そのフィールドに
+アクセスしています。
+
+**個々のエラーへのアクセス:**
+Go 1.20 時点では、結合された個々のエラー値を直接スライス等で
+取得する標準関数はありません。
+`joinedErr.Error()` の結果（改行区切りの文字列）を
+`strings.Split()` で分割すれば個々のエラーメッセージ文字列は
+取得できますが、元のエラー値そのものではありません。
+
+`errors.Join` と `errors.Is`/`errors.As` を組み合わせることで、
+複数のエラーをまとめつつ、必要な詳細情報に基づいて
+エラーハンドリングを行うことができます。

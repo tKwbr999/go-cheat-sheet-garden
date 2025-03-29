@@ -1,18 +1,11 @@
----
-title: "エラー処理: カスタムエラー型の定義"
+## タイトル
+title: エラー処理: カスタムエラー型の定義
+
+## タグ
 tags: ["error-handling", "error", "struct", "interface", "カスタムエラー"]
----
 
-`errors.New` や `fmt.Errorf` は手軽に `error` 値を作成できますが、時にはエラーに関する**より多くの情報**（エラーコード、発生時刻、関連データなど）を保持させたい場合や、エラーの種類を**型**として区別したい場合があります。
-
-このような場合、**カスタムエラー型**を定義することができます。Goでは、`error` インターフェース（`Error() string` メソッドを持つ）を満たす任意の型をエラーとして扱えるため、通常は**構造体 (struct)** を使ってカスタムエラー型を定義します。
-
-## カスタムエラー型の定義方法
-
-1.  エラーに関する情報を保持するためのフィールドを持つ**構造体**を定義します。
-2.  その構造体（通常はポインタレシーバ `*MyError`）に対して **`Error() string` メソッドを実装**します。このメソッドは、構造体のフィールドを使って、人間が読める形式のエラーメッセージ文字列を返すようにします。
-
-```go title="カスタムエラー型の定義と実装"
+## コード
+```go
 package main
 
 import (
@@ -20,92 +13,77 @@ import (
 	"time"
 )
 
-// --- カスタムエラー型の定義 ---
-// OperationError: 操作に関するエラー情報を保持する構造体
+// カスタムエラー型 (構造体)
 type OperationError struct {
-	Timestamp time.Time // エラー発生時刻
-	Op        string    // 操作名
-	Code      int       // エラーコード
-	Message   string    // 詳細メッセージ
-	Err       error     // ラップされた元のエラー (オプション)
+	Timestamp time.Time
+	Op        string
+	Code      int
+	Message   string
+	Err       error // ラップされたエラー (オプション)
 }
 
-// --- Error() メソッドの実装 ---
-// *OperationError 型が error インターフェースを満たすようにする
+// Error() メソッドを実装し、error インターフェースを満たす
 func (e *OperationError) Error() string {
-	// 構造体のフィールドを使ってエラーメッセージを組み立てる
-	errMsg := fmt.Sprintf("[%s] 操作 '%s' でエラー (コード: %d): %s",
+	// フィールドを使って詳細なメッセージを生成
+	msg := fmt.Sprintf("[%s] Op:%s Code:%d Msg:%s",
 		e.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)
-	// もしラップされたエラーがあれば、それもメッセージに含める (例)
 	if e.Err != nil {
-		errMsg += fmt.Sprintf(" (原因: %v)", e.Err)
+		msg += fmt.Sprintf(" (Cause: %v)", e.Err)
 	}
-	return errMsg
+	return msg
 }
 
-// --- (オプション) Unwrap() メソッドの実装 ---
-// エラーラッピングをサポートする場合 (Go 1.13+)
-// errors.Is や errors.As でラップされたエラーを辿れるようにする
-func (e *OperationError) Unwrap() error {
-	return e.Err
-}
-
-// --- カスタムエラーを返す可能性のある関数 (例) ---
-func performComplexOperation(action string, fail bool) error {
-	if fail {
-		// カスタムエラー型のインスタンスを作成して返す
-		// (通常はポインタを返す)
-		return &OperationError{
-			Timestamp: time.Now(),
-			Op:        action,
-			Code:      501,
-			Message:   "予期せぬ問題が発生しました",
-			Err:       nil, // 今回はラップするエラーはない
-		}
-	}
-	fmt.Printf("操作 '%s' は成功しました。\n", action)
-	return nil // 成功時は nil
-}
+// (Unwrap() error メソッドを実装するとエラーラッピングをサポート)
 
 func main() {
-	// --- カスタムエラーを受け取る ---
-	err := performComplexOperation("データ更新", true) // エラーを発生させる
+	// カスタムエラーを生成 (例)
+	err := &OperationError{
+		Timestamp: time.Now(), Op: "Update", Code: 501, Message: "Failed",
+	}
 
 	if err != nil {
-		fmt.Println("--- エラー情報 ---")
-		// err.Error() で実装した Error() メソッドが呼ばれる
-		fmt.Println(err)
-
-		// 型アサーションや errors.As で具体的なエラー情報にアクセスできる (後述)
-		fmt.Printf("エラーの具体的な型: %T\n", err) // *main.OperationError
-		// if opErr, ok := err.(*OperationError); ok {
-		// 	fmt.Println("エラーコード:", opErr.Code)
-		// 	fmt.Println("発生時刻:", opErr.Timestamp)
-		// }
-	} else {
-		fmt.Println("操作は正常に完了しました。")
+		fmt.Println("エラー:", err) // 実装した Error() が呼ばれる
+		fmt.Printf("型: %T\n", err) // *main.OperationError
+		// if opErr, ok := err.(*OperationError); ok { /* フィールドアクセス */ }
 	}
 }
 
-/* 実行結果 (時刻は実行時に依存):
---- エラー情報 ---
-[2025-03-28T17:18:00+09:00] 操作 'データ更新' でエラー (コード: 501): 予期せぬ問題が発生しました
-エラーの具体的な型: *main.OperationError
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+`errors.New` や `fmt.Errorf` では不十分な、
+より詳細なエラー情報（エラーコード、発生時刻など）を
+保持したり、エラーの種類を**型**として区別したい場合は、
+**カスタムエラー型**を定義します。
 
-*   `OperationError` 構造体は、エラーに関する複数の情報（時刻、操作名、コード、メッセージ、ラップされたエラー）を保持するためのフィールドを定義しています。
-*   `func (e *OperationError) Error() string`: `*OperationError` 型に対して `Error()` メソッドを実装しています。これにより `*OperationError` は `error` インターフェースを満たします。メソッド内では、構造体のフィールドを使って詳細なエラーメッセージを生成しています。
-*   `func (e *OperationError) Unwrap() error`: (オプション) エラーラッピングをサポートするための `Unwrap()` メソッドを実装しています。これにより、`errors.Is` や `errors.As` が `e.Err` フィールドにラップされたエラーを辿れるようになります。
-*   `performComplexOperation` 関数は、失敗した場合に `&OperationError{...}` という `*OperationError` 型の値を `error` として返します。
-*   `main` 関数では、返された `error` 値の `Error()` メソッドを呼び出してメッセージを表示し、`%T` でその具体的な型が `*main.OperationError` であることを確認しています。
+通常は**構造体 (struct)** を使い、`error` インターフェースを
+満たすようにします。
 
-## カスタムエラー型の利点
+**定義方法:**
+1. エラー情報を保持するフィールドを持つ**構造体**を定義する。
+   (例: `OperationError` 構造体)
+2. その構造体（通常はポインタレシーバ `*MyError`）に対して
+   **`Error() string` メソッドを実装**する。
+   このメソッド内で、構造体のフィールドを使って
+   人間が読めるエラーメッセージ文字列を生成して返す。
 
-*   **豊富な情報:** 単なる文字列メッセージだけでなく、エラーコード、発生時刻、関連データなど、エラーに関する構造化された情報を保持できます。
-*   **型の区別:** エラーの種類を型として区別できます。呼び出し側は、型アサーションや `errors.As` を使って特定のエラー型を判別し、その型特有の情報に基づいてより詳細なエラーハンドリングを行うことができます。
-*   **エラーラッピング:** `Unwrap()` メソッドを実装することで、エラーの原因を追跡しやすくすることができます。
+コード例では `OperationError` 構造体を定義し、
+`Error()` メソッドを実装しています。これにより
+`*OperationError` は `error` インターフェースを満たします。
 
-`errors.New` や `fmt.Errorf` では表現しきれない、より詳細なエラー情報を扱いたい場合に、カスタムエラー型を定義することは非常に有効な手段です。
+**(オプション) エラーラッピング:**
+Go 1.13以降、`Unwrap() error` メソッドを実装すると、
+`errors.Is` や `errors.As` がラップされたエラー (`Err` フィールド等) を
+辿れるようになります。
+```go
+func (e *OperationError) Unwrap() error { return e.Err }
+```
+
+**利点:**
+*   **豊富な情報:** エラーコード、時刻、関連データ等を構造化して保持できる。
+*   **型の区別:** 型アサーションや `errors.As` (後述) で
+    特定のエラー型を判別し、型固有の情報に基づいた処理が可能。
+*   **エラーラッピング:** `Unwrap()` 実装で原因追跡が容易に。
+
+詳細なエラー情報を扱いたい場合にカスタムエラー型は有効です。

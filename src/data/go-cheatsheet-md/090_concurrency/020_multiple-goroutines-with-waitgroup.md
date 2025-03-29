@@ -1,28 +1,11 @@
----
-title: "並行処理: 複数の Goroutine と WaitGroup"
+## タイトル
+title: 並行処理: 複数の Goroutine と WaitGroup
+
+## タグ
 tags: ["concurrency", "goroutine", "sync", "WaitGroup", "同期", "ループ", "クロージャ"]
----
 
-`sync.WaitGroup` は、**複数**の Goroutine の完了を待ち合わせるために使われます。`for` ループを使って複数の Goroutine を起動し、それらすべての終了を待つのは一般的なパターンです。
-
-## ループでの `WaitGroup` の使い方
-
-1.  `WaitGroup` 変数を宣言します (`var wg sync.WaitGroup`)。
-2.  `for` ループの**前**に、起動する Goroutine の総数を `wg.Add(総数)` でカウンターに設定します。
-    *   または、ループの**各反復の開始時**に `wg.Add(1)` を呼び出すこともできます（ただし、`go` キーワードで Goroutine を起動する**前**に呼び出す必要があります）。
-3.  ループ内で Goroutine を `go` キーワードで起動します。
-4.  起動される Goroutine の関数内で、**最初に `defer wg.Done()`** を記述します。
-5.  ループが終了した後（すべての Goroutine が起動された後）、`wg.Wait()` を呼び出して、すべての Goroutine が `Done()` を呼び出すのを待ちます。
-
-## ループ変数とクロージャの注意点 (再確認)
-
-`for` ループ内で Goroutine を起動し、その Goroutine がループ変数（例: `for i := ...` の `i`）を利用する場合、注意が必要です。Goroutine 内の関数リテラル（クロージャ）は、ループ変数そのものへの参照をキャプチャするため、Goroutine が実際に実行される時点ではループ変数の値が変わってしまっている可能性があります（通常はループ終了後の最後の値）。
-
-これを避けるためには、**ループの各反復でループ変数の値をコピーした新しい変数を作成**するか、**ループ変数の値を Goroutine に引数として渡す**必要があります。
-
-## コード例
-
-```go title="ループで複数の Goroutine を起動し WaitGroup で待つ"
+## コード
+```go
 package main
 
 import (
@@ -31,87 +14,66 @@ import (
 	"time"
 )
 
-func worker(id int, wg *sync.WaitGroup) {
-	// この Goroutine が終了する際にカウンターを減らす
-	defer wg.Done()
-
-	fmt.Printf("ワーカー %d: 開始\n", id)
-	// 処理をシミュレート
-	time.Sleep(time.Duration(id) * 50 * time.Millisecond)
-	fmt.Printf("ワーカー %d: 終了\n", id)
-}
-
 func main() {
 	var wg sync.WaitGroup
 	numWorkers := 5
 
-	fmt.Printf("%d 個のワーカーを起動します...\n", numWorkers)
+	fmt.Printf("%d 個のワーカー起動...\n", numWorkers)
 
-	// 方法1: ループ前に Add する
-	// wg.Add(numWorkers)
-	// for i := 1; i <= numWorkers; i++ {
-	// 	go worker(i, &wg) // worker 関数に i の値と wg のポインタを渡す
-	// }
-
-	// 方法2: ループ内で Add し、ループ変数を引数で渡す
+	// ループで複数の Goroutine を起動
 	for i := 1; i <= numWorkers; i++ {
-		wg.Add(1) // Goroutine を起動する直前にカウンターを増やす
-		// go func() { ... }() で無名関数を Goroutine として起動
-		go func(workerID int) { // ★ ループ変数 i の値を引数 workerID で受け取る
-			defer wg.Done() // この Goroutine 終了時にカウンターを減らす
+		wg.Add(1) // Goroutine 起動前にカウンターを増やす
+		// ループ変数 i を Goroutine に引数として渡す
+		go func(workerID int) {
+			defer wg.Done() // Goroutine 完了時にカウンターを減らす
 
-			fmt.Printf("ワーカー %d: 開始\n", workerID)
+			fmt.Printf("Worker %d: Start\n", workerID)
 			time.Sleep(time.Duration(workerID) * 50 * time.Millisecond)
-			fmt.Printf("ワーカー %d: 終了\n", workerID)
-		}(i) // ★ ループの現在の i の値を引数として渡す
+			fmt.Printf("Worker %d: End\n", workerID)
+		}(i) // ★ 現在の i の値を引数として渡す
 	}
 
-	// 方法3: ループ内で Add し、ループ変数のコピーをクロージャで使う (Go 1.22 より前のイディオム)
-	// for i := 1; i <= numWorkers; i++ {
-	// 	wg.Add(1)
-	// 	i := i // ★ ループの各反復で新しい変数 i を作成し、現在の値をコピー
-	// 	go func() {
-	// 		defer wg.Done()
-	// 		fmt.Printf("ワーカー %d: 開始\n", i) // クロージャはこの内側の i をキャプチャ
-	// 		time.Sleep(time.Duration(i) * 50 * time.Millisecond)
-	// 		fmt.Printf("ワーカー %d: 終了\n", i)
-	// 	}()
-	// }
-
-	fmt.Println("すべてのワーカーの終了を待機します...")
+	fmt.Println("全ワーカーの終了待機...")
 	wg.Wait() // カウンターが 0 になるまで待つ
 
-	fmt.Println("すべてのワーカーが終了しました。")
+	fmt.Println("全ワーカー終了")
 }
 
-/* 実行結果の例 (Goroutine の実行順序により多少前後する可能性あり):
-5 個のワーカーを起動します...
-すべてのワーカーの終了を待機します...
-ワーカー 1: 開始
-ワーカー 2: 開始
-ワーカー 3: 開始
-ワーカー 4: 開始
-ワーカー 5: 開始
-ワーカー 1: 終了
-ワーカー 2: 終了
-ワーカー 3: 終了
-ワーカー 4: 終了
-ワーカー 5: 終了
-すべてのワーカーが終了しました。
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+`sync.WaitGroup` は**複数**の Goroutine の完了待ちに使われます。
+`for` ループで複数の Goroutine を起動し、待つのが一般的です。
 
-*   この例では「方法2」を採用しています。
-*   `for i := 1; i <= numWorkers; i++`: 5回のループを実行します。
-*   `wg.Add(1)`: ループの各反復で、これから起動する Goroutine のためにカウンターを 1 増やします。
-*   `go func(workerID int) { ... }(i)`:
-    *   無名関数を定義し、`go` で Goroutine として起動します。
-    *   この無名関数は `workerID int` という引数を取ります。
-    *   起動時に、ループ変数 `i` の**現在の値**を、この無名関数の引数 `workerID` に**コピーして渡して**います。
-    *   Goroutine 内では、ループ変数 `i` ではなく、引数として受け取った `workerID` を使います。これにより、各 Goroutine は起動された時点での正しい `i` の値 (1, 2, 3, 4, 5) を使うことができます。
-    *   `defer wg.Done()`: Goroutine の処理が完了したらカウンターを減らします。
-*   `wg.Wait()`: すべての Goroutine が `Done()` を呼び出し、カウンターが 0 になるまで待ちます。
+**ループでの使い方:**
+1. `var wg sync.WaitGroup` で宣言。
+2. ループ**前**に `wg.Add(総数)` で設定、
+   またはループ**内**で Goroutine 起動**前**に `wg.Add(1)`。
+3. ループ内で `go` で Goroutine を起動。
+4. Goroutine 関数内で**最初に `defer wg.Done()`**。
+5. ループ終了後、`wg.Wait()` で待機。
 
-`sync.WaitGroup` は、複数の並行タスクを実行し、それらすべての完了を待つという一般的なシナリオで非常に役立ちます。ループ内で Goroutine を起動する際は、ループ変数の扱いに注意しましょう。
+**ループ変数とクロージャの注意点:**
+`for` ループ内で Goroutine を起動し、ループ変数 (例: `i`) を
+Goroutine 内の無名関数 (クロージャ) で使う場合、注意が必要です。
+クロージャはループ変数自体への参照をキャプチャするため、
+Goroutine 実行時にはループ変数の値が変わっている可能性があります。
+
+**対策:**
+*   **引数で渡す (コード例の方法):**
+    `go func(id int){ ... }(i)` のように、Goroutine に
+    ループ変数の**現在の値**を引数として渡します。
+    Goroutine 内ではその引数を使います。
+*   **変数をコピー (Go 1.22 より前のイディオム):**
+    ループ内で `i := i` のように新しい変数を作成し、
+    現在の値をコピーします。クロージャはその内側の変数を
+    キャプチャします。
+
+コード例では、ループ内で `wg.Add(1)` し、無名関数 Goroutine に
+ループ変数 `i` の値を引数 `workerID` として渡しています。
+これにより、各 Goroutine は正しい ID で動作します。
+最後に `wg.Wait()` で全 Goroutine の完了を待ちます。
+
+`WaitGroup` は複数の並行タスク完了待ちに非常に役立ちます。
+ループ変数には注意しましょう。

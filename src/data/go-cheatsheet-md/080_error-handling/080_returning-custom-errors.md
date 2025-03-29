@@ -1,21 +1,11 @@
----
-title: "エラー処理: カスタムエラーを返す"
+## タイトル
+title: エラー処理: カスタムエラーを返す
+
+## タグ
 tags: ["error-handling", "error", "struct", "interface", "カスタムエラー", "return"]
----
 
-前のセクションで定義したようなカスタムエラー型は、通常の `error` 値と同様に関数の戻り値として使うことができます。
-
-カスタムエラー型の定義と `Error()` メソッドの実装については、**「カスタムエラー型の定義」** (`080_error-handling/070_defining-custom-error-types.md`) を参照してください。
-
-## カスタムエラーを返す際のポイント
-
-*   **`error` インターフェースとして返す:** 関数の戻り値の型は、具体的なカスタムエラー型（例: `*MyError`）ではなく、`error` インターフェースとして宣言するのが一般的です。これにより、呼び出し側は具体的な実装の詳細を知る必要がなくなります。
-*   **ポインタで返す:** カスタムエラーを構造体で定義した場合、通常はその**ポインタ** (`*MyError`) を `error` として返します。
-    *   これは、エラー値が `nil` かどうかを正しく判定できるようにするためです（`nil` ポインタを `error` として返すと、インターフェースとしては `nil` ではないが、値は `nil` という状態になるため、通常は避けるべきです。エラーがない場合は明示的に `nil` を返します）。
-    *   また、大きな構造体の場合にコピーコストを避ける意味合いもあります。
-*   **成功時は `nil` を返す:** エラーが発生しなかった場合は、`error` 型のゼロ値である `nil` を返します。
-
-```go title="カスタムエラーを返す関数の例"
+## コード
+```go
 package main
 
 import (
@@ -23,63 +13,70 @@ import (
 	"time"
 )
 
-// --- カスタムエラー型 (再掲) ---
+// カスタムエラー型 (前のセクションで定義)
 type OperationError struct {
-	Timestamp time.Time
-	Op        string
-	Code      int
-	Message   string
+	Timestamp time.Time; Op string; Code int; Message string
 }
-
-func (e *OperationError) Error() string {
-	return fmt.Sprintf("[%s] 操作 '%s' でエラー (コード: %d): %s",
+func (e *OperationError) Error() string { /* ... 実装 ... */
+	return fmt.Sprintf("[%s] Op:%s Code:%d Msg:%s",
 		e.Timestamp.Format(time.RFC3339), e.Op, e.Code, e.Message)
 }
 
-// --- カスタムエラーを返す関数 ---
-func performAction(action string, shouldFail bool) error { // 戻り値は error インターフェース
-	fmt.Printf("アクション '%s' を実行中...\n", action)
+
+// カスタムエラーを返す関数
+func performAction(action string, shouldFail bool) error { // 戻り値は error
+	fmt.Printf("アクション '%s' 実行...\n", action)
 	if shouldFail {
-		// 失敗した場合、*OperationError を error として返す
+		// 失敗時: *OperationError を error として返す
 		return &OperationError{
-			Timestamp: time.Now(),
-			Op:        action,
-			Code:      400,
-			Message:   "無効な入力です",
+			Timestamp: time.Now(), Op: action, Code: 400, Message: "無効な入力",
 		}
 	}
-	// 成功した場合は nil を返す
+	// 成功時: nil を返す
 	return nil
 }
 
 func main() {
-	// --- 呼び出しとエラーチェック ---
-	err1 := performAction("ユーザー登録", false) // 成功ケース
-	if err1 != nil {
-		fmt.Println("エラー:", err1)
-	} else {
-		fmt.Println("-> 成功")
-	}
+	// 成功ケース
+	err1 := performAction("登録", false)
+	if err1 == nil { fmt.Println("-> 成功") }
 
-	fmt.Println("---")
-
-	err2 := performAction("データ削除", true) // 失敗ケース
+	// 失敗ケース
+	err2 := performAction("削除", true)
 	if err2 != nil {
-		fmt.Println("エラー:", err2) // 実装した Error() メソッドが呼ばれる
-		fmt.Printf("エラーの型: %T\n", err2) // *main.OperationError
-	} else {
-		fmt.Println("-> 成功")
+		fmt.Println("エラー:", err2) // 実装した Error() が呼ばれる
+		fmt.Printf("型: %T\n", err2) // *main.OperationError
 	}
 }
 
-/* 実行結果 (時刻は実行時に依存):
-アクション 'ユーザー登録' を実行中...
--> 成功
----
-アクション 'データ削除' を実行中...
-エラー: [2025-03-28T17:19:00+09:00] 操作 'データ削除' でエラー (コード: 400): 無効な入力です
-エラーの型: *main.OperationError
-*/
 ```
 
-カスタムエラー型を使うことで、より詳細なエラー情報を呼び出し元に伝えることができます。呼び出し側では、次のセクションで説明する型アサーションや `errors.As` を使って、エラーが特定のカスタムエラー型であるかを確認し、追加情報にアクセスすることができます。
+## 解説
+```text
+カスタムエラー型 (例: `OperationError`) を定義したら、
+通常の `error` 値と同様に関数の戻り値として使えます。
+
+**カスタムエラーを返す際のポイント:**
+*   **戻り値は `error`:** 関数の戻り値の型は、具体的な
+    カスタムエラー型 (`*OperationError`) ではなく、
+    `error` インターフェースとして宣言するのが一般的です。
+    これにより呼び出し側は実装の詳細に依存せずに済みます。
+*   **ポインタで返す:** 構造体で定義したカスタムエラーは、
+    通常はその**ポインタ** (`&OperationError{...}`) を
+    `error` として返します。
+    (大きな構造体のコピーコスト回避や、`nil` 判定のため)
+*   **成功時は `nil`:** エラーがない場合は `nil` を返します。
+    (具体的な型の `nil` ポインタではなく、明示的に `nil` を返す)
+
+コード例の `performAction` 関数は、失敗時に
+`*OperationError` 型の値を `error` インターフェースとして
+返しています。成功時は `nil` を返します。
+
+呼び出し側 (`main`) では、他のエラーと同様に
+`if err != nil` でチェックし、`err.Error()` で
+カスタムエラー型で実装された `Error()` メソッドの結果
+(詳細なエラーメッセージ) を取得できます。
+
+次のセクションでは、型アサーションや `errors.As` を使って、
+受け取った `error` が特定のカスタムエラー型かを確認し、
+そのフィールドにアクセスする方法を見ます。

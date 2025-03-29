@@ -1,20 +1,11 @@
----
-title: "Context パッケージ: Context の受け渡し規約"
+## タイトル
+title: Context パッケージ: Context の受け渡し規約
+
+## タグ
 tags: ["context", "concurrency", "規約", "関数シグネチャ", "第一引数"]
----
 
-Goのコミュニティでは、`context.Context` を関数間で受け渡しする際に、広く受け入れられている**規約 (Convention)** があります。
-
-この規約については、**「並行処理」**セクションの**「Context を使ったキャンセル処理 (`ctx.Done()`, `ctx.Err()`)」** (`090_concurrency/210_using-context-in-functions-checking-done.md`) でも触れました。
-
-## 規約: 第一引数として `ctx context.Context` を渡す
-
-*   ブロッキングする可能性のある関数、外部リソース（ネットワーク、データベースなど）にアクセスする関数、あるいはリクエスト処理の一部として呼び出される関数は、**第一引数**として `ctx context.Context` を受け取るべきです。
-*   引数名は `ctx` とするのが一般的です。
-*   `Context` は**決して `nil` であってはなりません**。もしどの Context を使うべきか不明な場合は、`context.TODO()` を使いますが、これは一時的な措置であるべきです。
-*   `Context` を構造体のフィールドとして**埋め込むべきではありません**。明示的に引数として渡すべきです。
-
-```go title="Context を第一引数として渡す例"
+## コード
+```go
 package main
 
 import (
@@ -23,75 +14,65 @@ import (
 	"time"
 )
 
-// データベースクエリを模倣する関数
-// ★ 第一引数として ctx を受け取る ★
+// 下位関数: Context を受け取りキャンセルをチェック
 func queryDatabase(ctx context.Context, query string) (string, error) {
-	fmt.Printf("データベースクエリ '%s' を実行中...\n", query)
-
-	// Context のキャンセルをチェックしながら処理を行う (select を使う)
+	fmt.Printf(" DB Query: '%s'\n", query)
 	select {
-	case <-time.After(100 * time.Millisecond): // クエリに時間がかかると仮定
-		fmt.Printf("クエリ '%s' 成功\n", query)
-		return "結果データ", nil
-	case <-ctx.Done(): // ★ Context がキャンセルされたかチェック
-		fmt.Printf("クエリ '%s' はキャンセルされました: %v\n", query, ctx.Err())
-		return "", ctx.Err() // キャンセル理由を返す
+	case <-time.After(100 * time.Millisecond): // 処理模倣
+		fmt.Printf(" Query OK: '%s'\n", query)
+		return "data", nil
+	case <-ctx.Done(): // ★ キャンセルチェック
+		fmt.Printf(" Query Cancelled: '%s' (%v)\n", query, ctx.Err())
+		return "", ctx.Err()
 	}
 }
 
-// 上位の処理関数も Context を受け取り、下位の関数に渡す
+// 上位関数: Context を受け取り下位関数に渡す
 func handleRequest(ctx context.Context, requestData string) error {
-	fmt.Println("リクエスト処理開始")
-	// ... 何らかの前処理 ...
-
-	// 下位の関数に Context をそのまま渡す
-	result, err := queryDatabase(ctx, fmt.Sprintf("SELECT data FROM table WHERE id='%s'", requestData))
+	fmt.Println("Request Handling Start")
+	// ★ 下位関数に ctx をそのまま渡す
+	result, err := queryDatabase(ctx, "find:"+requestData)
 	if err != nil {
-		// エラーをラップして返す
-		return fmt.Errorf("リクエスト処理失敗: %w", err)
+		return fmt.Errorf("request failed: %w", err)
 	}
-
-	fmt.Printf("取得結果: %s\n", result)
-	fmt.Println("リクエスト処理完了")
+	fmt.Printf("Result: %s\n", result)
 	return nil
 }
 
-func main() {
-	// ルート Context を作成
-	rootCtx := context.Background()
+// main (呼び出し元)
+// func main() {
+// 	ctx := context.Background()
+// 	ctxTimeout, cancel := context.WithTimeout(ctx, 50*time.Millisecond)
+// 	defer cancel()
+// 	handleRequest(ctxTimeout, "some-data") // Context を渡す
+// }
 
-	// タイムアウト付きの Context を作成
-	ctxWithTimeout, cancel := context.WithTimeout(rootCtx, 50*time.Millisecond) // 50ms でタイムアウト
-	defer cancel()
-
-	fmt.Println("--- タイムアウトするケース ---")
-	err1 := handleRequest(ctxWithTimeout, "data1") // タイムアウトするはず
-	if err1 != nil {
-		fmt.Println("エラー:", err1)
-	}
-
-	fmt.Println("\n--- 成功するケース ---")
-	// タイムアウトしない Context (Background をそのまま使う)
-	err2 := handleRequest(rootCtx, "data2") // 成功するはず
-	if err2 != nil {
-		fmt.Println("エラー:", err2)
-	}
-}
-
-/* 実行結果:
---- タイムアウトするケース ---
-リクエスト処理開始
-データベースクエリ 'SELECT data FROM table WHERE id='data1'' を実行中...
-クエリ 'SELECT data FROM table WHERE id='data1'' はキャンセルされました: context deadline exceeded
-エラー: リクエスト処理失敗: クエリ 'SELECT data FROM table WHERE id='data1'' はキャンセルされました: context deadline exceeded
-
---- 成功するケース ---
-リクエスト処理開始
-データベースクエリ 'SELECT data FROM table WHERE id='data2'' を実行中...
-クエリ 'SELECT data FROM table WHERE id='data2'' 成功
-取得結果: 結果データ
-リクエスト処理完了
-*/
 ```
 
-この規約に従うことで、Goのプログラム全体でキャンセルシグナルやデッドライン、リクエストスコープの値が一貫した方法で伝達されるようになり、コードの可読性や保守性が向上します。標準ライブラリや多くのサードパーティライブラリもこの規約に従っています。
+## 解説
+```text
+`context.Context` を関数間で受け渡す際の**規約 (Convention)**:
+
+**規約: 第一引数として `ctx context.Context` を渡す**
+*   ブロッキング可能性のある関数、外部リソースアクセス関数、
+    リクエスト処理の一部となる関数は、**第一引数**として
+    `ctx context.Context` を受け取るべき。
+*   引数名は慣習的に `ctx`。
+*   `ctx` は**決して `nil` であってはならない**。
+    不明な場合は一時的に `context.TODO()` を使うが、
+    最終的には適切な Context に置き換えるべき。
+*   `Context` を**構造体のフィールドに埋め込むべきではない**。
+    必ず引数として明示的に渡す。
+
+コード例:
+*   `queryDatabase` 関数は第一引数に `ctx` を受け取り、
+    `select` で `ctx.Done()` をチェックしています。
+*   `handleRequest` 関数も第一引数に `ctx` を受け取り、
+    それをそのまま `queryDatabase` に渡しています。
+*   呼び出し元 (`main` など) は、`context.Background()` や
+    `context.WithTimeout` などで生成した Context を
+    `handleRequest` の第一引数に渡します。
+
+この規約に従うことで、キャンセルシグナルやデッドライン等が
+プログラム全体で一貫して伝達され、コードの可読性・保守性が向上します。
+標準ライブラリや多くのサードパーティライブラリもこの規約に従っています。

@@ -1,15 +1,11 @@
----
-title: "インターフェース: 型スイッチ (Type Switch)"
+## タイトル
+title: インターフェース: 型スイッチ (Type Switch)
+
+## タグ
 tags: ["interfaces", "interface", "型スイッチ", "type switch", "switch"]
----
 
-インターフェース変数に格納されている値の**具体的な型**に基づいて処理を分岐させたい場合、**型スイッチ (Type Switch)** を使います。これは `switch` 文の特殊な形式です。
-
-型スイッチの詳しい構文と使い方は、**「制御構文」**セクションの**「型スイッチ (Type Switch)」**の項目 (`020_flow-control/150_type-switch.md`) を参照してください。
-
-ここでは、`Shape` インターフェースの例を使って簡単に示します。
-
-```go title="型スイッチの例 (Shape インターフェース)"
+## コード
+```go
 package main
 
 import (
@@ -17,50 +13,77 @@ import (
 	"math"
 )
 
-// --- インターフェースと型の定義 (再掲) ---
-type Shape interface {
-	Area() float64
-}
-type Rectangle struct { Width, Height float64 }
+type Shape interface{ Area() float64 }
+type Rectangle struct{ Width, Height float64 }
 func (r Rectangle) Area() float64 { return r.Width * r.Height }
-type Circle struct { Radius float64 }
+type Circle struct{ Radius float64 }
 func (c Circle) Area() float64 { return math.Pi * c.Radius * c.Radius }
 
-// --- 型スイッチを使う関数 ---
+// 型スイッチを使う関数
 func describeShape(s Shape) {
 	fmt.Printf("入力: %v, ", s)
-	switch v := s.(type) { // s の具体的な型をチェック
+	switch v := s.(type) { // 型スイッチ構文
 	case Rectangle:
-		// v は Rectangle 型として扱える
-		fmt.Printf("これは長方形です。幅=%.1f, 高さ=%.1f, 面積=%.2f\n", v.Width, v.Height, v.Area())
+		// v は Rectangle 型
+		fmt.Printf("長方形 (W:%.1f, H:%.1f), 面積:%.2f\n", v.Width, v.Height, v.Area())
 	case Circle:
-		// v は Circle 型として扱える
-		fmt.Printf("これは円です。半径=%.1f, 面積=%.2f\n", v.Radius, v.Area())
+		// v は Circle 型
+		fmt.Printf("円 (R:%.1f), 面積:%.2f\n", v.Radius, v.Area())
 	case nil:
-		fmt.Println("これは nil です。")
+		fmt.Println("nil")
 	default:
 		// v は元の Shape 型
-		fmt.Printf("これは未知の図形です (%T)。面積=%.2f\n", v, v.Area())
+		fmt.Printf("未知の図形 (%T), 面積:%.2f\n", v, v.Area())
 	}
 }
 
 func main() {
-	var s Shape // nil インターフェース
+	var s Shape // nil
+	describeShape(s)
 
-	describeShape(s) // nil のケース
+	s = Rectangle{5, 4}
+	describeShape(s)
 
-	s = Rectangle{Width: 5, Height: 4}
-	describeShape(s) // Rectangle のケース
-
-	s = Circle{Radius: 2.5}
-	describeShape(s) // Circle のケース
+	s = Circle{2.5}
+	describeShape(s)
 }
 
-/* 実行結果:
-入力: <nil>, これは nil です。
-入力: {5 4}, これは長方形です。幅=5.0, 高さ=4.0, 面積=20.00
-入力: {2.5}, これは円です。半径=2.5, 面積=19.63
-*/
 ```
 
-型スイッチは、インターフェース変数に格納された値の型に応じて異なる処理を行いたい場合に非常に便利な構文です。
+## 解説
+```text
+インターフェース変数に格納された値の**具体的な型**に
+基づいて処理を分岐させたい場合、**型スイッチ**を使います。
+これは `switch` 文の特殊な形式です。
+
+**構文:**
+```go
+switch 変数 := インターフェース変数.(type) {
+case 型1:
+    // 変数 は 型1 として使える
+case 型2:
+    // 変数 は 型2 として使える
+case nil:
+    // インターフェース変数が nil の場合
+default:
+    // どの型にも一致しない場合
+    // 変数 は元のインターフェース型
+}
+```
+*   `インターフェース変数.(type)`: 型スイッチを示す特別な構文。
+    `switch` の初期化ステートメントでのみ使用可。
+*   `変数`: 各 `case` ブロック内で、判別された具体的な型の
+    値を受け取る変数。
+*   `case 型1:`: 値の型が `型1` かチェック。一致すれば
+    このブロックが実行され、`変数` は `型1` として扱える。
+*   `case nil:`: `nil` かチェック。
+*   `default:`: どの型にも一致しない場合。
+
+コード例の `describeShape` 関数では、引数 `s` ( `Shape` 型) の
+具体的な型を `switch v := s.(type)` で判別しています。
+`case Rectangle:` ブロック内では `v` は `Rectangle` 型として、
+`case Circle:` ブロック内では `v` は `Circle` 型として
+それぞれのフィールド (`v.Width`, `v.Radius`) にアクセスできます。
+
+型スイッチは、インターフェース変数の具体的な型に応じて
+異なる処理を行うための便利な構文です。

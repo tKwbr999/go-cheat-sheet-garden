@@ -1,130 +1,92 @@
----
-title: "I/O 操作: ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)"
+## タイトル
+title: I/O 操作: ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)
+
+## タグ
 tags: ["io-operations", "os", "filepath", "WalkDir", "WalkDirFunc", "fs", "DirEntry", "ディレクトリ探索", "再帰", "Go1.16"]
----
 
-指定したディレクトリとその**すべてのサブディレクトリ**に含まれるファイルやディレクトリを**再帰的に**処理したい場合、Go 1.16 で導入された **`filepath.WalkDir`** 関数を使うのが効率的で推奨される方法です。（それ以前は `filepath.Walk` が使われていましたが、`WalkDir` は `fs.DirEntry` を使うため、不要な `os.Stat` 呼び出しを避けられる利点があります。）
-
-`import "path/filepath"` と `import "io/fs"` (コールバック関数の型定義のため) として利用します。
-
-## `filepath.WalkDir()` の使い方
-
-`filepath.WalkDir()` は、指定されたルートディレクトリ `root` から開始し、ディレクトリツリーを**深さ優先**で探索します。見つかった各ファイルまたはディレクトリに対して、指定されたコールバック関数 `fn` を呼び出します。
-
-**構文:** `err := filepath.WalkDir(root string, fn fs.WalkDirFunc)`
-
-*   `root`: 探索を開始するルートディレクトリのパス (`string`)。
-*   `fn`: 各エントリに対して呼び出されるコールバック関数 (`fs.WalkDirFunc` 型)。
-*   戻り値 `err`: 探索中にコールバック関数 `fn` が `nil` 以外のエラーを返した場合、または探索自体でエラーが発生した場合に、そのエラーを返します。正常に完了した場合は `nil` を返します。
-
-## コールバック関数 `fs.WalkDirFunc`
-
-コールバック関数 `fn` は以下のシグネチャを持ちます。
-
-**シグネチャ:** `type WalkDirFunc func(path string, d fs.DirEntry, err error) error`
-
-*   `path`: 現在処理中のファイルまたはディレクトリのフルパス (`string`)。
-*   `d`: 現在処理中のエントリの情報 (`fs.DirEntry` インターフェース)。`d.Name()`, `d.IsDir()`, `d.Type()`, `d.Info()` などのメソッドを使えます。
-*   `err`: このエントリ `path` にアクセスする際に発生したエラー（例: 権限エラー）。もし `err != nil` なら、`d` は無効な場合があります。
-*   **戻り値 `error`**:
-    *   `nil`: 探索を**続行**します。
-    *   **`filepath.SkipDir`**: もし `d` がディレクトリの場合、この特別なエラー値を返すと、そのディレクトリの**中身は探索せずにスキップ**します。ファイルに対して返しても効果はありません。
-    *   その他の `nil` でないエラー: 探索を**中断**し、そのエラーが `WalkDir` の戻り値となります。
-
-## コード例: 特定の拡張子のファイルを検索
-
-カレントディレクトリ (`.`) 以下を再帰的に探索し、`.log` という拡張子を持つファイルのみを表示する例です。`.git` ディレクトリはスキップします。
-
-```go title="filepath.WalkDir の使用例"
+## コード
+```go
 package main
 
 import (
 	"fmt"
-	"io/fs" // fs.DirEntry, fs.WalkDirFunc を使うため
+	"io/fs" // fs.DirEntry, fs.WalkDirFunc
 	"log"
-	"os"
-	"path/filepath" // filepath.WalkDir, filepath.SkipDir, filepath.Ext を使うため
-	"strings"
+	"path/filepath" // filepath.WalkDir, filepath.SkipDir, filepath.Ext
+	// "os" // テスト用ファイル作成・削除は省略
 )
 
 func main() {
-	// --- テスト用のディレクトリとファイルを作成 ---
-	// (エラーハンドリングは省略)
-	os.MkdirAll("tmp/subdir1", 0755)
-	os.MkdirAll("tmp/.git", 0755) // スキップ対象
-	os.WriteFile("tmp/file1.txt", []byte("text"), 0644)
-	os.WriteFile("tmp/app.log", []byte("log data 1"), 0644)
-	os.WriteFile("tmp/subdir1/file2.txt", []byte("more text"), 0644)
-	os.WriteFile("tmp/subdir1/another.log", []byte("log data 2"), 0644)
-	os.WriteFile("tmp/.git/config", []byte("git config"), 0644)
-	fmt.Println("テスト用のディレクトリとファイルを作成しました。")
+	// 事前にテスト用ディレクトリ・ファイルを作成しておく想定
+	// os.MkdirAll("tmp/subdir", 0755)
+	// os.MkdirAll("tmp/.git", 0755)
+	// os.WriteFile("tmp/file.txt", ...)
+	// os.WriteFile("tmp/app.log", ...)
+	// os.WriteFile("tmp/subdir/other.log", ...)
 
-	// --- filepath.WalkDir で探索 ---
-	fmt.Println("\n--- .log ファイルを探索 ('.git' はスキップ) ---")
-	root := "tmp" // 探索を開始するディレクトリ
+	root := "tmp" // 探索開始ディレクトリ
+	fmt.Printf("Walking directory '%s'...\n", root)
 
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
-		// 1. エラーチェック (パスへのアクセスエラーなど)
+		// 1. パスアクセスエラーチェック
 		if err != nil {
-			fmt.Printf("警告: パス '%s' へのアクセスエラー: %v (続行します)\n", path, err)
-			// エラーが発生したパスの処理はできないが、探索自体は続けたい場合は nil を返す
-			// return err // ここでエラーを返すと WalkDir が中断される
-			return nil
+			fmt.Printf("Error accessing path %q: %v\n", path, err)
+			return err // エラーがあれば探索中断 (nil を返せば続行)
 		}
 
-		// 2. ディレクトリのスキップ処理
+		// 2. 特定ディレクトリをスキップ (例: .git)
 		if d.IsDir() && d.Name() == ".git" {
-			fmt.Printf("ディレクトリ '%s' をスキップします。\n", path)
-			return filepath.SkipDir // ★ このディレクトリ以下は探索しない
+			fmt.Printf("Skipping dir: %s\n", path)
+			return filepath.SkipDir // このディレクトリ以下は探索しない
 		}
 
-		// 3. ファイルのみを対象とし、拡張子をチェック
-		if !d.IsDir() {
-			// if strings.HasSuffix(d.Name(), ".log") { // 単純なサフィックスチェック
-			if filepath.Ext(d.Name()) == ".log" { // filepath.Ext を使う方が確実
-				fmt.Printf("発見: %s\n", path)
-			}
+		// 3. ファイルのみ対象とし、拡張子チェック (例: .log)
+		if !d.IsDir() && filepath.Ext(path) == ".log" {
+			fmt.Printf("Found log file: %s\n", path)
 		}
 
-		// 4. 探索を続ける場合は nil を返す
-		return nil
+		return nil // 探索続行
 	})
 
-	// WalkDir 全体のエラーチェック
 	if err != nil {
-		log.Fatalf("WalkDir 実行中にエラーが発生しました: %v", err)
+		log.Fatalf("WalkDir failed: %v", err)
 	}
-
-	fmt.Println("\n--- 探索完了 ---")
-
-	// --- 後片付け ---
-	os.RemoveAll(root)
-	fmt.Println("\nテスト用ディレクトリを削除しました。")
+	fmt.Println("Walk finished.")
+	// os.RemoveAll(root) // 後片付け
 }
 
-/* 実行結果:
-テスト用のディレクトリとファイルを作成しました。
-
---- .log ファイルを探索 ('.git' はスキップ) ---
-ディレクトリ 'tmp/.git' をスキップします。
-発見: tmp/app.log
-発見: tmp/subdir1/another.log
-
---- 探索完了 ---
-
-テスト用ディレクトリを削除しました。
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+指定ディレクトリとその**全サブディレクトリ**を**再帰的に**探索するには、
+Go 1.16+ で導入された **`filepath.WalkDir`** が推奨されます。
+(`filepath.Walk` より効率的な場合がある)
+`import "path/filepath"` と `import "io/fs"` が必要です。
 
-*   `filepath.WalkDir("tmp", func(...) error { ... })`: `tmp` ディレクトリから探索を開始し、見つかった各エントリに対してコールバック関数を実行します。
-*   **コールバック関数内:**
-    *   `if err != nil { ... }`: まず、そのパスへのアクセス自体にエラーがなかったかを確認します。ここではエラーがあっても `nil` を返して探索を続行しています。
-    *   `if d.IsDir() && d.Name() == ".git" { return filepath.SkipDir }`: エントリがディレクトリで、かつ名前が `.git` であれば、`filepath.SkipDir` を返してそのディレクトリ以下の探索をスキップします。
-    *   `if !d.IsDir() { ... }`: エントリがファイルの場合のみ処理を進めます。
-    *   `if filepath.Ext(d.Name()) == ".log"`: `filepath.Ext` でファイルの拡張子を取得し、`.log` であればパスを表示します。
-    *   `return nil`: 上記のいずれの条件にも当てはまらない場合（処理対象外のファイルや、スキップしないディレクトリ）、または処理が正常に完了した場合は `nil` を返し、探索を続行します。
-*   `WalkDir` の呼び出し後にもエラーチェックを行い、コールバック関数が途中でエラーを返した場合や、探索自体に問題があった場合に備えます。
+**使い方:**
+`err := filepath.WalkDir(root string, fn fs.WalkDirFunc)`
+*   `root`: 探索開始ディレクトリパス。
+*   `fn`: 各エントリで見つかる度に呼び出されるコールバック関数。
+*   `err`: 探索中に `fn` が `nil` 以外を返した場合等のエラー。
 
-`filepath.WalkDir` は、ファイルシステムの再帰的な操作（特定ファイルの検索、一括リネーム、バックアップなど）を行う際の強力なツールです。コールバック関数で `filepath.SkipDir` やエラーを適切に返すことで、探索の挙動を柔軟に制御できます。
+**コールバック関数 `fs.WalkDirFunc`:**
+`func(path string, d fs.DirEntry, err error) error`
+*   `path`: 現在のエントリのフルパス。
+*   `d`: エントリ情報 (`fs.DirEntry`: `Name()`, `IsDir()` 等)。
+*   `err`: `path` へのアクセスエラー (権限等)。`nil` でない場合 `d` は無効かも。
+*   **戻り値 `error`**:
+    *   `nil`: 探索を**続行**。
+    *   **`filepath.SkipDir`**: `d` がディレクトリの場合、その中身を**スキップ**。
+    *   その他エラー: 探索を**中断**し、そのエラーが `WalkDir` の戻り値になる。
+
+コード例では、`tmp` ディレクトリ以下を探索し、
+コールバック関数内で以下の処理を行っています。
+1. パスアクセスエラーがあれば中断 (ここでは `err` を返している)。
+2. `.git` ディレクトリを見つけたら `filepath.SkipDir` でスキップ。
+3. ファイルであり、かつ拡張子が `.log` ならパスを表示。
+4. 上記以外は `nil` を返し探索続行。
+
+`filepath.WalkDir` はファイル検索、一括処理、バックアップ等、
+ファイルシステムの再帰操作に強力なツールです。
+コールバックの戻り値で探索を制御できます。

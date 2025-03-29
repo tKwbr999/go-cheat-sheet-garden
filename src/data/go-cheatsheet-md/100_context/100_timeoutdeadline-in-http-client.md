@@ -1,131 +1,97 @@
----
-title: "Context パッケージ: HTTP クライアントでのタイムアウト/キャンセル"
+## タイトル
+title: Context パッケージ: HTTP クライアントでのタイムアウト/キャンセル
+
+## タグ
 tags: ["context", "concurrency", "net/http", "http client", "timeout", "deadline", "cancel", "NewRequestWithContext", "Do"]
----
 
-外部の Web サーバーに HTTP リクエストを送る際、サーバーからの応答が遅い、あるいは全く返ってこない場合に、クライアント側で無期限に待ち続けるのは避けたい状況です。`context` パッケージを使うと、`net/http` クライアントの**リクエスト全体**（接続、リクエスト送信、応答待機を含む）に対してタイムアウトやデッドラインを設定したり、処理の途中でキャンセルしたりすることができます。
-
-## `http.NewRequestWithContext`
-
-`http.Request` を作成する際に、`http.NewRequest` の代わりに **`http.NewRequestWithContext`** を使います。この関数は第一引数に `context.Context` を取ります。
-
-**構文:** `req, err := http.NewRequestWithContext(ctx context.Context, method, url string, body io.Reader)`
-
-*   `ctx`: このリクエストに関連付ける Context。`context.WithTimeout` や `context.WithDeadline`, `context.WithCancel` で生成した Context を渡します。
-*   `method`: HTTP メソッド ("GET", "POST" など)。
-*   `url`: リクエスト先の URL 文字列。
-*   `body`: リクエストボディ (POST などで必要ない場合は `nil`)。
-
-## `client.Do(req)` とエラーハンドリング
-
-作成した `http.Request` (`req`) は、`http.Client` の `Do` メソッドを使って送信します。
-
-**構文:** `resp, err := client.Do(req)`
-
-*   `client`: `http.Client` のインスタンス（通常は `http.DefaultClient` か、カスタム設定したクライアント）。
-*   `req`: `NewRequestWithContext` で作成したリクエスト。
-
-**エラーハンドリング:**
-
-*   `client.Do(req)` は、リクエストが成功すればレスポンス (`*http.Response`) と `nil` エラーを返します。
-*   リクエストの処理中に `req` に関連付けられた Context がキャンセルされた（タイムアウト、デッドライン超過、または `cancel()` 呼び出し）場合、`client.Do` は**エラーを返します**。
-*   このエラー `err` に対して `errors.Is(err, context.DeadlineExceeded)` や `errors.Is(err, context.Canceled)` を使って、キャンセルがタイムアウト/デッドラインによるものか、明示的なキャンセルによるものかを判定できます。
-*   ネットワークエラーなど、Context のキャンセル以外の理由でエラーが発生する場合もあります。
-
-**重要:** `client.Do` がエラーを返した場合でも、`resp` が `nil` でない可能性があります（例えばリダイレクト中にタイムアウトした場合など）。レスポンスボディ (`resp.Body`) が存在する場合は、**必ず `defer resp.Body.Close()` で閉じる**必要があります。
-
-## コード例: HTTP GET リクエストのタイムアウト
-
-```go title="HTTP GET リクエストにタイムアウトを設定"
+## コード
+```go
 package main
 
 import (
 	"context"
-	"errors" // errors.Is を使うため
+	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"time"
 )
 
 func main() {
-	// 非常に短いタイムアウト (10ミリ秒) を設定した Context を作成
-	// (通常の Web サイトへのアクセスではほぼ確実にタイムアウトする)
-	requestTimeout := 10 * time.Millisecond
+	// タイムアウト付き Context (例: 50ms)
+	requestTimeout := 50 * time.Millisecond
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
-	// ★ defer で cancel を呼び出すのを忘れない ★
-	defer cancel()
+	defer cancel() // ★ 必ず cancel を呼ぶ
 
-	// リクエストを作成 (Context を関連付ける)
+	// Context 付きリクエスト作成
 	url := "https://example.com"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "リクエスト作成エラー: %v\n", err)
-		return
-	}
+	if err != nil { /* エラー処理 */ return }
 
-	fmt.Printf("'%s' に GET リクエストを送信します (タイムアウト: %v)...\n", url, requestTimeout)
+	fmt.Printf("GET %s (Timeout: %v)...\n", url, requestTimeout)
 
-	// デフォルトの HTTP クライアントでリクエストを実行
+	// リクエスト実行
 	resp, err := http.DefaultClient.Do(req)
-
-	// ★★★ エラーチェック ★★★
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "リクエスト実行エラー: %v\n", err)
-
-		// エラーがタイムアウト/デッドラインによるものかチェック
-		if errors.Is(err, context.DeadlineExceeded) {
-			fmt.Fprintln(os.Stderr, "-> 原因: リクエストがタイムアウトしました。")
-		} else if errors.Is(err, context.Canceled) {
-			fmt.Fprintln(os.Stderr, "-> 原因: リクエストがキャンセルされました。")
-		} else {
-			// その他のネットワークエラーなど
-			fmt.Fprintln(os.Stderr, "-> 原因: タイムアウト以外のエラーです。")
-		}
-
-		// エラーがあっても resp が nil でない場合があるので Body を閉じる
-		if resp != nil {
-			// ボディは読まなくても Close は必要
-			resp.Body.Close()
-		}
-		return // エラー発生時はここで終了
+	// ★ エラーがあってもなくても resp.Body を閉じる必要あり
+	if resp != nil {
+		defer resp.Body.Close()
 	}
 
-	// --- 成功した場合 (タイムアウトしなかった場合) ---
-	// ★★★ 重要: エラーがなくても Body は必ず閉じる ★★★
-	defer resp.Body.Close()
-
-	fmt.Printf("レスポンスステータス: %s\n", resp.Status)
-
-	// レスポンスボディを読み取る (例)
-	bodyBytes, readErr := io.ReadAll(resp.Body)
-	if readErr != nil {
-		fmt.Fprintf(os.Stderr, "レスポンスボディ読み取りエラー: %v\n", readErr)
+	// エラーチェック
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Request Error: %v\n", err)
+		// タイムアウトかチェック
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Fprintln(os.Stderr, "-> Timeout!")
+		}
 		return
 	}
-	fmt.Printf("レスポンスボディ (最初の50バイト): %s...\n", string(bodyBytes[:min(50, len(bodyBytes))]))
+
+	// 成功時の処理 (例)
+	fmt.Printf("Status: %s\n", resp.Status)
+	// body, _ := io.ReadAll(resp.Body) // ボディ読み取りなど
 }
 
-// min 関数 (Go 1.21 以降は標準ライブラリにある)
-func min(a, b int) int {
-	if a < b { return a }
-	return b
-}
-
-/* 実行結果の例 (ネットワーク状況によりエラーメッセージは多少異なる可能性あり):
-'https://example.com' に GET リクエストを送信します (タイムアウト: 10ms)...
-リクエスト実行エラー: Get "https://example.com": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
--> 原因: リクエストがタイムアウトしました。
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+外部への HTTP リクエストでは、応答遅延や無応答に備え、
+タイムアウトやキャンセル処理を入れることが重要です。
+`context` パッケージと `net/http` を組み合わせることで実現できます。
 
-*   `context.WithTimeout` で非常に短いタイムアウト (10ms) を設定した `ctx` を作成します。
-*   `http.NewRequestWithContext(ctx, ...)` で、この `ctx` を関連付けたリクエスト `req` を作成します。
-*   `http.DefaultClient.Do(req)` を実行します。`example.com` へのアクセスは通常 10ms 以上かかるため、Context のタイムアウトが発生します。
-*   `client.Do` はエラーを返します。`errors.Is(err, context.DeadlineExceeded)` でチェックすると `true` になり、「リクエストがタイムアウトしました」と出力されます。
-*   `defer resp.Body.Close()` は、`client.Do` が成功した場合 (`err == nil`) でも、エラーが発生した場合 (`err != nil` かつ `resp != nil`) でも、`resp.Body` が存在すれば確実にクローズするために重要です。
+**`http.NewRequestWithContext`:**
+リクエスト作成時に Context を関連付けます。
+`req, err := http.NewRequestWithContext(ctx, method, url, body)`
+*   `ctx`: `WithTimeout`, `WithDeadline`, `WithCancel` で
+    生成した Context を渡します。
 
-`net/http` クライアントで `context` を使うことで、外部サービスへのリクエストに対するタイムアウト制御や、より大きな処理の一部として HTTP リクエストをキャンセルする、といったことが容易に実現できます。
+**`client.Do(req)` とエラーハンドリング:**
+`http.Client` (通常 `http.DefaultClient`) の `Do` メソッドで
+Context 付きリクエスト `req` を送信します。
+`resp, err := client.Do(req)`
+
+*   **Context キャンセル時の動作:**
+    リクエスト処理中に `ctx` がキャンセルされる
+    (タイムアウト、デッドライン超過、`cancel()` 呼び出し) と、
+    `client.Do` は**エラーを返します**。
+*   **エラー理由の判定:** 返された `err` に対し、
+    `errors.Is(err, context.DeadlineExceeded)` や
+    `errors.Is(err, context.Canceled)` を使って、
+    キャンセル理由を特定できます。
+    (ネットワークエラー等、他の原因の場合もあります)
+
+**重要: `resp.Body.Close()`**
+`client.Do` がエラーを返した場合でも、`resp` が `nil` でない
+可能性があります。レスポンスボディ `resp.Body` が存在する場合は、
+**必ず `defer resp.Body.Close()` で閉じる**必要があります。
+エラーチェックの `if err != nil` ブロックの**前**に `defer` を
+書くか、`if resp != nil` の中で `defer` するのが一般的です。
+
+コード例では、短いタイムアウトを設定した Context を使って
+リクエストを作成・実行し、`client.Do` が返すエラーを
+`errors.Is` でチェックしてタイムアウトを検出しています。
+
+`net/http` クライアントで `context` を使うことで、
+外部サービスへのリクエストに対するタイムアウト制御や
+キャンセル処理を容易に実装できます。

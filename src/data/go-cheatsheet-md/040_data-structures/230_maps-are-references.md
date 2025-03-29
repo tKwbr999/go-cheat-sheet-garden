@@ -1,89 +1,69 @@
----
-title: "データ構造: マップ (Map) は参照型"
+## タイトル
+title: データ構造: マップ (Map) は参照型
+
+## タグ
 tags: ["data-structures", "マップ", "map", "参照型", "ポインタ", "共有", "関数引数"]
----
 
-配列 (`array`) が値型であり、代入や関数渡しでコピーが作成されたのとは対照的に、Goの**マップ (`map`)** は**参照型 (Reference Type)** です。これはスライス (`slice`) と似た挙動を示します。
-
-## 参照型とは？ 共有されるデータ
-
-マップが参照型であるということは、マップ変数を別の変数に代入したり、関数の引数として渡したりする際に、マップのデータ構造全体がコピーされるのではなく、そのデータ構造への**参照（ポインタのようなもの）**がコピーされることを意味します。
-
-その結果、複数のマップ変数が**同じ**マップデータを指し示すことになります。そのため、一方の変数を通じてマップの内容（キーと値のペア）を変更すると、**もう一方の変数からもその変更が見えます**。
-
-```go title="マップの代入と関数への引き渡し (参照)"
+## コード
+```go
 package main
 
 import "fmt"
 
-// マップを受け取り、その要素を変更する関数
-// マップは参照型なので、関数内でマップを変更すると呼び出し元のマップも変更される
+// マップを受け取り変更する関数 (参照渡し)
 func modifyMap(m map[string]int) {
-	fmt.Printf("  modifyMap 内 (変更前): m = %v\n", m)
-	m["Carol"] = 75 // 関数内のマップ m を変更
-	m["Alice"] = 99 // 既存のキーの値も変更
-	delete(m, "Bob") // 要素を削除
-	fmt.Printf("  modifyMap 内 (変更後): m = %v\n", m)
+	fmt.Printf("  modifyMap 内 (変更前): %v\n", m)
+	m["Carol"] = 75 // 関数内でマップを変更
+	delete(m, "Bob")
+	fmt.Printf("  modifyMap 内 (変更後): %v\n", m)
 }
 
 func main() {
-	// --- マップの代入 ---
-	originalMap := map[string]int{
-		"Alice": 85,
-		"Bob":   92,
-	}
-	fmt.Printf("代入前: originalMap = %v\n", originalMap)
+	// マップの代入 (参照がコピーされる)
+	originalMap := map[string]int{"Alice": 85, "Bob": 92}
+	copiedMap := originalMap // 同じマップデータを指す
+	copiedMap["Bob"] = 90    // copiedMap 経由で変更
 
-	// マップを別の変数に代入すると、参照がコピーされる
-	// copiedMap と originalMap は同じマップデータを指す
-	copiedMap := originalMap
-	fmt.Printf("コピー直後: copiedMap = %v\n", copiedMap)
+	fmt.Printf("originalMap: %v\n", originalMap) // 元のマップも変更されている
+	fmt.Printf("copiedMap:   %v\n", copiedMap)
 
-	// コピー先のマップを変更する
-	copiedMap["Bob"] = 90
-	copiedMap["David"] = 80 // 新しい要素を追加
-	fmt.Printf("コピーを変更後: copiedMap = %v\n", copiedMap)
-
-	// 元のマップも変更されていることを確認
-	fmt.Printf("元のマップも変更: originalMap = %v\n", originalMap)
-
-	fmt.Println("\n--- 関数へのマップの引き渡し ---")
-	mapForFunc := map[string]int{
-		"Alice": 100,
-		"Bob":   200,
-	}
-	fmt.Printf("関数呼び出し前: mapForFunc = %v\n", mapForFunc)
-
-	// modifyMap 関数にマップを渡す (参照が渡される)
-	modifyMap(mapForFunc)
-
-	// modifyMap 関数内でマップが変更されたため、元のマップも影響を受ける
-	fmt.Printf("関数呼び出し後: mapForFunc = %v\n", mapForFunc)
+	// 関数へのマップの引き渡し (参照が渡される)
+	mapForFunc := map[string]int{"Alice": 100, "Bob": 200}
+	fmt.Printf("\n関数呼び出し前: %v\n", mapForFunc)
+	modifyMap(mapForFunc) // 関数内で mapForFunc が変更される
+	fmt.Printf("関数呼び出し後: %v\n", mapForFunc)
 }
 
-/* 実行結果 (マップの表示順序は不定):
-代入前: originalMap = map[Alice:85 Bob:92]
-コピー直後: copiedMap = map[Alice:85 Bob:92]
-コピーを変更後: copiedMap = map[Alice:85 Bob:90 David:80]
-元のマップも変更: originalMap = map[Alice:85 Bob:90 David:80]
-
---- 関数へのマップの引き渡し ---
-関数呼び出し前: mapForFunc = map[Alice:100 Bob:200]
-  modifyMap 内 (変更前): m = map[Alice:100 Bob:200]
-  modifyMap 内 (変更後): m = map[Alice:99 Carol:75]
-関数呼び出し後: mapForFunc = map[Alice:99 Carol:75]
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+配列 (`array`) が値型だったのに対し、Goの**マップ (`map`)** は
+**参照型 (Reference Type)** です (スライスやチャネルも同様)。
 
-*   `copiedMap := originalMap`: `originalMap` が指しているマップデータへの参照が `copiedMap` にコピーされます。`originalMap` と `copiedMap` は同じデータを共有します。
-*   `copiedMap["Bob"] = 90`: `copiedMap` を通じてマップの値を変更すると、`originalMap` から見ても値が変わっています。
-*   `modifyMap(mapForFunc)`: `mapForFunc` が指しているマップデータへの参照が `modifyMap` 関数に渡されます。
-*   関数内で `m["Carol"] = 75` や `delete(m, "Bob")` を実行すると、`main` 関数内の `mapForFunc` が指しているマップデータ自体が変更されます。
+**参照型とは？ データ共有**
+マップ変数を別の変数に代入 (`m2 := m1`) したり、
+関数の引数として渡したりする際、マップのデータ構造全体ではなく、
+そのデータ構造への**参照（ポインタのようなもの）**がコピーされます。
 
-## なぜ参照型なのか？
+結果として、複数のマップ変数が**同じマップデータ**を指し示します。
+一方の変数を通じてマップの内容を変更すると、
+**もう一方の変数からもその変更が見えます**。
 
-マップは内部的に複雑なデータ構造（通常はハッシュテーブル）を持っており、要素の追加や削除に応じて動的にサイズが変わります。これを値型として扱う（代入や関数渡しで毎回全データをコピーする）のは非効率的です。そのため、Goではマップ（およびスライス、チャネル）は参照型として設計されています。
+**コード例:**
+*   `copiedMap := originalMap`: `copiedMap` と `originalMap` は
+    同じマップデータを共有します。`copiedMap["Bob"] = 90` とすると
+    `originalMap["Bob"]` も `90` になります。
+*   `modifyMap(mapForFunc)`: `mapForFunc` の参照が関数に渡されます。
+    関数内で `m` (渡された参照) を通じて要素を追加・削除すると、
+    呼び出し元の `mapForFunc` も変更されます。
 
-マップが参照型であることを理解することは、意図しないデータの変更を防いだり、関数間でデータを効率的に共有したりするために重要です。マップの独立したコピーが必要な場合は、新しいマップを作成し、元のマップの要素をループでコピーする必要があります。
+**なぜ参照型か？**
+マップは内部的に複雑で動的なデータ構造を持つため、
+代入や関数渡しで毎回全データをコピーするのは非効率です。
+参照型にすることで効率的に扱えます。
+
+マップが参照型であることを理解することは、意図しない
+データ変更を防ぎ、効率的なデータ共有のために重要です。
+マップの独立したコピーが必要な場合は、新しいマップを作成し、
+元のマップの要素をループでコピーする必要があります。

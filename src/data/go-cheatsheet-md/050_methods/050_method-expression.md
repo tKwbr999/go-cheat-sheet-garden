@@ -1,31 +1,11 @@
----
-title: "メソッド: メソッド式 (Method Expression)"
+## タイトル
+title: メソッド: メソッド式 (Method Expression)
+
+## タグ
 tags: ["methods", "メソッド式", "関数型", "レシーバ"]
----
 
-通常、メソッドは `変数.メソッド名(引数)` のように、特定の型の値（レシーバ）に対して呼び出します。しかし、Goには**メソッド式 (Method Expression)** という構文があり、これを使うとメソッドを**通常の関数**のように扱うことができます。
-
-## メソッド式とは？
-
-メソッド式は、メソッドを、そのレシーバを**第一引数**として受け取る通常の関数値に変換します。
-
-**構文:** `レシーバ型名.メソッド名` (例: `Point.Distance`)
-
-*   `レシーバ型名`: メソッドが定義されている型（例: `Point`）。ポインタレシーバのメソッドの場合は `(*Point)` のように書くこともありますが、通常は型名だけで大丈夫です（次のセクションで詳述）。
-*   `メソッド名`: 呼び出したいメソッドの名前。
-
-このメソッド式 `T.MethodName` は、以下のような関数型の値になります。
-
-*   **値レシーバ `func (recv T) MethodName(args...) ...` の場合:**
-    `func(recv T, args...) ...` という型の関数値になります。第一引数にレシーバの値 `T` を取ります。
-*   **ポインタレシーバ `func (recv *T) MethodName(args...) ...` の場合:**
-    `func(recv *T, args...) ...` という型の関数値になります。第一引数にレシーバのポインタ `*T` を取ります。
-
-## コード例
-
-`Point` 型の `Distance` メソッド（値レシーバ）を例に見てみましょう。
-
-```go title="メソッド式の使い方 (値レシーバ)"
+## コード
+```go
 package main
 
 import (
@@ -33,13 +13,11 @@ import (
 	"math"
 )
 
-type Point struct {
-	X, Y float64
-}
+type Point struct{ X, Y float64 }
 
 // Distance メソッド (値レシーバ)
 func (p Point) Distance(q Point) float64 {
-	fmt.Printf("  (Distanceメソッド内: レシーバ p=%+v, 引数 q=%+v)\n", p, q)
+	fmt.Printf("  (Distance: p=%+v, q=%+v)\n", p, q)
 	dx := q.X - p.X
 	dy := q.Y - p.Y
 	return math.Sqrt(dx*dx + dy*dy)
@@ -49,57 +27,53 @@ func main() {
 	p := Point{1, 2}
 	q := Point{4, 6}
 
-	// --- 通常のメソッド呼び出し ---
-	fmt.Println("--- 通常のメソッド呼び出し ---")
-	dist1 := p.Distance(q) // レシーバ p に対して Distance を呼び出す
-	fmt.Printf("p.Distance(q) = %f\n", dist1)
-
-	// --- メソッド式 ---
-	fmt.Println("\n--- メソッド式 ---")
-	// メソッド式 Point.Distance は func(Point, Point) float64 型の関数値になる
+	// メソッド式: 型名.メソッド名
+	// Point.Distance は func(Point, Point) float64 型の関数値
 	distanceFunc := Point.Distance
 	fmt.Printf("メソッド式の型: %T\n", distanceFunc)
 
 	// メソッド式を関数として呼び出す
-	// 最初の引数にレシーバとなる値 (p) を渡す
-	// 2番目以降の引数にメソッドの通常の引数 (q) を渡す
-	dist2 := distanceFunc(p, q) // distanceFunc(レシーバ, 引数)
-	fmt.Printf("distanceFunc(p, q) = %f\n", dist2)
+	// 第1引数にレシーバ (p)、第2引数以降にメソッド引数 (q)
+	dist := distanceFunc(p, q)
+	fmt.Printf("distanceFunc(p, q) = %f\n", dist) // 5.0
 
-	// メソッド式を直接呼び出すことも可能
-	dist3 := Point.Distance(p, q)
-	fmt.Printf("Point.Distance(p, q) = %f\n", dist3)
-
-	// メソッド式を変数に代入せずに関数引数として渡すこともできる
-	// (例: apply 関数が func(Point, Point) float64 型の関数を要求する場合)
-	// result := apply(Point.Distance, p, q)
+	// 通常のメソッド呼び出し: p.Distance(q)
 }
 
-/* 実行結果:
---- 通常のメソッド呼び出し ---
-  (Distanceメソッド内: レシーバ p={X:1 Y:2}, 引数 q={X:4 Y:6})
-p.Distance(q) = 5.000000
-
---- メソッド式 ---
-メソッド式の型: func(main.Point, main.Point) float64
-  (Distanceメソッド内: レシーバ p={X:1 Y:2}, 引数 q={X:4 Y:6})
-distanceFunc(p, q) = 5.000000
-  (Distanceメソッド内: レシーバ p={X:1 Y:2}, 引数 q={X:4 Y:6})
-Point.Distance(p, q) = 5.000000
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+通常メソッドは `変数.メソッド名()` で呼び出しますが、
+**メソッド式 (Method Expression)** を使うと、
+メソッドを**通常の関数**のように扱えます。
 
-*   `distanceFunc := Point.Distance`: `Point` 型の `Distance` メソッドに対するメソッド式を取得し、変数 `distanceFunc` に代入しています。`distanceFunc` は `func(main.Point, main.Point) float64` という関数型になります。
-*   `dist2 := distanceFunc(p, q)`: `distanceFunc` を通常の関数として呼び出しています。**最初の引数 `p` がメソッドのレシーバ**として扱われ、2番目の引数 `q` がメソッドの通常の引数として渡されます。これは `p.Distance(q)` と同じ処理を実行します。
-*   `dist3 := Point.Distance(p, q)`: メソッド式を直接呼び出すことも可能です。
+**構文:** `レシーバ型名.メソッド名`
+例: `Point.Distance`
 
-## メソッド式の用途
+これは、メソッドのレシーバを**第一引数**として受け取る
+通常の関数値に変換します。
 
-メソッド式は、通常のメソッド呼び出しほど頻繁には使われませんが、以下のような場合に役立ちます。
+*   **値レシーバ `func (recv T) M(args...)` の場合:**
+    メソッド式 `T.M` は `func(recv T, args...)` 型の関数値になる。
+*   **ポインタレシーバ `func (recv *T) M(args...)` の場合:**
+    メソッド式 `T.M` (または `(*T).M`) は
+    `func(recv *T, args...)` 型の関数値になる。
 
-*   **関数を引数として渡す:** ある型のメソッドを、関数型の引数を受け取る別の関数（高階関数）に渡したい場合。メソッド式を使うことで、メソッドを適切なシグネチャを持つ関数値に変換できます。
-*   **メソッドの実装を切り替え可能にする:** メソッド式を変数に代入しておき、後でその変数に別の（同じシグネチャを持つ）関数やメソッド式を代入することで、動作を切り替える。
+コード例では `Point.Distance` というメソッド式を変数
+`distanceFunc` に代入しています。
+`distanceFunc` の型は `func(main.Point, main.Point) float64` となり、
+レシーバ (`Point`) が第一引数になっています。
 
-メソッド式は、メソッドをより柔軟に関数値として扱うための機能です。次のセクションでは、ポインタレシーバメソッドに対するメソッド式を見ていきます。
+`distanceFunc(p, q)` のように呼び出すと、`p` がレシーバ、
+`q` がメソッドの引数として `Distance` メソッドが実行されます。
+これは通常のメソッド呼び出し `p.Distance(q)` と同じ結果になります。
+
+**用途:**
+メソッド式は頻繁には使いませんが、以下の場合に役立ちます。
+*   **高階関数への引数:** ある型のメソッドを、関数型の引数を
+    受け取る別の関数に渡したい場合。
+*   **実装切り替え:** メソッド式を変数に代入し、後で
+    別の関数やメソッド式を再代入して動作を変える。
+
+メソッド式は、メソッドをより柔軟に関数値として扱うための機能です。

@@ -1,66 +1,73 @@
----
-title: "インターフェース: 空インターフェースと型スイッチ"
+## タイトル
+title: インターフェース: 空インターフェースと型スイッチ
+
+## タグ
 tags: ["interfaces", "interface", "any", "空インターフェース", "型スイッチ", "type switch", "switch"]
----
 
-空インターフェース (`interface{}` または `any`) は任意の型の値を保持できるため、その変数に実際にどのような型の値が入っているかによって処理を分岐させたい場合がよくあります。このような場合に**型スイッチ (Type Switch)** が非常に役立ちます。
-
-型スイッチの基本的な構文と動作については、**「制御構文」**セクションの**「型スイッチ (Type Switch)」**の項目 (`020_flow-control/150_type-switch.md`) を参照してください。
-
-型スイッチを使うことで、複数の型アサーションを `if-else if` で繋げるよりも、コードを安全かつ簡潔に記述できます。
-
-```go title="空インターフェースに対する型スイッチ"
+## コード
+```go
 package main
 
 import "fmt"
 
-// 任意の型の値を受け取り、型に応じて処理する関数
+// any 型の値を受け取り、型に応じて処理
 func processAnything(value any) {
-	fmt.Printf("入力値: %v\n", value)
-
-	switch v := value.(type) { // value の具体的な型をチェック
+	fmt.Printf("入力: %v, ", value)
+	switch v := value.(type) { // 型スイッチ
 	case int:
-		fmt.Printf("  -> 整数です。値: %d\n", v)
+		fmt.Printf("整数: %d\n", v)
 	case string:
-		fmt.Printf("  -> 文字列です。値: \"%s\"\n", v)
+		fmt.Printf("文字列: %s\n", v)
 	case bool:
-		fmt.Printf("  -> 真偽値です。値: %t\n", v)
-	case float64:
-		fmt.Printf("  -> 浮動小数点数です。値: %f\n", v)
+		fmt.Printf("真偽値: %t\n", v)
 	case nil:
-		fmt.Println("  -> nil です。")
+		fmt.Println("nil")
 	default:
-		// v は元の any 型
-		fmt.Printf("  -> その他の型です。型: %T\n", v)
+		fmt.Printf("その他 (%T)\n", v)
 	}
 }
 
 func main() {
 	processAnything(100)
-	processAnything("Hello")
+	processAnything("Go")
 	processAnything(true)
 	processAnything(nil)
-	processAnything([]byte("data")) // default ケース
+	processAnything(1.23) // default
 }
 
-/* 実行結果:
-入力値: 100
-  -> 整数です。値: 100
-入力値: Hello
-  -> 文字列です。値: "Hello"
-入力値: true
-  -> 真偽値です。値: true
-入力値: <nil>
-  -> nil です。
-入力値: [100 97 116 97]
-  -> その他の型です。型: []uint8
-*/
 ```
 
-**ポイント:**
+## 解説
+```text
+空インターフェース (`any`/`interface{}`) は
+任意の型の値を保持できるため、その具体的な型に
+応じて処理を分岐させたい場合に
+**型スイッチ (Type Switch)** が役立ちます。
+(`switch` 文の特殊形式)
 
-*   `switch v := value.(type)`: 空インターフェース変数 `value` に対して型スイッチを行います。
-*   `case 型:`: `value` が指定した `型` であった場合に、そのブロックが実行されます。ブロック内では、変数 `v` はその `型` として扱えます。
-*   `default:`: どの `case` にも一致しなかった場合に実行されます。
+型スイッチを使うと、複数の型アサーションを
+`if-else if` で繋げるよりも安全かつ簡潔に書けます。
 
-空インターフェースを扱う際には、型スイッチが型に応じた処理を安全に行うための基本的な方法となります。
+**構文:**
+```go
+switch 変数 := インターフェース変数.(type) {
+case 型1:
+    // 変数 は 型1 として使える
+case 型2:
+    // 変数 は 型2 として使える
+case nil:
+    // nil の場合
+default:
+    // どの型にも一致しない場合
+}
+```
+*   `.(type)` キーワードで型スイッチを開始。
+*   各 `case` で型を指定し、一致すればそのブロックを実行。
+    ブロック内では `変数` はその `case` の型として扱える。
+*   `default` でどの型にも一致しない場合を処理。
+
+コード例の `processAnything` 関数は、`any` 型の `value` を
+型スイッチで判別し、型に応じたメッセージを出力します。
+
+空インターフェースを扱う際は、型スイッチが
+型に応じた処理を安全に行うための基本的な方法となります。

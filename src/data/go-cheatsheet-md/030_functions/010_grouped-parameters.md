@@ -1,73 +1,57 @@
----
-title: "関数: 引数の型指定をまとめる"
+## タイトル
+title: 関数: 引数の型指定をまとめる
+
+## タグ
 tags: ["functions", "func", "引数", "パラメータ"]
----
 
-関数の引数リストを定義する際、**連続して同じ型**の引数が続く場合、Go言語では型指定をより簡潔に書くことができます。
-
-## 型指定の省略ルール
-
-連続する同じ型の引数がある場合、最後の引数を**除く**すべての引数で、型の記述を省略できます。最後の引数に型を指定すれば、それより前にある連続した同じ型の引数すべてにその型が適用されます。
-
-**通常の書き方:**
+## コード
 ```go
-func add(a int, b int) int { ... }
-func process(x int, y int, z int, message string) { ... }
-```
-
-**型指定をまとめた書き方:**
-```go
-func add(a, b int) int { ... } // a と b は両方とも int 型
-func process(x, y, z int, message string) { ... } // x, y, z はすべて int 型
-```
-
-## コード例
-
-```go title="引数の型指定をまとめる例"
 package main
 
 import "fmt"
 
-// 通常の書き方
-// func multiply(x int, y int) int {
-// 	return x * y
-// }
-
-// 型指定をまとめた書き方
 // x と y は両方とも int 型
 func multiply(x, y int) int {
 	return x * y
 }
 
-// 複数の型が混在する場合
 // width と height は int 型、label は string 型
 func drawRectangle(width, height int, label string) {
-	fmt.Printf("長方形を描画: 幅=%d, 高さ=%d, ラベル=\"%s\"\n", width, height, label)
+	fmt.Printf("描画: 幅=%d, 高さ=%d, ラベル=\"%s\"\n", width, height, label)
 }
 
-// 戻り値の型も同様にまとめられる (後のセクションで説明)
-// func calculate(a, b int) (sum, diff int) { ... }
-
 func main() {
-	// multiply 関数を呼び出し
 	product := multiply(6, 7)
 	fmt.Printf("multiply(6, 7) = %d\n", product)
 
-	// drawRectangle 関数を呼び出し
 	drawRectangle(100, 50, "ボタン")
-	drawRectangle(20, 30, "アイコン")
 }
 
-/* 実行結果:
-multiply(6, 7) = 42
-長方形を描画: 幅=100, 高さ=50, ラベル="ボタン"
-長方形を描画: 幅=20, 高さ=30, ラベル="アイコン"
-*/
 ```
 
-**ポイント:**
+## 解説
+```text
+関数の引数リストで、**連続して同じ型**の引数が続く場合、
+型指定を簡潔に書けます。
 
-*   `func multiply(x, y int)` は `func multiply(x int, y int)` と完全に同じ意味です。
-*   `func drawRectangle(width, height int, label string)` では、`width` と `height` が連続して `int` 型なので、`height` の後にだけ `int` を書いています。`label` は型が異なるので、別途 `string` を指定しています。
+**ルール:**
+連続する同じ型の引数がある場合、最後の引数を**除く**
+すべての引数で型の記述を省略できます。
+最後の引数に型を指定すれば、それより前の連続した
+同じ型の引数すべてにその型が適用されます。
 
-この書き方はGoのコードで非常によく使われ、関数定義を少し短く、読みやすくするのに役立ちます。
+**例:**
+*   通常の書き方: `func add(a int, b int)`
+*   まとめた書き方: `func add(a, b int)`
+    (a と b は両方 int 型)
+
+*   通常の書き方: `func process(x int, y int, z int, msg string)`
+*   まとめた書き方: `func process(x, y, z int, msg string)`
+    (x, y, z はすべて int 型)
+
+コード例の `multiply(x, y int)` や
+`drawRectangle(width, height int, label string)` も
+このルールに従っています。
+
+この書き方はGoで非常によく使われ、関数定義を
+少し短く読みやすくするのに役立ちます。

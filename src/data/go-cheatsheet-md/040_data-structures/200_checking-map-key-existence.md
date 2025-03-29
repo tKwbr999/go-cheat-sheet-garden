@@ -1,104 +1,78 @@
----
-title: "データ構造: マップ (Map) のキー存在確認 (カンマOKイディオム)"
+## タイトル
+title: データ構造: マップ (Map) のキー存在確認 (カンマOKイディオム)
+
+## タグ
 tags: ["data-structures", "マップ", "map", "キー存在確認", "カンマOK", "if"]
----
 
-マップから値を取得する際 (`value := m[key]`)、もしキーが存在しなければ値の型のゼロ値が返されます。しかし、これだけでは「キーが存在しなかった」のか、「キーは存在するが、その値がたまたまゼロ値だった」のかを区別できません。
-
-例えば、`map[string]int` でキー `"count"` の値を取得した際に `0` が返ってきた場合、それは `"count"` というキーが存在しないのか、それとも `"count"` キーの値が実際に `0` なのか判断できません。
-
-この問題を解決するために、Goにはマップアクセス時にキーの存在有無も同時に確認できる**カンマOKイディオム (comma ok idiom)** が用意されています。
-
-## カンマOKイディオム: `value, ok := マップ名[キー]`
-
-マップの要素にアクセスする際、代入の左辺に2つの変数を書くと、2番目の変数にキーが存在したかどうかを示す `bool` 値が代入されます。
-
-**構文:** `値変数, 存在フラグ変数 := マップ名[キー]`
-
-*   `値変数`: キーに対応する値、またはキーが存在しない場合は値の型のゼロ値が代入されます。
-*   `存在フラグ変数` (慣習的に `ok` という名前が使われることが多い):
-    *   キーがマップ内に**存在すれば `true`** が代入されます。
-    *   キーがマップ内に**存在しなければ `false`** が代入されます。
-
-この `ok` 変数をチェックすることで、キーの存在を確実に判定できます。
-
-## コード例
-
-```go title="カンマOKイディオムによるキー存在確認"
+## コード
+```go
 package main
 
 import "fmt"
 
 func main() {
-	// 点数を格納するマップ
 	scores := map[string]int{
 		"Alice": 95,
-		"Bob":   0, // Bob の点数は 0 点
-		// "Charlie" は存在しない
+		"Bob":   0, // 値が 0
 	}
 
-	// --- キー "Alice" の存在確認 ---
-	scoreAlice, okAlice := scores["Alice"]
-	if okAlice {
-		fmt.Printf("Alice は存在します。点数: %d\n", scoreAlice)
-	} else {
-		fmt.Println("Alice は存在しません。")
-	}
-
-	// --- キー "Bob" の存在確認 ---
-	// Bob は存在するが、値は 0 (int のゼロ値)
-	scoreBob, okBob := scores["Bob"]
+	// カンマOKイディオムで存在確認
+	scoreBob, okBob := scores["Bob"] // Bob は存在する
 	if okBob {
-		fmt.Printf("Bob は存在します。点数: %d\n", scoreBob)
-	} else {
-		fmt.Println("Bob は存在しません。")
+		fmt.Printf("Bob は存在: %d\n", scoreBob) // 存在する (値 0)
 	}
 
-	// --- キー "Charlie" の存在確認 ---
-	scoreCharlie, okCharlie := scores["Charlie"]
-	if okCharlie {
-		fmt.Printf("Charlie は存在します。点数: %d\n", scoreCharlie)
-	} else {
-		// okCharlie は false になる
-		fmt.Printf("Charlie は存在しません。(取得された値: %d)\n", scoreCharlie) // scoreCharlie にはゼロ値 0 が入る
+	scoreCharlie, okCharlie := scores["Charlie"] // Charlie は存在しない
+	if !okCharlie {
+		fmt.Printf("Charlie は不在 (ok=%t, value=%d)\n", okCharlie, scoreCharlie) // ok=false, value=0
 	}
 
-	// --- if 文の初期化ステートメントと組み合わせる (一般的) ---
-	// マップアクセスと存在チェックを if 文の中で行う
-	fmt.Println("\n--- if 文との組み合わせ ---")
+	// if の初期化ステートメントと組み合わせるのが一般的
 	if score, ok := scores["Alice"]; ok {
-		// このブロックは ok が true の場合のみ実行される
-		// score 変数もこの if ブロック内でのみ有効
-		fmt.Printf("Alice の点数は %d です。\n", score)
+		fmt.Printf("Alice の点数: %d\n", score)
 	} else {
-		fmt.Println("Alice のデータはありません。")
+		fmt.Println("Alice は不在")
 	}
 
-	if score, ok := scores["David"]; ok {
-		fmt.Printf("David の点数は %d です。\n", score)
-	} else {
-		// ok が false なのでこちらが実行される
-		// score 変数はゼロ値 (0) を持つが、通常このブロックでは使わない
-		fmt.Println("David のデータはありません。")
+	if _, ok := scores["David"]; !ok { // 値は不要な場合 _ で無視
+		fmt.Println("David は不在")
 	}
 }
 
-/* 実行結果:
-Alice は存在します。点数: 95
-Bob は存在します。点数: 0
-Charlie は存在しません。(取得された値: 0)
-
---- if 文との組み合わせ ---
-Alice の点数は 95 です。
-David のデータはありません。
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+マップから値を取得する際 (`v := m[key]`)、
+キーが存在しないと値の型の**ゼロ値**が返ります。
+これだけでは「キーがない」のか「値がゼロ値」なのか
+区別できません。
 
-*   `scoreAlice, okAlice := scores["Alice"]`: キー `"Alice"` は存在するので、`scoreAlice` に `95`、`okAlice` に `true` が代入されます。
-*   `scoreBob, okBob := scores["Bob"]`: キー `"Bob"` は存在し、値は `0` なので、`scoreBob` に `0`、`okBob` に `true` が代入されます。
-*   `scoreCharlie, okCharlie := scores["Charlie"]`: キー `"Charlie"` は存在しないので、`scoreCharlie` に `int` のゼロ値 `0`、`okCharlie` に `false` が代入されます。
-*   `if score, ok := scores["Alice"]; ok { ... }`: `if` 文の初期化ステートメントでマップアクセスと存在チェックを同時に行い、`ok` が `true` の場合のみ `if` ブロックを実行する、という書き方は非常に一般的です。`score` と `ok` のスコープはこの `if` 文内に限定されます。
+**カンマOKイディオム:**
+マップアクセス時にキーの存在有無も確認できます。
+`value, ok := マップ名[キー]`
 
-カンマOKイディオムは、マップのキーが存在するかどうかを安全かつ明確に確認するための必須のテクニックです。
+*   `value`: キーに対応する値 (なければゼロ値)。
+*   `ok`: キーが存在したか (`bool`)。存在すれば `true`。
+
+この `ok` 変数をチェックすれば、キーの存在を確実に判定できます。
+
+コード例では、`scores["Bob"]` はキーが存在し値が `0` なので
+`okBob` は `true`、`scoreBob` は `0` になります。
+一方、`scores["Charlie"]` はキーが存在しないので
+`okCharlie` は `false`、`scoreCharlie` はゼロ値の `0` になります。
+
+**`if` 文との組み合わせ:**
+`if` 文の初期化ステートメントで同時に行うのが一般的です。
+```go
+if value, ok := m[key]; ok {
+    // キーが存在した場合の処理 (value を使う)
+} else {
+    // キーが存在しなかった場合の処理
+}
+```
+値が不要な場合は `_` で無視できます。
+`if _, ok := m[key]; ok { ... }`
+
+カンマOKイディオムは、マップのキー存在を安全かつ明確に
+確認するための必須テクニックです。

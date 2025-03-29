@@ -1,35 +1,11 @@
----
-title: "I/O 操作: ファイルへの書き込み (`file.Write`, `file.WriteString`)"
+## タイトル
+title: I/O 操作: ファイルへの書き込み (`file.Write`, `file.WriteString`)
+
+## タグ
 tags: ["io-operations", "io", "os", "file", "write", "WriteString", "Writer", "ファイル書き込み"]
----
 
-`os.WriteFile` はファイル全体を一度に書き込みますが、データを少しずつファイルに書き込みたい場合や、既に開いているファイルに追加で書き込みたい場合は、`*os.File` が持つ **`Write`** メソッドを使います。
-
-`os.Create` や `os.OpenFile` で書き込み可能モードで取得した `*os.File` は `io.Writer` インターフェースを満たしており、`Write` メソッドを持っています。
-
-## `file.Write()` の使い方
-
-`Write` メソッドは、引数として渡されたバイトスライス `p` の内容をファイルに書き込みます。
-
-**シグネチャ:** `func (f *File) Write(p []byte) (n int, err error)`
-
-*   `p`: ファイルに書き込むデータを含むバイトスライス (`[]byte`)。
-*   戻り値:
-    *   `n`: 実際にファイルに書き込まれたバイト数。通常は `len(p)` と同じはずですが、ディスク容量不足などで一部しか書き込めなかった場合は少なくなる可能性があります。
-    *   `err`: 書き込み中にエラーが発生した場合、そのエラー。成功した場合は `nil`。
-
-## `file.WriteString()` の使い方
-
-文字列 (`string`) を直接ファイルに書き込みたい場合は、`WriteString` メソッドが便利です。内部的には文字列をバイトスライスに変換して `Write` を呼び出します。
-
-**シグネチャ:** `func (f *File) WriteString(s string) (n int, err error)`
-
-*   `s`: ファイルに書き込む文字列 (`string`)。
-*   戻り値: `Write` と同様。
-
-## コード例
-
-```go title="file.Write と file.WriteString の使用例"
+## コード
+```go
 package main
 
 import (
@@ -40,85 +16,60 @@ import (
 
 func main() {
 	fileName := "output_write.txt"
+	file, err := os.Create(fileName) // 書き込み用に作成/オープン
+	if err != nil { log.Fatal(err) }
+	defer file.Close() // ★ 必ず閉じる
 
-	// --- os.Create で書き込み用にファイルを開く ---
-	// (既に存在する場合は内容が空になる)
-	file, err := os.Create(fileName)
-	if err != nil {
-		log.Fatalf("ファイル作成失敗: %v", err)
-	}
-	// ★ defer でファイルを確実に閉じる ★
-	defer file.Close()
+	fmt.Printf("'%s' を書き込み用にオープン\n", fileName)
 
-	fmt.Printf("ファイル '%s' を書き込み用にオープンしました。\n", fileName)
+	// file.Write でバイトスライスを書き込む
+	data1 := []byte("Write で書き込み\n")
+	n1, err := file.Write(data1)
+	if err != nil { log.Fatalf("Write 失敗: %v", err) }
+	fmt.Printf("Write: %d バイト書き込み\n", n1)
 
-	// --- file.Write でバイトスライスを書き込む ---
-	data1 := []byte("Hello from Write!\n")
-	bytesWritten1, err := file.Write(data1)
-	if err != nil {
-		log.Fatalf("Write 失敗: %v", err)
-	}
-	fmt.Printf("Write: %d バイト書き込みました。\n", bytesWritten1)
+	// file.WriteString で文字列を書き込む
+	n2, err := file.WriteString("WriteString で書き込み\n")
+	if err != nil { log.Fatalf("WriteString 失敗: %v", err) }
+	fmt.Printf("WriteString: %d バイト書き込み\n", n2)
 
-	// --- file.WriteString で文字列を書き込む ---
-	data2 := "WriteString is convenient.\n"
-	bytesWritten2, err := file.WriteString(data2)
-	if err != nil {
-		log.Fatalf("WriteString 失敗: %v", err)
-	}
-	fmt.Printf("WriteString: %d バイト書き込みました。\n", bytesWritten2)
+	// fmt.Fprintf(file, "Fprintf も使える\n") // *os.File は io.Writer
 
-	// --- fmt.Fprintf を使う方法 ---
-	// *os.File は io.Writer なので、Fprintf も使える
-	data3 := "Fprintf also works!"
-	bytesWritten3, err := fmt.Fprintf(file, "%s\n", data3) // Fprintf はフォーマット後のバイト数を返す
-	if err != nil {
-		log.Fatalf("Fprintf 失敗: %v", err)
-	}
-	fmt.Printf("Fprintf: %d バイト書き込みました。\n", bytesWritten3)
-
-
-	fmt.Println("\nファイルへの書き込みが完了しました。")
-
-	// --- 確認のため、書き込んだファイルを読み込んでみる ---
-	readData, readErr := os.ReadFile(fileName)
-	if readErr != nil {
-		log.Printf("警告: 書き込んだファイルの読み込みに失敗: %v", readErr)
-	} else {
-		fmt.Println("\n--- 書き込んだファイルの内容 ---")
-		fmt.Print(string(readData))
-		fmt.Println("-------------------------")
-	}
-
-	// --- 後片付け ---
-	err = os.Remove(fileName)
-	if err != nil {
-		log.Printf("警告: テストファイルの削除に失敗: %v", err)
-	}
+	fmt.Println("書き込み完了")
+	// os.Remove(fileName) // 後片付け
 }
 
-/* 実行結果:
-ファイル 'output_write.txt' を書き込み用にオープンしました。
-Write: 18 バイト書き込みました。
-WriteString: 26 バイト書き込みました。
-Fprintf: 20 バイト書き込みました。
-
-ファイルへの書き込みが完了しました。
-
---- 書き込んだファイルの内容 ---
-Hello from Write!
-WriteString is convenient.
-Fprintf also works!
--------------------------
-*/
 ```
 
-**コード解説:**
+## 解説
+```text
+データを少しずつファイルに書き込んだり、開いているファイルに
+追記したりするには、`*os.File` が持つ **`Write`** メソッドを使います。
+(`os.Create` や書き込み可能モードの `os.OpenFile` で取得した `*os.File` は
+`io.Writer` インターフェースを満たします)
 
-*   `os.Create` でファイルを開き、`defer file.Close()` でクローズを予約します。
-*   `file.Write(data1)`: バイトスライス `data1` をファイルに書き込みます。
-*   `file.WriteString(data2)`: 文字列 `data2` をファイルに書き込みます。
-*   `fmt.Fprintf(file, "%s\n", data3)`: `*os.File` は `io.Writer` なので、`fmt.Fprintf` の第一引数に渡してフォーマットされた文字列を書き込むこともできます。
-*   各書き込み操作の後でエラーチェックを行っています。
+**`file.Write()`:**
+バイトスライス `p` の内容をファイルに書き込みます。
+`n, err := file.Write(p []byte)`
+*   `p`: 書き込むデータ (`[]byte`)。
+*   `n`: 書き込まれたバイト数。
+*   `err`: エラー情報 (成功時は `nil`)。
 
-`file.Write` や `file.WriteString` は、ファイルにデータを少しずつ書き込んだり、生成しながら書き込んだりする場合に使います。`os.WriteFile` と異なり、ファイルを開いたまま複数の書き込み操作を行うことができます。
+**`file.WriteString()`:**
+文字列 `s` をファイルに書き込みます (内部で `Write` を使用)。
+`n, err := file.WriteString(s string)`
+*   `s`: 書き込む文字列 (`string`)。
+*   `n`, `err`: `Write` と同様。
+
+コード例では `os.Create` でファイルを開き (`defer file.Close()` で
+クローズ予約)、`file.Write` でバイトスライスを、
+`file.WriteString` で文字列を書き込んでいます。
+各操作後にエラーチェックが必要です。
+
+**(補足)** `*os.File` は `io.Writer` なので、
+`fmt.Fprintf(file, ...)` を使ってフォーマットされた文字列を
+書き込むことも可能です。
+
+`file.Write`/`WriteString` は、ファイルにデータを段階的に
+書き込む場合に利用します。`os.WriteFile` と異なり、
+ファイルを開いたまま複数回の書き込みが可能です。
