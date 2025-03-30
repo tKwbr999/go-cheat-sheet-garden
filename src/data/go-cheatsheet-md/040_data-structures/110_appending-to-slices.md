@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス (Slice) への要素の追加 `append`
+title: スライス (Slice) への要素の追加 `append`
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "append", "可変長", "容量", "内部配列"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 空インターフェースと型アサーション
+title: 空インターフェースと型アサーション
 
 ## タグ
 tags: ["interfaces", "interface", "any", "空インターフェース", "型アサーション", "type assertion", "カンマOK"]

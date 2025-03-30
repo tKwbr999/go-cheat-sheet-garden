@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: ネストした構造体 (Nested Structs)
+title: ネストした構造体 (Nested Structs)
 
 ## タグ
 tags: ["data-structures", "構造体", "struct", "ネスト", "埋め込み", "フィールド"]

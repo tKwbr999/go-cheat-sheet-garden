@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: `select` と終了チャネル (Quit Channel)
+title: `select` と終了チャネル (Quit Channel)
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "select", "quit channel", "終了通知", "同期", "context"]

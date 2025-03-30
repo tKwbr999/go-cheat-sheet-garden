@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: Context のテスト (モックは通常不要)
+title: Context のテスト (モックは通常不要)
 
 ## タグ
 tags: ["context", "concurrency", "testing", "mocking", "WithCancel", "WithTimeout"]

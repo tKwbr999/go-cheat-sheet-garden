@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: 式を省略した `switch` 文
+title: 式を省略した `switch` 文
 
 ## タグ
 tags: ["flow-control", "switch", "case", "default", "条件分岐", "if"]

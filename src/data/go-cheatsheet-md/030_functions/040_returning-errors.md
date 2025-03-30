@@ -1,5 +1,5 @@
 ## タイトル
-title: 関数: エラーを返す (`error` 型)
+title: エラーを返す (`error` 型)
 
 ## タグ
 tags: ["functions", "func", "戻り値", "return", "エラー処理", "error", "nil", "errors", "fmt.Errorf"]

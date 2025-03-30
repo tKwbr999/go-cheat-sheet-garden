@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: Context への値の追加 (`WithValue`)"
+title: "Context への値の追加 (`WithValue`)"
 
 ## タグ
 tags: ["context", "concurrency", "WithValue", "リクエストスコープ", "値伝達"]

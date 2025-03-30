@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 空インターフェースと型スイッチ
+title: 空インターフェースと型スイッチ
 
 ## タグ
 tags: ["interfaces", "interface", "any", "空インターフェース", "型スイッチ", "type switch", "switch"]

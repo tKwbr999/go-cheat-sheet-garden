@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: 値のキーに関するベストプラクティス"
+title: "値のキーに関するベストプラクティス"
 
 ## タグ
 tags: ["context", "concurrency", "WithValue", "Value", "キー", "独自型", "ベストプラクティス"]

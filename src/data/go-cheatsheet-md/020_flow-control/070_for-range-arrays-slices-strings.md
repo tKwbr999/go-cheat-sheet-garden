@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `for range` ループ (配列, スライス, 文字列)
+title: `for range` ループ (配列, スライス, 文字列)
 
 ## タグ
 tags: ["flow-control", "for", "for range", "ループ", "繰り返し", "配列", "スライス", "文字列", "rune"]

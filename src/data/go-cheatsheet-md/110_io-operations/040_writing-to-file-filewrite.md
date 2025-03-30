@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ファイルへの書き込み (`file.Write`, `file.WriteString`)
+title: ファイルへの書き込み (`file.Write`, `file.WriteString`)
 
 ## タグ
 tags: ["io-operations", "io", "os", "file", "write", "WriteString", "Writer", "ファイル書き込み"]

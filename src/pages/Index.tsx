@@ -1,57 +1,140 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react"; // useRef を追加 (HEAD)
 import Header from "@/components/Header";
-import CheatSheetSection from "@/components/CheatSheetSection";
+// CheatSheetSection は SectionLoader 内で使われるのでここでは不要かも
+// import CheatSheetSection from "@/components/CheatSheetSection";
+import SectionLoader from '@/components/SectionLoader';
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
-// bundled-cheatsheet-data から直接インポート
-import bundledCheatSheetData from "@/data/bundled-cheatsheet-data";
+// bundled-cheatsheet-data のインポートを削除 (HEAD)
 import TableOfContents from "@/components/TableOfContents";
+import { useVirtualizer } from "@tanstack/react-virtual"; // 追加 (HEAD)
+// 型インポートは SectionLoader 内で使われるのでここでは不要かも
+// import type { CheatSheetSection as CheatSheetSectionType } from "@/data/types";
+
+// マニフェストファイルの型定義 (HEAD)
+interface SectionManifestItem {
+  id: string;
+  title: string;
+}
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
-  // 全データを直接取得
-  const cheatSheetData = bundledCheatSheetData;
+  const [sectionsManifest, setSectionsManifest] = useState<SectionManifestItem[]>([]); // マニフェストデータ用 state (HEAD)
+  const [loadingManifest, setLoadingManifest] = useState(true); // ローディング状態 (HEAD)
+  const [errorManifest, setErrorManifest] = useState<string | null>(null); // エラー状態 (HEAD)
 
-  // スクロールボタンの表示制御
+  // スクロールコンテナ用の ref (HEAD)
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  // マニフェストファイルのフェッチ (HEAD)
   useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      setShowScrollButton(offset > 500);
+    const fetchManifest = async () => {
+      try {
+        setLoadingManifest(true);
+        setErrorManifest(null);
+        const response = await fetch('/data/sections-manifest.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: SectionManifestItem[] = await response.json();
+        setSectionsManifest(data);
+      } catch (e) {
+        console.error("Failed to fetch sections manifest:", e);
+        setErrorManifest("チートシートの目次を読み込めませんでした。");
+      } finally {
+        setLoadingManifest(false);
+      }
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    fetchManifest();
   }, []);
 
+  // 仮想化の設定 (HEAD)
+  const rowVirtualizer = useVirtualizer({
+    count: sectionsManifest.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 500, // レビューコメント対応後の値
+    overscan: 5,
+  });
+
+  // スクロールボタンの表示制御 (HEAD - parentRef 基準)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (parentRef.current) {
+        const offset = parentRef.current.scrollTop;
+        setShowScrollButton(offset > 500);
+      }
+    };
+    const scrollElement = parentRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener("scroll", handleScroll);
+      return () => scrollElement.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
+  // scrollToTop (HEAD - parentRef 基準)
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    parentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-background min-h-screen flex flex-col"> {/* flex-col を追加 (HEAD) */}
       <Header />
 
       {/* Main content section with Table of Contents */}
-      <section className="pt-32 pb-16">
-        <div className="container mx-auto max-w-10xl flex gap-4">
-          {/* Table of Contents Sidebar */}
-          <TableOfContents className="hidden lg:block" />
-          {/* Main Content Area */}
-          <main className="flex-1">
-            <div className="mt-16">
-              {/* 全データを使ってセクションをレンダリング */}
-              {cheatSheetData.map((sectionInfo) => (
-                <CheatSheetSection
-                  key={sectionInfo.id}
-                  sectionData={sectionInfo}
-                />
-              ))}
-            </div>
-          </main>
-        </div>
-      </section>
+      {/* スクロールコンテナ (HEAD) */}
+      <div ref={parentRef} className="flex-1 overflow-auto">
+        {/* pt-8 を採用 (HEAD) */}
+        <section className="pt-8 pb-16">
+          <div className="container mx-auto max-w-10xl flex gap-4">
+            {/* Table of Contents Sidebar */}
+            {/* sections を渡す (HEAD), クラス名は feat/64 のものを TableOfContents 側で採用済み */}
+            <TableOfContents sections={sectionsManifest} className="hidden lg:block sticky top-20 h-[calc(100vh-5rem)]" />
+            {/* Main Content Area */}
+            <main className="flex-1">
+              {/* 仮想化リストのコンテナ (HEAD) */}
+              <div
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                {loadingManifest && <div>目次を読み込み中...</div>}
+                {errorManifest && <div className="text-red-500">{errorManifest}</div>}
+                {/* 仮想化されたアイテムのレンダリング (HEAD) */}
+                {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+                  const sectionInfo = sectionsManifest[virtualItem.index];
+                  if (!sectionInfo) return null;
+
+                  return (
+                    <div
+                      key={sectionInfo.id}
+                      ref={rowVirtualizer.measureElement} // レビューコメント対応
+                      data-index={virtualItem.index}      // レビューコメント対応
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: `${virtualItem.size}px`,
+                        transform: `translateY(${virtualItem.start}px)`,
+                      }}
+                      id={sectionInfo.id}
+                    >
+                      {/* SectionLoader を使用 (HEAD), props 渡し修正済み */}
+                      <SectionLoader sectionId={sectionInfo.id} measureRef={rowVirtualizer.measureElement} index={virtualItem.index} />
+                    </div>
+                  );
+                })}
+              </div>
+            </main>
+          </div>
+        </section>
+      </div>
 
       {/* Footer */}
-      <footer className="bg-secondary py-12 border-t border-border">
+      {/* mt-auto を追加 (HEAD) */}
+      <footer className="bg-secondary py-12 border-t border-border mt-auto">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-6 md:mb-0">
@@ -70,6 +153,7 @@ const Index = () => {
       </footer>
 
       {/* Scroll to top button */}
+      {/* onClick は parentRef を使う (HEAD) */}
       <button
         onClick={scrollToTop}
         className={`fixed bottom-8 right-8 bg-gradient-primary text-primary-foreground p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 active:scale-95 ${

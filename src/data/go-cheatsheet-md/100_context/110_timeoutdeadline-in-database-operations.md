@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: データベース操作でのタイムアウト/キャンセル
+title: データベース操作でのタイムアウト/キャンセル
 
 ## タグ
 tags: ["context", "concurrency", "database/sql", "QueryContext", "ExecContext", "BeginTx", "PingContext", "timeout", "cancel"]

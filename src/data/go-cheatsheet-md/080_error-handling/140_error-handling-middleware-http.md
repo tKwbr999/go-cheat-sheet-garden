@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: HTTPミドルウェアによるエラーハンドリング
+title: HTTPミドルウェアによるエラーハンドリング
 
 ## タグ
 tags: ["error-handling", "error", "http", "middleware", "panic", "recover", "defer"]

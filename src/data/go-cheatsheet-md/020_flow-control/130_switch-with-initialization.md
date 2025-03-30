@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `switch` 文と初期化ステートメント
+title: `switch` 文と初期化ステートメント
 
 ## タグ
 tags: ["flow-control", "switch", "case", "default", "初期化ステートメント", "スコープ"]

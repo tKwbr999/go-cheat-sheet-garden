@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ファイル内の位置移動 (`file.Seek`)
+title: ファイル内の位置移動 (`file.Seek`)
 
 ## タグ
 tags: ["io-operations", "io", "os", "file", "seek", "Seek", "SeekStart", "SeekCurrent", "SeekEnd", "オフセット"]

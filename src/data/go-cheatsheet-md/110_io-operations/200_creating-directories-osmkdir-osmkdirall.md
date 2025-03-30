@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ディレクトリの作成 (`os.Mkdir`, `os.MkdirAll`)
+title: ディレクトリの作成 (`os.Mkdir`, `os.MkdirAll`)
 
 ## タグ
 tags: ["io-operations", "os", "directory", "mkdir", "Mkdir", "MkdirAll", "ディレクトリ作成", "パーミッション", "IsExist"]

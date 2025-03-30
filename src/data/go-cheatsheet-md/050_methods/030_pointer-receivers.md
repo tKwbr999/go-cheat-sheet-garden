@@ -1,5 +1,5 @@
 ## タイトル
-title: メソッド: ポインタレシーバ (Pointer Receiver)
+title: ポインタレシーバ (Pointer Receiver)
 
 ## タグ
 tags: ["methods", "レシーバ", "ポインタレシーバ", "ポインタ", "参照渡し", "変更"]

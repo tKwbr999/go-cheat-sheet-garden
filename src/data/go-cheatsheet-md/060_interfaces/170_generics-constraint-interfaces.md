@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: ジェネリクスの型制約としての利用
+title: ジェネリクスの型制約としての利用
 
 ## タグ
 tags: ["interfaces", "interface", "ジェネリクス", "generics", "型パラメータ", "型制約", "constraint"]

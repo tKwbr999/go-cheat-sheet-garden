@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `defer` される関数の引数評価タイミング
+title: `defer` される関数の引数評価タイミング
 
 ## タグ
 tags: ["flow-control", "defer", "引数評価", "関数"]

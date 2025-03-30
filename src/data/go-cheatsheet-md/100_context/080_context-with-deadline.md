@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: デッドライン付き Context (`WithDeadline`)
+title: デッドライン付き Context (`WithDeadline`)
 
 ## タグ
 tags: ["context", "concurrency", "WithDeadline", "cancel", "タイムアウト", "デッドライン"]

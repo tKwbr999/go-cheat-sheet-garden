@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: エラーは値 (`errors.Is`)
+title: エラーは値 (`errors.Is`)
 
 ## タグ
 tags: ["error-handling", "error", "errors", "errors.Is", "エラーラッピング", "%w", "センチネルエラー"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: アトミック操作 (`sync/atomic` パッケージ)
+title: アトミック操作 (`sync/atomic` パッケージ)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "atomic", "アトミック操作", "競合状態", "低レベル同期", "Go1.19"]

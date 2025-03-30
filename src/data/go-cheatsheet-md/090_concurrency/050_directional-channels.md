@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: 方向付きチャネル (Directional Channels)
+title: 方向付きチャネル (Directional Channels)
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "方向付きチャネル", "送信専用", "受信専用", "型安全性"]

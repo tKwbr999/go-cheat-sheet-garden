@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス (Slice) のコピー `copy`
+title: スライス (Slice) のコピー `copy`
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "コピー", "copy", "参照", "内部配列"]

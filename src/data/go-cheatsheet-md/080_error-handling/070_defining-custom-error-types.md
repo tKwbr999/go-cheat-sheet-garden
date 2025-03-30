@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: カスタムエラー型の定義
+title: カスタムエラー型の定義
 
 ## タグ
 tags: ["error-handling", "error", "struct", "interface", "カスタムエラー"]

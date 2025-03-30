@@ -2,72 +2,72 @@
   "title": "Packages",
   "codeExamples": [
     {
-      "title": "パッケージ: コードの構成単位 `package` 宣言",
+      "title": "コードの構成単位 `package` 宣言",
       "description": "",
       "code": "// ファイルの先頭で package main を宣言\npackage main\n\nimport \"fmt\"\n// import \"myutils\" // 他のパッケージもインポート可\n\n// main 関数 (プログラムのエントリーポイント)\nfunc main() {\n\tfmt.Println(\"This is the main package.\")\n\t// msg := myutils.GetMessage() // ライブラリ関数呼び出し例\n\t// fmt.Println(msg)\n}\n\n// このファイルは go run や go build で実行可能"
     },
     {
-      "title": "パッケージ: エクスポートされる識別子 vs エクスポートされない識別子",
+      "title": "エクスポートされる識別子 vs エクスポートされない識別子",
       "description": "",
       "code": "// calculator パッケージ\npackage calculator\n\nimport \"fmt\"\n\n// 公開される定数 (大文字始まり)\nconst MaxValue = 1000\n\n// 公開される関数\nfunc Add(a, b int) int {\n\tlogOperation(\"Add\", a, b) // 非公開関数を呼ぶ\n\treturn a + b\n}\n\n// 公開される構造体\ntype Result struct {\n\tOperation string // 公開フィールド\n\tValue     int    // 公開フィールド\n\tcomment   string // 非公開フィールド\n}\n\n// 非公開の関数 (小文字始まり)\nfunc logOperation(opName string, a, b int) {\n\tfmt.Printf(\"  [internal log] %s(%d, %d)\\n\", opName, a, b)\n}\n\n// 公開される関数 (非公開フィールドを扱う)\nfunc NewResult(op string, val int) *Result {\n\treturn &Result{\n\t\tOperation: op,\n\t\tValue:     val,\n\t\tcomment:   \"完了\", // パッケージ内から非公開フィールドにアクセス\n\t}\n}\n\n// (main パッケージからの呼び出し例は解説参照)"
     },
     {
-      "title": "パッケージ: ドキュメンテーションコメント",
+      "title": "ドキュメンテーションコメント",
       "description": "Goではコードに**ドキュメンテーションコメント**を記述することが\n強く推奨されます。`godoc` コマンド等で整形され、\nパッケージ利用者の助けになります。\n\n**パッケージコメント:**\nパッケージ全体の概要説明。\n**`package` 宣言の直前**に `//` で記述します。\n通常 `// Package パッケージ名 ...` で始めます。",
       "code": "// Package mypackage は、文字列操作ユーティリティを提供します。(パッケージコメント例)\npackage mypackage\n\nimport (\n\t\"fmt\"\n\t\"unicode/utf8\"\n)\n\n// DefaultSeparator はデフォルトの区切り文字を表します。\nconst DefaultSeparator = \",\"\n\n// ErrorCount は処理中に発生したエラーの数を記録します。\nvar ErrorCount int\n\n// Processor は文字列を処理するインターフェースです。\ntype Processor interface {\n\tProcess(s string) (string, error)\n}\n\n// Reverse は与えられた文字列を逆順にして返します。\n// マルチバイト文字にも対応しています。\nfunc Reverse(s string) string {\n\trunes := []rune(s)\n\tn := len(runes)\n\tfor i := 0; i < n/2; i++ {\n\t\trunes[i], runes[n-1-i] = runes[n-1-i], runes[i]\n\t}\n\treturn string(runes)\n}\n\n// CountRunes は文字列の文字数 (Rune の数) を返します。\nfunc CountRunes(s string) int {\n\treturn countRunesInternal(s) // 非公開関数を呼ぶ\n}\n\n// countRunesInternal は非公開関数 (コメントは必須ではない)\nfunc countRunesInternal(s string) int {\n\treturn utf8.RuneCountInString(s)\n}"
     },
     {
-      "title": "\"パッケージ: 単一および複数のインポート\"",
+      "title": "\"単一および複数のインポート\"",
       "description": "Goのプログラムで他のパッケージの機能を利用するには `import` 文を使います。パッケージを一つだけインポートする場合と、複数まとめてインポートする場合があります。\n\nこれらの基本的な使い方については、**「基本」**セクションの**「パッケージのインポート `import`」** (`000_basics/160_import-statements.md`) を参照してください。\n\n**基本的な構文:**\n\n*   **単一インポート:**",
       "code": "import \"fmt\""
     },
     {
-      "title": "パッケージ: インポート時のエイリアス (別名)",
+      "title": "インポート時のエイリアス (別名)",
       "description": "",
       "code": "package main\n\n// fmt パッケージを f というエイリアスでインポート\nimport f \"fmt\"\nimport \"strings\" // 比較用\n\nfunc main() {\n\t// エイリアス f を使って fmt の関数を呼び出す\n\tf.Println(\"エイリアスを使って出力\")\n\n\ts := strings.ToUpper(\"hello\")\n\tf.Println(s) // ここでも f を使う\n}"
     },
     {
-      "title": "パッケージ: ドットインポート (`.`) - 非推奨",
+      "title": "ドットインポート (`.`) - 非推奨",
       "description": "",
       "code": "package main\n\n// fmt と math をドットインポート (非推奨)\nimport (\n\t. \"fmt\"\n\t. \"math\"\n)\n\nfunc main() {\n\t// fmt.Println ではなく Println で呼び出せる\n\t// しかし、これが fmt.Println なのか、\n\t// main パッケージの Println なのか不明瞭になる\n\tPrintln(\"Hello\") // fmt.Println が呼ばれる\n\n\t// math.Pi ではなく Pi で参照できる\n\tPrintf(\"円周率: %f\\n\", Pi) // fmt.Printf も同様\n\n\t// math.Sqrt ではなく Sqrt で参照できる\n\tPrintf(\"平方根: %f\\n\", Sqrt(2))\n\n\t// もし main にも Pi があったら衝突する\n\t// var Pi = 999 // エラーになる可能性\n}"
     },
     {
-      "title": "パッケージ: ブランクインポート (`_`) と副作用",
+      "title": "ブランクインポート (`_`) と副作用",
       "description": "`import` 文でエイリアスとして**ブランク識別子 (`_`)** を使う\n特殊な形式を**ブランクインポート**と呼びます。\n\n**構文:** `import _ \"パッケージパス\"`\n\n**動作と目的:**\nブランクインポートされたパッケージの**識別子は参照できません**。\n主な目的は、パッケージインポートによる**副作用**、\n特にパッケージ内の **`init` 関数の実行**を利用することです。\n`init` 関数はパッケージ初期化時に自動実行されます。\n\nつまり、パッケージの関数などを直接使わないが、\nそのパッケージが初期化時に行う処理（登録処理など）だけを\n実行させたい場合にブランクインポートを使います。\n\n**一般的な使用例:**\n1.  **データベースドライバ登録:**",
       "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"image\"\n\t// ★ PNG フォーマットを扱えるようにブランクインポート\n\t// この行がないと image.Decode は PNG を認識できない\n\t_ \"image/png\"\n\t\"os\"\n)\n\n// 簡単な PNG データ (1x1 透明ピクセル)\nvar pngData = []byte{ /* ... (バイトデータは省略) ... */\n\t0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,\n\t0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,\n\t0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,\n\t0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,\n\t0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,\n\t0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,\n}\n\nfunc main() {\n\t// _ \"image/png\" がインポートされているため PNG を認識可能\n\timg, formatName, err := image.Decode(bytes.NewReader(pngData))\n\tif err != nil {\n\t\tfmt.Fprintf(os.Stderr, \"デコードエラー: %v\\n\", err)\n\t\treturn\n\t}\n\tfmt.Printf(\"フォーマット: %s, サイズ: %dx%d\\n\", formatName, img.Bounds().Dx(), img.Bounds().Dy())\n}"
     },
     {
-      "title": "パッケージ: インポートパスと Go Modules",
+      "title": "インポートパスと Go Modules",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t// 正しいインポートパス (モジュールパスからの絶対パス)\n\t\"mycompany.com/myproject/internal/helper\"\n\n\t// 間違ったインポートパス (相対パスは不可)\n\t// \"./internal/helper\"\n\t// \"../myproject/internal/helper\"\n)\n\nfunc main() {\n\tfmt.Println(\"Main started.\")\n\tmessage := helper.GetHelperMessage() // 正しくインポートされた関数を呼び出す\n\tfmt.Println(message)\n}\n\n// --- internal/helper/helper.go ---\n// package helper\n// func GetHelperMessage() string { return \"Helper message\" }\n\n// --- go.mod ---\n// module mycompany.com/myproject\n// go 1.20"
     },
     {
-      "title": "パッケージ: パッケージ変数 (Package Variables)",
+      "title": "パッケージ変数 (Package Variables)",
       "description": "",
       "code": "// config パッケージ (例)\npackage config\n\nimport \"fmt\"\n\n// --- パッケージ変数 ---\n\n// 公開されるパッケージ変数\nvar DefaultPort int = 8080\n\n// 非公開パッケージ変数\nvar apiKey string = \"initial-key\"\nvar accessCount int // ゼロ値 0\n\n// --- 関数 ---\n\n// 非公開 apiKey を取得する公開関数\nfunc GetAPIKey() string {\n\taccessCount++\n\tfmt.Printf(\"  (GetAPIKey: アクセス %d 回目)\\n\", accessCount)\n\treturn apiKey\n}\n\n// 非公開 apiKey を設定する公開関数\nfunc SetAPIKey(newKey string) {\n\tfmt.Printf(\"  (SetAPIKey: '%s' に変更)\\n\", newKey)\n\tapiKey = newKey\n}\n\n// アクセスカウントを取得する公開関数\nfunc GetAccessCount() int {\n\treturn accessCount\n}\n\n// --- main パッケージからの利用例 (解説参照) ---\n// import \"myproject/config\"\n// func main() {\n//     fmt.Println(config.DefaultPort) // OK\n//     key := config.GetAPIKey()      // OK\n//     config.SetAPIKey(\"new\")      // OK\n//     // fmt.Println(config.apiKey) // エラー (非公開)\n// }"
     },
     {
-      "title": "パッケージ: 初期化関数 `init()`",
+      "title": "初期化関数 `init()`",
       "description": "",
       "code": "// --- パッケージ a (例: a/a.go) ---\npackage a\n\nimport \"fmt\"\n\nvar VarA = \"Var A initialized\"\n\nfunc init() {\n\tfmt.Println(\"Package a: init()\")\n\tVarA = \"Var A modified in init\"\n}\nfunc FuncA() { fmt.Println(\"Package a: FuncA()\") }\n\n// --- main パッケージ (例: main.go) ---\npackage main\n\nimport (\n\t\"fmt\"\n\t\"myproject/a\" // パスは例\n)\n\nvar VarMain = \"Var Main initialized\"\n\nfunc init() {\n\tfmt.Println(\"Package main: init()\")\n}\n\nfunc main() {\n\tfmt.Println(\"--- main() started ---\")\n\tfmt.Println(\"main: VarA:\", a.VarA) // a の init() 実行後の値\n\ta.FuncA()\n\tfmt.Println(\"main: VarMain:\", VarMain)\n\tfmt.Println(\"--- main() finished ---\")\n}\n\n/* 実行結果 (おおよその順序):\nPackage a: init()\nPackage main: init()\n--- main() started ---\nmain: VarA: Var A modified in init\nPackage a: FuncA()\nmain: VarMain: Var Main initialized\n--- main() finished ---\n*/"
     },
     {
-      "title": "パッケージ: 複数の `init()` 関数",
+      "title": "複数の `init()` 関数",
       "description": "",
       "code": "// --- パッケージ mypkg (例: mypkg/a.go) ---\npackage mypkg\nimport \"fmt\"\nfunc init() { fmt.Println(\"mypkg/a.go: init()\") }\nfunc FuncA() { fmt.Println(\"mypkg/a.go: FuncA()\") }\n\n// --- パッケージ mypkg (例: mypkg/b.go) ---\n// (同じパッケージ内に別のファイル)\npackage mypkg\nimport \"fmt\"\nvar VarB = initializeVarB() // 変数初期化は init より先\nfunc initializeVarB() string { fmt.Println(\"mypkg/b.go: VarB init\"); return \"VarB\" }\nfunc init() { fmt.Println(\"mypkg/b.go: init()\") }\nfunc FuncB() { fmt.Println(\"mypkg/b.go: FuncB()\") }\n\n// --- main パッケージ (例: main.go) ---\npackage main\nimport (\n\t\"fmt\"\n\t\"myproject/mypkg\" // パスは例\n)\nfunc main() {\n\tfmt.Println(\"main() 開始\")\n\tmypkg.FuncA()\n\tmypkg.FuncB()\n\tfmt.Println(\"main() 終了\")\n}\n\n/* 実行結果例 (mypkg 内の init 順序は不定):\nmypkg/b.go: VarB init\nmypkg/a.go: init()\nmypkg/b.go: init()\nmain() 開始\nmypkg/a.go: FuncA()\nmypkg/b.go: FuncB()\nmain() 終了\n*/"
     },
     {
-      "title": "パッケージ: Go Modules によるプロジェクト初期化 (`go mod init`)",
+      "title": "Go Modules によるプロジェクト初期化 (`go mod init`)",
       "description": "現在のGo開発では **Go Modules** で依存関係を管理します。\n新しいプロジェクト開始時には Go Modules の初期化が必要です。\n\n**Go Modules とは？**\n*   Go プロジェクトの依存関係管理システム。\n*   プロジェクトごとに利用する外部パッケージのバージョンを記録。\n*   プロジェクトルートの `go.mod` ファイルで管理。\n*   Go 1.16 以降デフォルトで有効。\n\n**プロジェクト初期化: `go mod init`**\nプロジェクトのルートディレクトリでコマンドを実行します。\n**コマンド:** `go mod init モジュールパス`\n\n*   `モジュールパス`: プロジェクトを識別する**一意な名前**。\n    これがプロジェクト内パッケージのインポート基準パスになる。\n    通常はリポジトリパス (`github.com/user/repo`) や\n    組織ドメイン (`mycompany.com/service`) を使う。\n    **他と衝突しない一意なパス**が重要。\n\n実行すると、コード例のような `go.mod` ファイルが生成されます。\n*   `module`: 設定したモジュールパス。\n*   `go`: 使用する Go のバージョン。\n\nこの後、コード (`main.go` など) を記述し、\n`go run` や `go build` で実行します。\n外部パッケージを `import` してビルド等を行うと、\nGo Modules が自動で依存関係を `go.mod` に追加・管理します\n(`go get` で明示的追加も可)。\n\n`go mod init` は Go Modules 開発の最初のステップです。\n\n**参考コード (Bash & go.mod):**",
       "code": "// 4. main.go などを作成して開発開始\npackage main\nimport \"fmt\"\nfunc main() { fmt.Println(\"Hello Modules!\") }\n\n// 5. go run main.go や go build で実行"
     },
     {
-      "title": "パッケージ: `go.mod` ファイルの構造 (Go Modules)",
+      "title": "`go.mod` ファイルの構造 (Go Modules)",
       "description": "Go Modules の中心がプロジェクトルートの **`go.mod`** ファイルです。\nモジュールの定義、Goバージョン、依存関係などを記述します。\n通常は `go mod init` で生成され、`go get` 等で自動更新されます。\n\n**主要なディレクティブ:**\n*   **`module` (必須):** モジュールパスを定義。\n    例: `module github.com/user/repo`\n    これがインポートパスの基準になります。\n*   **`go` (必須):** 期待する Go の最小バージョンを指定。\n    例: `go 1.21`\n*   **`require`:** 直接依存するモジュールとバージョンを指定。\n    `go get` 等で自動管理されます。\n    `// indirect` は間接的な依存を示します。",
       "code": ".mod\n// モジュールパス (必須、通常はリポジトリパス)\nmodule example.com/mymodule\n\n// Go の最小バージョン (必須)\ngo 1.20\n\n// 依存モジュールとそのバージョン (go get などで自動管理)\nrequire (\n\tgithub.com/google/uuid v1.3.0\n\tgolang.org/x/exp v0.0.0-20230310184433-ae3f4189d583\n\tgopkg.in/yaml.v2 v2.4.0 // indirect (間接的な依存)\n)\n\n// 特定バージョンの除外 (オプション)\nexclude github.com/unstable/dependency v0.5.1\n\n// 依存の置き換え (オプション、ローカル開発などで使用)\nreplace example.com/mylibrary => ../mylibrary\n\n// 公開済みバージョンの取り消し (オプション、モジュール作者が使用)\nretract (\n\tv0.1.0 // バグがあったバージョンなど\n\t[v0.1.5, v0.1.9]\n)"
     },
     {
-      "title": "パッケージ: 依存関係の管理 (Go Modules コマンド)",
+      "title": "依存関係の管理 (Go Modules コマンド)",
       "description": "Go Modules は `go` コマンドで依存関係を管理します。\n\n**依存関係の追加・更新: `go get`**\n依存関係を追加・更新します。`go.mod` が更新されます。\n*   `go get <パッケージパス>`: 最新安定版を追加/更新。\n*   `go get <パッケージパス>@<バージョン>`: 特定バージョンを指定\n    (例: `v1.3.0`, コミットハッシュ, `latest`)。\n*   `go get -u ./...` または `go get -u`:\n    全ての依存関係を互換性のある最新版に更新。\n*   `go get <パッケージパス>@none`: 依存関係を削除\n    (通常は `go mod tidy` を推奨)。\n\n**依存関係の整理: `go mod tidy`**\nコードを分析し `go.mod` を整理します。\n*   コード内で `import` されているが `go.mod` にない依存を追加。\n*   `go.mod` にあるがコード内で使われていない依存を削除。\nコード変更後や依存を手動編集した後に実行すると良いです。\n\n**依存関係のベンダー化: `go mod vendor`**\n依存パッケージのソースコードをプロジェクト内の\n`vendor/` ディレクトリにコピーします。\nオフラインビルドや依存コードの同梱管理に使われます。\n`vendor/` があると `go build` は通常ここを使います。\n\n**依存関係の調査:**\n*   `go mod why <パッケージパス>`: なぜそのパッケージが必要か表示。\n*   `go list -m all`: 全ての依存関係リストを表示。\n*   `go list -m -json <パッケージパス>`: 詳細情報を JSON で表示。\n\nこれらのコマンドで Go Modules の依存関係を管理します。\n\n**参考コマンド (Bash):**",
       "code": "// このセクションにはGoのコード例はありません。\n// 依存関係管理コマンドはターミナル (bashなど) で実行します。"
     },
@@ -102,7 +102,7 @@
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"net/http\" // HTTP パッケージ\n)\n\n// ルート (\"/\") ハンドラ関数\nfunc rootHandler(w http.ResponseWriter, r *http.Request) {\n\tif r.URL.Path != \"/\" {\n\t\thttp.NotFound(w, r)\n\t\treturn\n\t}\n\tfmt.Fprint(w, \"Welcome!\") // レスポンス書き込み\n}\n\n// /hello ハンドラ関数\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n\tfmt.Fprint(w, \"Hello!\")\n}\n\nfunc main() {\n\t// ハンドラの登録\n\thttp.HandleFunc(\"/\", rootHandler)\n\thttp.HandleFunc(\"/hello\", helloHandler)\n\n\t// サーバーの起動\n\tport := \":8080\"\n\tfmt.Printf(\"Server listening on port %s\\n\", port)\n\tlog.Fatal(http.ListenAndServe(port, nil)) // エラーなら Fatal\n}"
     },
     {
-      "title": "パッケージ: `internal` パッケージによる内部実装の隠蔽",
+      "title": "`internal` パッケージによる内部実装の隠蔽",
       "description": "Go 1.4 から導入された **`internal`** ディレクトリは、\nパッケージの可視性を制御する特別な仕組みです。\n`internal` 以下に置かれたパッケージはインポート可能な範囲が\nコンパイラによって制限されます。\n\n**ルール:**\n`internal` ディレクトリ、またはそのサブディレクトリ内のパッケージは、\nその `internal` ディレクトリの**直上の親ディレクトリ**を\nルートとするサブツリー内のコードから**のみ**インポートできます。\nそれ以外の場所（別のプロジェクトや、親の外のディレクトリ）からは\nインポートできず、コンパイルエラーになります。\n\n**例:**",
       "code": "// --- internal/config/config.go ---\npackage config\n\n// internal 以下にあるパッケージ\n\n// Load は設定をロードする (エクスポートされている)\nfunc Load() string {\n\treturn \"Loaded Config from internal/config\"\n}\n\n// --- cmd/myapp/main.go (internal の親のサブツリー内) ---\npackage main\n\nimport (\n\t\"example.com/myproject/internal/config\" // OK: インポート可\n\t\"fmt\"\n)\n\nfunc main() {\n\tcfg := config.Load() // internal の関数を呼び出し\n\tfmt.Println(cfg)\n}\n\n// --- anotherproject/main.go (外部プロジェクト) ---\n/*\npackage main\n\nimport (\n\t\"fmt\"\n\t// \"example.com/myproject/internal/config\" // コンパイルエラー!\n)\n\nfunc main() {\n\t// cfg := config.Load() // エラー\n\tfmt.Println(\"Cannot import internal package\")\n}\n// エラー例: use of internal package example.com/myproject/internal/config not allowed\n*/"
     }

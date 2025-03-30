@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ファイルへの書き込み (`os.WriteFile`)
+title: ファイルへの書き込み (`os.WriteFile`)
 
 ## タグ
 tags: ["io-operations", "io", "os", "file", "write", "WriteFile", "ファイル書き込み", "パーミッション"]

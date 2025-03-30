@@ -1,5 +1,5 @@
 ## タイトル
-title: メソッド: 構造体 (Struct) に振る舞いを追加する
+title: 構造体 (Struct) に振る舞いを追加する
 
 ## タグ
 tags: ["methods", "struct", "レシーバ", "func"]

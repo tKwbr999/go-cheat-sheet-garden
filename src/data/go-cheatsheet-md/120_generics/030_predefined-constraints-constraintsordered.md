@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: 定義済みの型制約 (`comparable`, `cmp.Ordered`)
+title: 定義済みの型制約 (`comparable`, `cmp.Ordered`)
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型制約", "type constraint", "comparable", "cmp", "Ordered", "比較", "順序付け"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: タイムアウト Context を使ったテスト
+title: タイムアウト Context を使ったテスト
 
 ## タグ
 tags: ["context", "concurrency", "testing", "timeout", "WithTimeout", "errors.Is", "DeadlineExceeded"]

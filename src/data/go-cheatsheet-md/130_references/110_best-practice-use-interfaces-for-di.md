@@ -1,5 +1,5 @@
 ## タイトル
-title: "ベストプラクティス: 依存性注入 (DI) にインターフェースを使う"
+title: 依存性注入 (DI) にインターフェースを使う
 
 ## タグ
 tags: ["references", "best practice", "dependency injection", "di", "interfaces", "疎結合", "テスト容易性"]

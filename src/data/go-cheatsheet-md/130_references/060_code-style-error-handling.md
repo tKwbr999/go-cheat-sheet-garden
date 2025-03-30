@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: エラーハンドリング (Error Handling)"
+title: エラーハンドリング (Error Handling)
 
 ## タグ
 tags: ["references", "code style", "error handling", "error", "if err != nil", "panic", "recover", "%w"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス (Slice) への要素の挿入
+title: スライス (Slice) への要素の挿入
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "挿入", "append", "copy", "スライス操作"]

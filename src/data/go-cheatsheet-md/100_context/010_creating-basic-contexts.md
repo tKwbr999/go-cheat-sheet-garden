@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: 基本的な Context の生成"
+title: "基本的な Context の生成"
 
 ## タグ
 tags: ["context", "concurrency", "Background", "TODO"]

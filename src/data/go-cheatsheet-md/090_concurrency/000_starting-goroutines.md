@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: Goroutine (ゴルーチン) の開始
+title: Goroutine (ゴルーチン) の開始
 
 ## タグ
 tags: ["concurrency", "goroutine", "go", "並行処理", "軽量スレッド"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: 変数 (Variables)"
+title: 変数 (Variables)
 
 ## タグ
 tags: ["references", "code style", "variables", "naming", "var", ":=", "ゼロ値", "エラー変数"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `for range` でインデックスや値を無視する
+title: `for range` でインデックスや値を無視する
 
 ## タグ
 tags: ["flow-control", "for", "for range", "ループ", "繰り返し", "ブランク識別子", "_"]

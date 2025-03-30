@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 空インターフェース (`interface{}` / `any`)
+title: 空インターフェース (`interface{}` / `any`)
 
 ## タグ
 tags: ["interfaces", "interface", "any", "空インターフェース", "型アサーション", "型スイッチ"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: `make` 関数によるマップ (Map) の作成
+title: `make` 関数によるマップ (Map) の作成
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "make", "初期化", "容量"]

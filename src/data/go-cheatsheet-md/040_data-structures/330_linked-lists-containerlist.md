@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 連結リスト (Linked List) - `container/list`
+title: 連結リスト (Linked List) - `container/list`
 
 ## タグ
 tags: ["data-structures", "連結リスト", "linked list", "container/list", "双方向連結リスト"]

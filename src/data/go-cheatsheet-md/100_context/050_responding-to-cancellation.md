@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: キャンセルへの応答 (`ctx.Done()`)"
+title: "キャンセルへの応答 (`ctx.Done()`)"
 
 ## タグ
 tags: ["context", "concurrency", "goroutine", "Done", "select", "キャンセル"]

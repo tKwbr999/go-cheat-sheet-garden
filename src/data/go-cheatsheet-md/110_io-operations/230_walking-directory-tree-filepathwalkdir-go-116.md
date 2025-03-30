@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)
+title: ディレクトリツリーの探索 (`filepath.WalkDir`, Go 1.16+)
 
 ## タグ
 tags: ["io-operations", "os", "filepath", "WalkDir", "WalkDirFunc", "fs", "DirEntry", "ディレクトリ探索", "再帰", "Go1.16"]

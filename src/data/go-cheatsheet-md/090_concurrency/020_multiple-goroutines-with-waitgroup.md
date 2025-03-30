@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: 複数の Goroutine と WaitGroup
+title: 複数の Goroutine と WaitGroup
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "WaitGroup", "同期", "ループ", "クロージャ"]

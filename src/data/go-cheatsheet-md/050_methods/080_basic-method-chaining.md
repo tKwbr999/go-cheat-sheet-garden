@@ -1,5 +1,5 @@
 ## タイトル
-title: メソッド: メソッドチェーン (Method Chaining)
+title: メソッドチェーン (Method Chaining)
 
 ## タグ
 tags: ["methods", "メソッドチェーン", "流暢なインターフェース", "ビルダーパターン", "ポインタレシーバ"]

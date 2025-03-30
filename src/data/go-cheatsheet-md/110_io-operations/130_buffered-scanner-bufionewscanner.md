@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: バッファ付きスキャナー (`bufio.Scanner`)
+title: バッファ付きスキャナー (`bufio.Scanner`)
 
 ## タグ
 tags: ["io-operations", "io", "bufio", "Scanner", "NewScanner", "Scan", "Text", "Err", "Split", "ファイル読み込み", "行単位"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: 複数の `defer` と実行順序 (LIFO)
+title: 複数の `defer` と実行順序 (LIFO)
 
 ## タグ
 tags: ["flow-control", "defer", "LIFO", "スタック", "関数"]

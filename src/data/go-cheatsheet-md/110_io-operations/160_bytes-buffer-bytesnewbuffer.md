@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: バイトバッファ (`bytes.Buffer`)
+title: バイトバッファ (`bytes.Buffer`)
 
 ## タグ
 tags: ["io-operations", "io", "bytes", "Buffer", "NewBuffer", "NewBufferString", "Reader", "Writer", "メモリ", "バッファ"]

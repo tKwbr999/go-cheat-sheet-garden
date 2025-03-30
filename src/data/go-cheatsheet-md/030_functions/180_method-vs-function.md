@@ -1,5 +1,5 @@
 ## タイトル
-title: 関数 vs メソッド: 基本的な違い
+title: 関数 vs 基本的な違い
 
 ## タグ
 tags: ["functions", "func", "メソッド", "method", "レシーバ", "型"]

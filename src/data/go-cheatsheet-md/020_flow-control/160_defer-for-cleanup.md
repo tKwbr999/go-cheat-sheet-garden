@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `defer` による後処理の予約
+title: `defer` による後処理の予約
 
 ## タグ
 tags: ["flow-control", "defer", "クリーンアップ", "リソース解放", "関数"]

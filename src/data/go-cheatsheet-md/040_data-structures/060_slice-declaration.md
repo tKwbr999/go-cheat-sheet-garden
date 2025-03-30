@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス (Slice) の宣言
+title: スライス (Slice) の宣言
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "可変長", "参照型", "nil"]

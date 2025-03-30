@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: ジェネリクスのメソッド制約
+title: ジェネリクスのメソッド制約
 
 ## タグ
 tags: ["interfaces", "interface", "ジェネリクス", "generics", "型パラメータ", "型制約", "constraint", "メソッドセット"]
@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-// 制約インターフェース: String() メソッドを持つ
+// 制約String() メソッドを持つ
 type Stringer interface {
 	String() string
 }

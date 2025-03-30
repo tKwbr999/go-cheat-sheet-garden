@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: 早期リターンパターン (Early Return)
+title: 早期リターンパターン (Early Return)
 
 ## タグ
 tags: ["error-handling", "error", "if", "return", "早期リターン", "ガード節", "コーディングスタイル"]

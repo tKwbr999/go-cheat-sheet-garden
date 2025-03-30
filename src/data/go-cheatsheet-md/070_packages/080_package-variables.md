@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: パッケージ変数 (Package Variables)
+title: パッケージ変数 (Package Variables)
 
 ## タグ
 tags: ["packages", "package", "変数", "var", "スコープ", "グローバル変数", "副作用"]

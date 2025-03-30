@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 配列 (Array) の初期化
+title: 配列 (Array) の初期化
 
 ## タグ
 tags: ["data-structures", "配列", "array", "初期化", "リテラル"]

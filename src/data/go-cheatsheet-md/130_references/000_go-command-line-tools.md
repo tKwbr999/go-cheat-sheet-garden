@@ -1,5 +1,5 @@
 ## タイトル
-title: "リファレンス: Go コマンドラインツール"
+title: Go コマンドラインツール
 
 ## タグ
 tags: ["references", "go command", "cli", "build", "run", "test", "get", "install", "fmt", "vet", "mod", "list", "doc", "version"]

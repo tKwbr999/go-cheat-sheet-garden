@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: 初期化関数 `init()`
+title: 初期化関数 `init()`
 
 ## タグ
 tags: ["packages", "package", "init", "初期化", "副作用"]

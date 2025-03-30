@@ -1,5 +1,5 @@
 ## タイトル
-title: "リファレンス: 基本的なテスト関数"
+title: 基本的なテスト関数
 
 ## タグ
 tags: ["references", "testing", "go test", "TestXxx", "t.Errorf", "t.Fatalf"]
