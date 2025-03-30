@@ -14,7 +14,11 @@ interface TableOfContentsProps {
   className?: string;
 }
 
-const TableOfContents: React.FC<TableOfContentsProps> = ({ sections, className }) => { // props から sections を受け取る
+const TableOfContents: React.FC<TableOfContentsProps> = ({
+  sections,
+  className,
+}) => {
+  // props から sections を受け取る
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   // bundledCheatSheetData からの生成を削除
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -75,16 +79,15 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections, className }
 
     // Observe elements after a short delay to ensure they are in the DOM
     const timeoutId = setTimeout(() => {
-        // props から渡された sections を使用
-        sections.forEach((section) => {
-            const element = document.getElementById(section.id);
-            if (element) {
-                sectionRefs.current.set(section.id, element); // Update ref map just in case
-                currentObserver.observe(element);
-            }
-        });
+      // props から渡された sections を使用
+      sections.forEach((section) => {
+        const element = document.getElementById(section.id);
+        if (element) {
+          sectionRefs.current.set(section.id, element); // Update ref map just in case
+          currentObserver.observe(element);
+        }
+      });
     }, 100); // Delay to ensure DOM elements are ready
-
 
     return () => {
       clearTimeout(timeoutId);
@@ -114,13 +117,14 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections, className }
   return (
     <nav
       className={cn(
-        "sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto pt-0 pr-4 pb-4 pl-4 border-r hidden lg:block w-64", // feat/64 のクラス名を採用
+        "sticky h-[calc(100vh-5rem)] overflow-y-auto pt-0 pr-4 pb-4 pl-4 border-r hidden lg:block w-64", // feat/64 のクラス名を採用
         className
       )}
     >
-      {" "}
       {/* Changed border-l to border-r */}
-      <h3 className="text-lg font-semibold mb-4 text-foreground"> {/* feat/64 のクラス名を採用 */}
+      <h3 className="text-lg font-semibold mb-4 text-foreground">
+        {" "}
+        {/* feat/64 のクラス名を採用 */}
         Table of Contents
       </h3>{" "}
       {/* Ensure text color contrast */}

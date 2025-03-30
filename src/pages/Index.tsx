@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react"; // useRef を追加 (HEAD)
 import Header from "@/components/Header";
 // CheatSheetSection は SectionLoader 内で使われるのでここでは不要かも
 // import CheatSheetSection from "@/components/CheatSheetSection";
-import SectionLoader from '@/components/SectionLoader';
+import SectionLoader from "@/components/SectionLoader";
 import GoLogo from "@/components/GoLogo";
 import { ArrowUp } from "lucide-react";
 // bundled-cheatsheet-data のインポートを削除 (HEAD)
@@ -19,7 +19,9 @@ interface SectionManifestItem {
 
 const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [sectionsManifest, setSectionsManifest] = useState<SectionManifestItem[]>([]); // マニフェストデータ用 state (HEAD)
+  const [sectionsManifest, setSectionsManifest] = useState<
+    SectionManifestItem[]
+  >([]); // マニフェストデータ用 state (HEAD)
   const [loadingManifest, setLoadingManifest] = useState(true); // ローディング状態 (HEAD)
   const [errorManifest, setErrorManifest] = useState<string | null>(null); // エラー状態 (HEAD)
 
@@ -32,7 +34,7 @@ const Index = () => {
       try {
         setLoadingManifest(true);
         setErrorManifest(null);
-        const response = await fetch('/data/sections-manifest.json');
+        const response = await fetch("/data/sections-manifest.json");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -77,28 +79,33 @@ const Index = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen flex flex-col"> {/* flex-col を追加 (HEAD) */}
+    <div className="bg-background min-h-screen flex flex-col">
+      {" "}
+      {/* flex-col を追加 (HEAD) */}
       <Header />
-
       {/* Main content section with Table of Contents */}
-      {/* pt-8 を採用 (HEAD) */}
-      <section className="flex-1 flex pt-8 pb-16 overflow-hidden"> {/* flex-1 と overflow-hidden を追加 */}
-        <div className="container mx-auto max-w-10xl flex gap-4 flex-1"> {/* flex-1 を追加 */}
-          {/* Table of Contents Sidebar */}
-          {/* スクロールコンテナの外に移動 */}
-          <TableOfContents sections={sectionsManifest} className="hidden lg:block sticky top-20 h-[calc(100vh-5rem-2rem)] overflow-y-auto" /> {/* h-[calc(100vh-5rem-2rem)] と overflow-y-auto を追加 */}
-          {/* Main Content Area - スクロールコンテナ */}
-          <main ref={parentRef} className="flex-1 overflow-auto"> {/* ref と overflow-auto を main に移動 */}
+      {/* pt-20 はヘッダー分 */}
+      <section className="flex-1 pt-20 pb-16"> {/* flex と overflow-hidden を削除 */}
+        {/* Table of Contents Sidebar - fixed positioning */}
+        <TableOfContents
+          sections={sectionsManifest}
+          className="hidden lg:block fixed top-20 left-0 w-64 h-[calc(100vh-5rem)] overflow-y-auto border-r border-border" /* fixed, left-0, w-64, border-r を追加 */
+        />
+        {/* Main Content Area - スクロールコンテナ */}
+        {/* container を削除し、main に直接 padding と margin を適用 */}
+        <main ref={parentRef} className="flex-1 overflow-auto lg:ml-64 px-4 md:px-6"> {/* lg:ml-64 と padding を追加 */}
             {/* 仮想化リストのコンテナ (HEAD) */}
             <div
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`,
-                width: '100%',
-                position: 'relative',
+                width: "100%",
+                position: "relative",
               }}
             >
               {loadingManifest && <div>目次を読み込み中...</div>}
-              {errorManifest && <div className="text-red-500">{errorManifest}</div>}
+              {errorManifest && (
+                <div className="text-red-500">{errorManifest}</div>
+              )}
               {/* 仮想化されたアイテムのレンダリング (HEAD) */}
               {rowVirtualizer.getVirtualItems().map((virtualItem) => {
                 const sectionInfo = sectionsManifest[virtualItem.index];
@@ -108,27 +115,31 @@ const Index = () => {
                   <div
                     key={sectionInfo.id}
                     ref={rowVirtualizer.measureElement} // レビューコメント対応
-                    data-index={virtualItem.index}      // レビューコメント対応
+                    data-index={virtualItem.index} // レビューコメント対応
                     style={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 0,
                       left: 0,
-                      width: '100%',
+                      width: "100%",
                       height: `${virtualItem.size}px`,
                       transform: `translateY(${virtualItem.start}px)`,
                     }}
                     id={sectionInfo.id}
                   >
                     {/* SectionLoader を使用 (HEAD), props 渡し修正済み */}
-                    <SectionLoader sectionId={sectionInfo.id} measureRef={rowVirtualizer.measureElement} index={virtualItem.index} />
+                    <SectionLoader
+                      sectionId={sectionInfo.id}
+                      measureRef={rowVirtualizer.measureElement}
+                      index={virtualItem.index}
+                    />
                   </div>
                 );
               })}
             </div>
           </main>
-        </div>
+        {/* この div は section の子要素である必要があった */}
+        {/* </div> */} {/* この div は不要 */}
       </section>
-
       {/* Footer */}
       {/* mt-auto を追加 (HEAD) */}
       <footer className="bg-secondary py-12 border-t border-border mt-auto">
@@ -148,7 +159,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-
       {/* Scroll to top button */}
       {/* onClick は parentRef を使う (HEAD) */}
       <button
