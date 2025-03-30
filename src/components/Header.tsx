@@ -58,7 +58,13 @@ const Header = () => {
             rel="noopener noreferrer"
             className="hidden sm:flex items-center text-sm text-muted-foreground hover:text-primary transition-colors duration-200" // Hide on small screens
           >
-            <img src="/public/github-mark.svg" alt="GitHub" width={18} height={18} className="mr-1" />
+            <img
+              src="/github-mark.svg"
+              alt="GitHub"
+              width={18}
+              height={18}
+              className="mr-1"
+            />
             <span>GitHub</span>
           </a>
           {/* Theme Toggle Dropdown Removed */}
