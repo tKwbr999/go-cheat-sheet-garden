@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: 読み取り/書き込みロック (`sync.RWMutex`)
+title: 読み取り/書き込みロック (`sync.RWMutex`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "RWMutex", "Mutex", "読み取りロック", "書き込みロック", "競合状態", "パフォーマンス"]

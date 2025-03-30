@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: マップを使ったセットの実装 (map[T]struct{})
+title: マップを使ったセットの実装 (map[T]struct{})
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "セット", "set", "集合", "struct{}", "空の構造体", "メモリ効率"]

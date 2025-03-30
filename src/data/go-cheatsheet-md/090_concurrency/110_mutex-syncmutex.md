@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: 共有メモリの保護 (`sync.Mutex`)
+title: 共有メモリの保護 (`sync.Mutex`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "Mutex", "相互排他ロック", "競合状態", "Race Condition", "Lock", "Unlock", "defer"]

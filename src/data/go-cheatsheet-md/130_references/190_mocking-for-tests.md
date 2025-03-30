@@ -1,5 +1,5 @@
 ## タイトル
-title: "リファレンス: テストのためのモック (Mocking)"
+title: テストのためのモック (Mocking)
 
 ## タグ
 tags: ["references", "testing", "mocking", "stub", "fake", "dependency injection", "interfaces", "テスト容易性"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: Context の生成 (`context` パッケージ)
+title: Context の生成 (`context` パッケージ)
 
 ## タグ
 tags: ["concurrency", "goroutine", "context", "Background", "TODO", "WithCancel", "WithTimeout", "WithDeadline", "WithValue", "キャンセル", "タイムアウト"]

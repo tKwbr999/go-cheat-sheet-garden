@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ファイルからの読み込み (`file.Read`)
+title: ファイルからの読み込み (`file.Read`)
 
 ## タグ
 tags: ["io-operations", "io", "os", "file", "read", "Reader", "EOF", "ファイル読み込み", "バッファ", "ループ"]

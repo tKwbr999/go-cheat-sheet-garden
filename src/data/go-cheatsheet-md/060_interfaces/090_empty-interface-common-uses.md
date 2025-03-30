@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 空インターフェース (`any`) の一般的な使い道
+title: 空インターフェース (`any`) の一般的な使い道
 
 ## タグ
 tags: ["interfaces", "interface", "any", "空インターフェース", "fmt.Println", "JSON", "コンテナ"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: カスタムエラーの判定 (型アサーション)
+title: カスタムエラーの判定 (型アサーション)
 
 ## タグ
 tags: ["error-handling", "error", "カスタムエラー", "型アサーション", "type assertion", "カンマOK"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: マップ (Map) をキーでソートして反復処理
+title: マップ (Map) をキーでソートして反復処理
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "for range", "ループ", "繰り返し", "ソート", "sort", "順序"]

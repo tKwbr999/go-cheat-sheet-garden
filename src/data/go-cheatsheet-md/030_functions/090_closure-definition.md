@@ -1,5 +1,5 @@
 ## タイトル
-title: 関数: クロージャ (Closure) の定義
+title: クロージャ (Closure) の定義
 
 ## タグ
 tags: ["functions", "func", "クロージャ", "関数リテラル", "スコープ", "状態"]

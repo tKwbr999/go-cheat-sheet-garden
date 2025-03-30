@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 振る舞いの契約を定義する
+title: 振る舞いの契約を定義する
 
 ## タグ
 tags: ["interfaces", "interface", "メソッドシグネチャ", "契約", "ポリモーフィズム"]
@@ -10,7 +10,7 @@ package main
 
 import "fmt"
 
-// Shape インターフェース: 振る舞いを定義
+// Shape 振る舞いを定義
 type Shape interface {
 	Area() float64      // 面積を返すメソッド
 	Perimeter() float64 // 周長を返すメソッド

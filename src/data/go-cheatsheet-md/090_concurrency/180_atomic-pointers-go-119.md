@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: アトミックポインタ (`atomic.Pointer[T]`, Go 1.19+)
+title: アトミックポインタ (`atomic.Pointer[T]`, Go 1.19+)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "atomic", "Pointer", "アトミック操作", "ポインタ", "型安全", "Go1.19"]

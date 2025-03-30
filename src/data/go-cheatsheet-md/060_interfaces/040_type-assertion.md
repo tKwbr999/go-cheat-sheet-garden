@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: 型アサーション (Type Assertion)
+title: 型アサーション (Type Assertion)
 
 ## タグ
 tags: ["interfaces", "interface", "型アサーション", "type assertion", "カンマOK", "panic"]

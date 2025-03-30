@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 構造体の埋め込み (Embedding / Anonymous Fields)
+title: 構造体の埋め込み (Embedding / Anonymous Fields)
 
 ## タグ
 tags: ["data-structures", "構造体", "struct", "埋め込み", "匿名フィールド", "継承", "is-a"]

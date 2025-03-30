@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 匿名構造体 (Anonymous Struct)
+title: 匿名構造体 (Anonymous Struct)
 
 ## タグ
 tags: ["data-structures", "構造体", "struct", "匿名構造体", "リテラル"]

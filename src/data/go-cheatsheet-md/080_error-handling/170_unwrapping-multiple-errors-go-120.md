@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: 結合されたエラーの検査 (Go 1.20+)
+title: 結合されたエラーの検査 (Go 1.20+)
 
 ## タグ
 tags: ["error-handling", "error", "errors", "errors.Join", "errors.Is", "errors.As", "エラーラッピング", "Go1.20"]

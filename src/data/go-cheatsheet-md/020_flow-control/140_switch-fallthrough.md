@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `switch` 文での `fallthrough`
+title: `switch` 文での `fallthrough`
 
 ## タグ
 tags: ["flow-control", "switch", "case", "fallthrough"]

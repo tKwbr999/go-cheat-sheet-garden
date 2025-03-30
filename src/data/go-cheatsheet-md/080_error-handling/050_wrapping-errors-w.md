@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: エラーラッピング (`%w`)
+title: エラーラッピング (`%w`)
 
 ## タグ
 tags: ["error-handling", "error", "fmt.Errorf", "エラーラッピング", "%w", "errors.Is", "errors.As"]

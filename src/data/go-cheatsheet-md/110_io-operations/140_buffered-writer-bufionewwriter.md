@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: バッファ付きライター (`bufio.Writer`)
+title: バッファ付きライター (`bufio.Writer`)
 
 ## タグ
 tags: ["io-operations", "io", "bufio", "Writer", "NewWriter", "Flush", "バッファリング", "効率化", "ファイル書き込み"]

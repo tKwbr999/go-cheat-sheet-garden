@@ -1,5 +1,5 @@
 ## タイトル
-title: "デザインパターン: 関数オプションパターン (Function Options Pattern)"
+title: 関数オプションパターン (Function Options Pattern)
 
 ## タグ
 tags: ["references", "design pattern", "function options", "constructor", "可読性", "柔軟性"]

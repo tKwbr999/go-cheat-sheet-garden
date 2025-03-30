@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: データのコピー (`io.Copy`, `io.CopyN`)
+title: データのコピー (`io.Copy`, `io.CopyN`)
 
 ## タグ
 tags: ["io-operations", "io", "copy", "Copy", "CopyN", "Reader", "Writer", "ファイルコピー"]

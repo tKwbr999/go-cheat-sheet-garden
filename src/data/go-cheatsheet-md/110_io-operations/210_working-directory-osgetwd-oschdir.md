@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: カレントワーキングディレクトリ (`os.Getwd`, `os.Chdir`)
+title: カレントワーキングディレクトリ (`os.Getwd`, `os.Chdir`)
 
 ## タグ
 tags: ["io-operations", "os", "Getwd", "Chdir", "ワーキングディレクトリ", "カレントディレクトリ", "パス"]

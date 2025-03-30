@@ -2,52 +2,52 @@
   "title": "Methods",
   "codeExamples": [
     {
-      "title": "メソッド: 構造体 (Struct) に振る舞いを追加する",
+      "title": "構造体 (Struct) に振る舞いを追加する",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Rectangle struct {\n\tWidth, Height float64\n}\n\n// Area メソッド (値レシーバ)\nfunc (r Rectangle) Area() float64 {\n\treturn r.Width * r.Height\n}\n\n// Scale メソッド (ポインタレシーバ)\nfunc (r *Rectangle) Scale(factor float64) {\n\tif r == nil { return }\n\tr.Width *= factor  // 元の値を変更\n\tr.Height *= factor // 元の値を変更\n\tfmt.Printf(\"  (Scale内: W=%.1f, H=%.1f)\\n\", r.Width, r.Height)\n}\n\nfunc main() {\n\trect := Rectangle{Width: 10, Height: 5}\n\tfmt.Printf(\"初期状態: %+v\\n\", rect)\n\n\t// メソッド呼び出し (変数.メソッド名())\n\tarea := rect.Area() // rect がレシーバ (値渡し)\n\tfmt.Printf(\"面積: %.1f\\n\", area)\n\n\tfmt.Println(\"Scale(2) 呼び出し...\")\n\trect.Scale(2) // rect のアドレスがレシーバに渡される\n\tfmt.Printf(\"Scale後: %+v\\n\", rect) // rect の値が変更されている\n}"
     },
     {
-      "title": "メソッド: 構造体以外の型へのメソッド定義",
+      "title": "構造体以外の型へのメソッド定義",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\n// int を基にした新しい型 MyInt\ntype MyInt int\n\n// MyInt 型に対する IsEven メソッド (値レシーバ)\nfunc (m MyInt) IsEven() bool {\n\treturn m%2 == 0\n}\n\n// MyInt 型に対する Add メソッド (ポインタレシーバ)\nfunc (m *MyInt) Add(n MyInt) {\n\tif m == nil { return }\n\t*m += n // 元の値を変更\n}\n\nfunc main() {\n\tvar num1 MyInt = 10\n\tnum2 := MyInt(25)\n\n\t// IsEven メソッド呼び出し\n\tfmt.Printf(\"%d は偶数か？ %t\\n\", num1, num1.IsEven())\n\tfmt.Printf(\"%d は偶数か？ %t\\n\", num2, num2.IsEven())\n\n\t// Add メソッド呼び出し (ポインタレシーバ)\n\tfmt.Printf(\"Add(5) 前: %d\\n\", num1)\n\t(&num1).Add(5) // アドレスを渡して呼び出す\n\tfmt.Printf(\"Add(5) 後: %d\\n\", num1) // num1 の値が変更される\n\n\t// numPtr := &num2\n\t// numPtr.Add(10) // ポインタ変数経由でも呼び出せる\n}"
     },
     {
-      "title": "メソッド: 値レシーバ (Value Receiver)",
+      "title": "値レシーバ (Value Receiver)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Point struct{ X, Y int }\n\n// Display メソッド (値レシーバ)\nfunc (p Point) Display() {\n\tfmt.Printf(\"[%d, %d]\", p.X, p.Y)\n\t// p.X = 999 // ここで変更しても呼び出し元には影響しない\n}\n\n// Shift メソッド (値レシーバ) - 呼び出し元の値は変更できない\nfunc (p Point) Shift(dx, dy int) {\n\tfmt.Printf(\"  (Shift内 変更前: %+v)\\n\", p)\n\tp.X += dx // コピーを変更\n\tp.Y += dy // コピーを変更\n\tfmt.Printf(\"  (Shift内 変更後: %+v)\\n\", p)\n}\n\nfunc main() {\n\tpt := Point{X: 10, Y: 20}\n\tfmt.Printf(\"初期状態: %+v\\n\", pt)\n\n\tfmt.Print(\"Display() 呼び出し: \")\n\tpt.Display() // pt のコピーが渡される\n\tfmt.Println()\n\tfmt.Printf(\"Display() 後: %+v (変更なし)\\n\", pt)\n\n\tfmt.Println(\"\\nShift(5, 5) 呼び出し...\")\n\tpt.Shift(5, 5) // pt のコピーが渡される\n\tfmt.Printf(\"Shift() 後: %+v (変更なし！)\\n\", pt)\n}"
     },
     {
-      "title": "メソッド: ポインタレシーバ (Pointer Receiver)",
+      "title": "ポインタレシーバ (Pointer Receiver)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Point struct{ X, Y int }\n\n// Shift メソッド (ポインタレシーバ *Point)\nfunc (p *Point) Shift(dx, dy int) {\n\tif p == nil { // nil チェック推奨\n\t\tfmt.Println(\"nil レシーバです\")\n\t\treturn\n\t}\n\tfmt.Printf(\"  (Shift内 変更前: %+v)\\n\", *p)\n\tp.X += dx // ポインタ経由で元の値を変更\n\tp.Y += dy\n\tfmt.Printf(\"  (Shift内 変更後: %+v)\\n\", *p)\n}\n\nfunc main() {\n\tpt1 := Point{X: 10, Y: 20}\n\tfmt.Printf(\"初期状態 pt1: %+v\\n\", pt1)\n\n\tfmt.Println(\"\\nShift(5, 5) 呼び出し...\")\n\t// 値変数 pt1 でポインタレシーバメソッドを呼ぶ\n\t// Go が暗黙的にアドレス (&pt1) を渡す\n\tpt1.Shift(5, 5)\n\tfmt.Printf(\"Shift() 後の pt1: %+v (変更された！)\\n\", pt1)\n\n\t// var nilPtr *Point = nil\n\t// nilPtr.Shift(1, 1) // メソッド内で nil チェックがあれば panic しない\n}"
     },
     {
-      "title": "メソッド: レシーバ型の自動変換",
+      "title": "レシーバ型の自動変換",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Counter struct{ count int }\n\n// 値レシーバメソッド\nfunc (c Counter) Value() int {\n\tfmt.Println(\"  (Value() called)\")\n\treturn c.count\n}\n\n// ポインタレシーバメソッド\nfunc (c *Counter) Increment() {\n\tfmt.Println(\"  (Increment() called)\")\n\tif c == nil { return }\n\tc.count++\n}\n\nfunc main() {\n\tvar c1 Counter        // 値変数\n\tc2 := &Counter{count: 10} // ポインタ変数\n\n\tfmt.Println(\"--- 値変数 c1 で呼び出し ---\")\n\tfmt.Printf(\"c1.Value(): %d\\n\", c1.Value())     // 値 -> 値レシーバ (OK)\n\tc1.Increment()                             // 値 -> ポインタレシーバ (OK: &c1 が渡る)\n\tfmt.Printf(\"Increment() 後 c1.count: %d\\n\", c1.count)\n\n\tfmt.Println(\"\\n--- ポインタ変数 c2 で呼び出し ---\")\n\tfmt.Printf(\"c2.Value(): %d\\n\", c2.Value())     // ポインタ -> 値レシーバ (OK: *c2 が渡る)\n\tc2.Increment()                             // ポインタ -> ポインタレシーバ (OK)\n\tfmt.Printf(\"Increment() 後の c2.count: %d\\n\", c2.count)\n}"
     },
     {
-      "title": "メソッド: メソッド式 (Method Expression)",
+      "title": "メソッド式 (Method Expression)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct{ X, Y float64 }\n\n// Distance メソッド (値レシーバ)\nfunc (p Point) Distance(q Point) float64 {\n\tfmt.Printf(\"  (Distance: p=%+v, q=%+v)\\n\", p, q)\n\tdx := q.X - p.X\n\tdy := q.Y - p.Y\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp := Point{1, 2}\n\tq := Point{4, 6}\n\n\t// メソッド式: 型名.メソッド名\n\t// Point.Distance は func(Point, Point) float64 型の関数値\n\tdistanceFunc := Point.Distance\n\tfmt.Printf(\"メソッド式の型: %T\\n\", distanceFunc)\n\n\t// メソッド式を関数として呼び出す\n\t// 第1引数にレシーバ (p)、第2引数以降にメソッド引数 (q)\n\tdist := distanceFunc(p, q)\n\tfmt.Printf(\"distanceFunc(p, q) = %f\\n\", dist) // 5.0\n\n\t// 通常のメソッド呼び出し: p.Distance(q)\n}"
     },
     {
-      "title": "メソッド: メソッド式 (ポインタレシーバ)",
+      "title": "メソッド式 (ポインタレシーバ)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Counter struct{ count int }\n\n// ポインタレシーバメソッド\nfunc (c *Counter) Increment() {\n\tif c == nil { return }\n\tc.count++\n}\n\nfunc main() {\n\tc := Counter{count: 5}\n\tcPtr := &c\n\n\t// ポインタレシーバメソッドのメソッド式を取得\n\t// (*Counter).Increment または Counter.Increment\n\tincrementFunc := (*Counter).Increment\n\tfmt.Printf(\"メソッド式の型: %T\\n\", incrementFunc) // func(*main.Counter)\n\n\t// メソッド式を関数として呼び出す\n\t// 第1引数にはレシーバのポインタ (*Counter) を渡す\n\tincrementFunc(&c) // 値 c のアドレスを渡す\n\tfmt.Printf(\"incrementFunc(&c) 後: c.count = %d\\n\", c.count) // 6\n\n\tincrementFunc(cPtr) // ポインタ変数 cPtr を渡す\n\tfmt.Printf(\"incrementFunc(cPtr) 後: c.count = %d\\n\", c.count) // 7\n\n\t// incrementFunc(c) // コンパイルエラー: 型が違う\n}"
     },
     {
-      "title": "メソッド: メソッド値 (Method Value)",
+      "title": "メソッド値 (Method Value)",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\ntype Point struct{ X, Y float64 }\n\n// Distance メソッド (値レシーバ)\nfunc (p Point) Distance(q Point) float64 {\n\tdx := q.X - p.X\n\tdy := q.Y - p.Y\n\treturn math.Sqrt(dx*dx + dy*dy)\n}\n\nfunc main() {\n\tp := Point{1, 2}\n\tq := Point{4, 6}\n\n\t// メソッド値: 変数 p にバインドされた Distance メソッド\n\t// 型は func(Point) float64 (レシーバ引数なし)\n\tdistanceFromP := p.Distance\n\tfmt.Printf(\"メソッド値の型: %T\\n\", distanceFromP)\n\n\t// メソッド値を関数として呼び出す (引数は q のみ)\n\tdist := distanceFromP(q) // 実質的に p.Distance(q) が実行される\n\tfmt.Printf(\"distanceFromP(q) = %f\\n\", dist)\n}"
     },
     {
-      "title": "メソッド: メソッドチェーン (Method Chaining)",
+      "title": "メソッドチェーン (Method Chaining)",
       "description": "メソッド呼び出しを `.` で繋げて流れるように記述するスタイルを\n**メソッドチェーン (Method Chaining)** または\n**流暢なインターフェース (Fluent Interface)** と呼びます。\n一連の操作を直感的かつ簡潔に表現できます。\n\n**実現方法:**\nメソッドが処理後、**レシーバ自身（通常はそのポインタ）を\n戻り値として返す**ように設計します。",
       "code": "package main\n\nimport \"fmt\"\n\ntype StringBuilder struct {\n\tbuffer []byte\n}\n\n// Append は *StringBuilder を返し、チェーンを可能にする\nfunc (sb *StringBuilder) Append(s string) *StringBuilder {\n\tif sb == nil { return nil }\n\tsb.buffer = append(sb.buffer, s...)\n\treturn sb // レシーバ自身を返す\n}\n\n// String は最終結果を返す (チェーンの最後)\nfunc (sb *StringBuilder) String() string {\n\tif sb == nil { return \"\" }\n\treturn string(sb.buffer)\n}\n\nfunc main() {\n\tbuilder := &StringBuilder{} // ポインタで作成\n\n\t// メソッド呼び出しを . で繋げる\n\tresult := builder.Append(\"Hello\").Append(\", \").Append(\"World!\").String()\n\n\tfmt.Println(result) // Hello, World!\n}"
     },
     {
-      "title": "メソッド: メソッドチェーンとビルダーパターン",
+      "title": "メソッドチェーンとビルダーパターン",
       "description": "",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"net/url\"\n)\n\n// HTTPリクエストビルダー\ntype RequestBuilder struct {\n\tmethod  string\n\turl     string\n\theaders map[string]string\n}\n\n// Method設定 (レシーバを返しチェーン可能)\nfunc (rb *RequestBuilder) Method(method string) *RequestBuilder {\n\tif rb == nil { return nil }\n\trb.method = method\n\treturn rb\n}\n\n// URL設定 (レシーバを返しチェーン可能)\nfunc (rb *RequestBuilder) URL(url string) *RequestBuilder {\n\tif rb == nil { return nil }\n\trb.url = url\n\treturn rb\n}\n// Header設定メソッド (同様に *RequestBuilder を返す)\nfunc (rb *RequestBuilder) Header(key, value string) *RequestBuilder {\n\tif rb == nil { return nil }\n\tif rb.headers == nil { rb.headers = make(map[string]string) }\n\trb.headers[key] = value\n\treturn rb\n}\n\n\n// Buildメソッド (最終オブジェクト生成)\nfunc (rb *RequestBuilder) Build() (*http.Request, error) {\n\tif rb == nil { return nil, fmt.Errorf(\"nil builder\") }\n\treq, err := http.NewRequest(rb.method, rb.url, nil) // Body は nil\n\tif err != nil { return nil, fmt.Errorf(\"request error: %w\", err) }\n\tfor key, value := range rb.headers {\n\t\treq.Header.Add(key, value)\n\t}\n\treturn req, nil\n}\n\nfunc main() {\n\t// メソッドチェーンでリクエスト構築\n\treq, err := (&RequestBuilder{}). // 初期化 (または New 関数を使う)\n\t\t\t\tMethod(\"GET\").\n\t\t\t\tURL(\"https://example.com/api\").\n\t\t\t\tHeader(\"Accept\", \"application/json\").\n\t\t\t\tBuild()\n\n\tif err != nil { fmt.Printf(\"エラー: %v\\n\", err); return }\n\n\tfmt.Printf(\"Method: %s, URL: %s\\n\", req.Method, req.URL)\n\tfmt.Printf(\"Header: %v\\n\", req.Header)\n}"
     },

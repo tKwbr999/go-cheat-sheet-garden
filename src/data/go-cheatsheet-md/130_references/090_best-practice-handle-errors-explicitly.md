@@ -1,5 +1,5 @@
 ## タイトル
-title: "ベストプラクティス: エラーを明示的に処理する"
+title: エラーを明示的に処理する
 
 ## タグ
 tags: ["references", "best practice", "error handling", "error", "if err != nil"]

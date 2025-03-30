@@ -1,5 +1,5 @@
 ## タイトル
-title: メソッド: メソッド式 (Method Expression)
+title: メソッド式 (Method Expression)
 
 ## タグ
 tags: ["methods", "メソッド式", "関数型", "レシーバ"]

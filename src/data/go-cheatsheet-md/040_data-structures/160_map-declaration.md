@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: マップ (Map) の宣言
+title: マップ (Map) の宣言
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "キーバリュー", "辞書", "連想配列", "nil"]

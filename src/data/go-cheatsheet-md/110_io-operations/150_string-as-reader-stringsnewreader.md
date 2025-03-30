@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: 文字列を Reader として扱う (`strings.NewReader`)
+title: 文字列を Reader として扱う (`strings.NewReader`)
 
 ## タグ
 tags: ["io-operations", "io", "strings", "Reader", "NewReader", "テスト", "メモリ"]

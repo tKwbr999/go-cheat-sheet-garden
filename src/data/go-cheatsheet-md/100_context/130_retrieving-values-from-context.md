@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: Context からの値の取得 (`Value`)"
+title: "Context からの値の取得 (`Value`)"
 
 ## タグ
 tags: ["context", "concurrency", "Value", "型アサーション", "リクエストスコープ", "値伝達"]

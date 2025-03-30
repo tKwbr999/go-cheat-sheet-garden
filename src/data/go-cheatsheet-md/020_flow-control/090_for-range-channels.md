@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `for range` ループ (チャネル)
+title: `for range` ループ (チャネル)
 
 ## タグ
 tags: ["flow-control", "for", "for range", "ループ", "繰り返し", "チャネル", "channel", "並行処理", "close"]

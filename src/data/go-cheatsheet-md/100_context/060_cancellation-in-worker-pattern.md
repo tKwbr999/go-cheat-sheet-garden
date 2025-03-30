@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: ワーカーパターンにおけるキャンセル
+title: ワーカーパターンにおけるキャンセル
 
 ## タグ
 tags: ["context", "concurrency", "goroutine", "worker pool", "select", "Done", "キャンセル"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: タイムアウト付き Context (`WithTimeout`)
+title: タイムアウト付き Context (`WithTimeout`)
 
 ## タグ
 tags: ["context", "concurrency", "WithTimeout", "cancel", "タイムアウト", "デッドライン"]

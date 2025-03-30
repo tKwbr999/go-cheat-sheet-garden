@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: Optional/Maybe 型パターン
+title: Optional/Maybe 型パターン
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型パラメータ", "type parameter", "データ構造", "struct", "Optional", "Maybe", "nil", "ゼロ値"]

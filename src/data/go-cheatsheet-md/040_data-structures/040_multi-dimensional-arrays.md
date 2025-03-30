@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 多次元配列 (Multi-dimensional Array)
+title: 多次元配列 (Multi-dimensional Array)
 
 ## タグ
 tags: ["data-structures", "配列", "array", "多次元配列", "2次元配列", "行列"]

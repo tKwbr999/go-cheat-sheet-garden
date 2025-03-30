@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: パニック `panic`
+title: パニック `panic`
 
 ## タグ
 tags: ["flow-control", "panic", "エラー処理", "defer", "ランタイムエラー"]

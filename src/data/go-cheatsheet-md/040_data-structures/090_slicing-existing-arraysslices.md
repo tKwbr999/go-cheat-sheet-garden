@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス操作 (Slicing) - 配列やスライスから作る
+title: スライス操作 (Slicing) - 配列やスライスから作る
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "配列", "array", "スライス操作", "参照", "共有"]

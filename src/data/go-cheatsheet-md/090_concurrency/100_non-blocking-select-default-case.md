@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: ノンブロッキング `select` (`default` ケース)
+title: ノンブロッキング `select` (`default` ケース)
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "select", "default", "ノンブロッキング"]

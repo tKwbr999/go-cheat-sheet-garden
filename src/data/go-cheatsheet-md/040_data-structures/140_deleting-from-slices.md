@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: スライス (Slice) からの要素の削除
+title: スライス (Slice) からの要素の削除
 
 ## タグ
 tags: ["data-structures", "スライス", "slice", "削除", "append", "スライス操作"]

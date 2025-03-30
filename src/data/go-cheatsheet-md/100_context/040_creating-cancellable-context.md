@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: キャンセル可能な Context の生成 (`WithCancel`)
+title: キャンセル可能な Context の生成 (`WithCancel`)
 
 ## タグ
 tags: ["context", "concurrency", "WithCancel", "cancel", "キャンセル"]

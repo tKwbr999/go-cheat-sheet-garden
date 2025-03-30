@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: `defer` と組み合わせたエラーハンドリング
+title: `defer` と組み合わせたエラーハンドリング
 
 ## タグ
 tags: ["error-handling", "error", "defer", "クリーンアップ", "名前付き戻り値"]

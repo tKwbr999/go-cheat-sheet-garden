@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: `error` インターフェース
+title: `error` インターフェース
 
 ## タグ
 tags: ["error-handling", "error", "interface", "エラー", "Error()"]

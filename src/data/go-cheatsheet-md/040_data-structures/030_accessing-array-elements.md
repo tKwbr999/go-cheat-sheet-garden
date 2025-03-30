@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 配列 (Array) の要素へのアクセス
+title: 配列 (Array) の要素へのアクセス
 
 ## タグ
 tags: ["data-structures", "配列", "array", "インデックス", "アクセス", "代入", "範囲外アクセス", "panic"]

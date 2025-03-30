@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: Goroutine の終了を待つ (`sync.WaitGroup`)
+title: Goroutine の終了を待つ (`sync.WaitGroup`)
 
 ## タグ
 tags: ["concurrency", "goroutine", "sync", "WaitGroup", "同期", "Add", "Done", "Wait"]

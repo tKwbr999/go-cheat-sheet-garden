@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: 無限ループ `for {}` と `break`
+title: 無限ループ `for {}` と `break`
 
 ## タグ
 tags: ["flow-control", "for", "無限ループ", "ループ", "繰り返し", "break"]

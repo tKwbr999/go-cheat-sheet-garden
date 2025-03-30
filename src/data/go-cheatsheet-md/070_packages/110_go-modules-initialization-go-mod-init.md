@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: Go Modules によるプロジェクト初期化 (`go mod init`)
+title: Go Modules によるプロジェクト初期化 (`go mod init`)
 
 ## タグ
 tags: ["packages", "package", "go modules", "go mod init", "モジュールパス", "依存関係管理"]

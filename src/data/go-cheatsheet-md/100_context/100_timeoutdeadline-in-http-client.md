@@ -1,5 +1,5 @@
 ## タイトル
-title: Context パッケージ: HTTP クライアントでのタイムアウト/キャンセル
+title: HTTP クライアントでのタイムアウト/キャンセル
 
 ## タグ
 tags: ["context", "concurrency", "net/http", "http client", "timeout", "deadline", "cancel", "NewRequestWithContext", "Do"]

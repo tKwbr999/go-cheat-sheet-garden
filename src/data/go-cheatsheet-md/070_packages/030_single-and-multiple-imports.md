@@ -1,5 +1,5 @@
 ## タイトル
-title: "パッケージ: 単一および複数のインポート"
+title: "単一および複数のインポート"
 
 ## タグ
 tags: ["packages", "package", "import"]

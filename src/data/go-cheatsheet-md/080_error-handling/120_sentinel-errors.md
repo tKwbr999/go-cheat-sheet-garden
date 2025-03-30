@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: センチネルエラー (Sentinel Errors)
+title: センチネルエラー (Sentinel Errors)
 
 ## タグ
 tags: ["error-handling", "error", "errors", "errors.New", "errors.Is", "センチネルエラー"]

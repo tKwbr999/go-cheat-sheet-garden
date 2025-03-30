@@ -1,5 +1,5 @@
 ## タイトル
-title: 関数: 関数型 (Function Type) の宣言
+title: 関数型 (Function Type) の宣言
 
 ## タグ
 tags: ["functions", "func", "型", "関数型", "type"]

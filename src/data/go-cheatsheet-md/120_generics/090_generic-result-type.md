@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: Result 型パターン
+title: Result 型パターン
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型パラメータ", "type parameter", "データ構造", "struct", "Result", "エラー処理", "関数型プログラミング"]

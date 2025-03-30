@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: Context による明示的なキャンセル
+title: Context による明示的なキャンセル
 
 ## タグ
 tags: ["concurrency", "goroutine", "context", "WithCancel", "cancel", "キャンセル", "伝播"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: "リファレンス: テーブル駆動テスト (Table-Driven Tests)"
+title: テーブル駆動テスト (Table-Driven Tests)
 
 ## タグ
 tags: ["references", "testing", "go test", "table-driven", "t.Run", "サブテスト"]

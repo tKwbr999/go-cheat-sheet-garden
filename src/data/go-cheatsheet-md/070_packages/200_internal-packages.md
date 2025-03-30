@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: `internal` パッケージによる内部実装の隠蔽
+title: `internal` パッケージによる内部実装の隠蔽
 
 ## タグ
 tags: ["packages", "package", "internal", "可視性", "カプセル化", "依存関係"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: インターフェース (Interfaces)"
+title: インターフェース (Interfaces)
 
 ## タグ
 tags: ["references", "code style", "interfaces", "naming", "er suffix", "interface segregation"]

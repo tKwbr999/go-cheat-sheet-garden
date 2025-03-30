@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: 特定の型のエラーの取得 (`errors.As`)
+title: 特定の型のエラーの取得 (`errors.As`)
 
 ## タグ
 tags: ["error-handling", "error", "errors", "errors.As", "エラーラッピング", "%w", "カスタムエラー", "型アサーション"]

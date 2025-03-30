@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: 一時ファイルの作成 (`os.CreateTemp`)
+title: 一時ファイルの作成 (`os.CreateTemp`)
 
 ## タグ
 tags: ["io-operations", "os", "CreateTemp", "一時ファイル", "temp", "defer", "Remove", "Close"]

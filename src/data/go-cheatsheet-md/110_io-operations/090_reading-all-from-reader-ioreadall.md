@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: Reader からすべて読み込む (`io.ReadAll`)
+title: Reader からすべて読み込む (`io.ReadAll`)
 
 ## タグ
 tags: ["io-operations", "io", "ReadAll", "Reader", "EOF", "メモリ", "ファイル読み込み", "HTTP"]

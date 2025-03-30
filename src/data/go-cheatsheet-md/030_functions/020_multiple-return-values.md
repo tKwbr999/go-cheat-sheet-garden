@@ -1,5 +1,5 @@
 ## タイトル
-title: 関数: 複数の戻り値
+title: 複数の戻り値
 
 ## タグ
 tags: ["functions", "func", "戻り値", "return", "エラー処理", "_"]

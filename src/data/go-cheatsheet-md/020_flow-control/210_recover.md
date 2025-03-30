@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: パニックからの回復 `recover`
+title: パニックからの回復 `recover`
 
 ## タグ
 tags: ["flow-control", "panic", "recover", "defer", "エラー処理"]

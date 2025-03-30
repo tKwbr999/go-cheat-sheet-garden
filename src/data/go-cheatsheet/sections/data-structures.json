@@ -2,177 +2,177 @@
   "title": "Data Structures",
   "codeExamples": [
     {
-      "title": "データ構造: 配列 (Array) の宣言",
+      "title": "配列 (Array) の宣言",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// サイズ 5 の int 配列 (ゼロ値 0 で初期化)\n\tvar numbers [5]int\n\n\t// サイズ 3 の string 配列 (ゼロ値 \"\" で初期化)\n\tvar names [3]string\n\n\t// サイズ 2 の bool 配列 (ゼロ値 false で初期化)\n\tvar flags [2]bool\n\n\tfmt.Printf(\"numbers: %v (%T, len=%d)\\n\", numbers, numbers, len(numbers))\n\tfmt.Printf(\"names:   %q (%T, len=%d)\\n\", names, names, len(names))\n\tfmt.Printf(\"flags:   %v (%T, len=%d)\\n\", flags, flags, len(flags))\n\n\t// var a [5]int\n\t// var b [10]int\n\t// a = b // コンパイルエラー: 型が違う ([5]int と [10]int)\n}"
     },
     {
-      "title": "データ構造: 配列 (Array) の初期化",
+      "title": "配列 (Array) の初期化",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// サイズ 3 の int 配列を初期化\n\tnumbers := [3]int{10, 20, 30}\n\tfmt.Printf(\"numbers: %v (%T)\\n\", numbers, numbers)\n\n\t// サイズ 4 の string 配列を初期化\n\tfruits := [4]string{\"Apple\", \"Banana\", \"Cherry\", \"Date\"}\n\tfmt.Printf(\"fruits: %q (%T)\\n\", fruits, fruits)\n\n\t// 要素数がサイズと一致しないとコンパイルエラー\n\t// error1 := [3]int{1, 2} // エラー\n\t// error2 := [3]int{1, 2, 3, 4} // エラー\n}"
     },
     {
-      "title": "データ構造: 配列 (Array) のサイズ推論 `...`",
+      "title": "配列 (Array) のサイズ推論 `...`",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// [...] で初期値の数からサイズを推論 (サイズ 4)\n\tnumbers := [...]int{10, 20, 30, 40}\n\tfmt.Printf(\"numbers: %v (%T, len=%d)\\n\", numbers, numbers, len(numbers))\n\n\t// サイズ 3 の配列になる\n\tweekdays := [...]string{\"Mon\", \"Tue\", \"Wed\"}\n\tfmt.Printf(\"weekdays: %q (%T, len=%d)\\n\", weekdays, weekdays, len(weekdays))\n\n\t// サイズ 1 の配列\n\tsingle := [...]bool{true}\n\tfmt.Printf(\"single: %v (%T, len=%d)\\n\", single, single, len(single))\n\n\t// サイズ 0 の配列\n\tempty := [...]float64{}\n\tfmt.Printf(\"empty: %v (%T, len=%d)\\n\", empty, empty, len(empty))\n}"
     },
     {
-      "title": "データ構造: 配列 (Array) の要素へのアクセス",
+      "title": "配列 (Array) の要素へのアクセス",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar numbers [5]int // ゼロ値 [0 0 0 0 0]\n\tfmt.Printf(\"初期状態: %v\\n\", numbers)\n\n\t// 要素への書き込み (代入)\n\tnumbers[0] = 10\n\tnumbers[1] = 20\n\tnumbers[4] = 50\n\tfmt.Printf(\"代入後:   %v\\n\", numbers)\n\n\t// 要素の読み取り\n\tfirst := numbers[0]\n\tlast := numbers[4]\n\tfmt.Printf(\"最初:%d, 最後:%d, インデックス2:%d\\n\", first, last, numbers[2])\n\n\t// ループを使ったアクセス\n\tfmt.Println(\"--- ループ ---\")\n\tfor i := 0; i < len(numbers); i++ {\n\t\tfmt.Printf(\" %d: %d\\n\", i, numbers[i])\n\t\t// numbers[i] = numbers[i] * 2 // 値の変更も可能\n\t}\n\n\t// 範囲外アクセスは panic を引き起こす\n\t// fmt.Println(numbers[5]) // panic: runtime error: index out of range\n}"
     },
     {
-      "title": "データ構造: 多次元配列 (Multi-dimensional Array)",
+      "title": "多次元配列 (Multi-dimensional Array)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 2行3列の配列をリテラルで初期化\n\tmatrix := [2][3]int{\n\t\t{10, 20, 30}, // 行 0\n\t\t{40, 50, 60}, // 行 1\n\t}\n\n\t// 要素の読み取り (行インデックス, 列インデックス)\n\tval1 := matrix[0][1] // 1行目(0), 2列目(1) -> 20\n\tval2 := matrix[1][2] // 2行目(1), 3列目(2) -> 60\n\tfmt.Printf(\"matrix[0][1]=%d, matrix[1][2]=%d\\n\", val1, val2)\n\n\t// 要素への書き込み (代入)\n\tmatrix[0][0] = 11\n\tfmt.Println(\"変更後:\", matrix) // [[11 20 30] [40 50 60]]\n\n\t// ネストしたループで全要素アクセス\n\tfmt.Println(\"--- 全要素 ---\")\n\tfor i := 0; i < len(matrix); i++ { // 行ループ (len=2)\n\t\tfor j := 0; j < len(matrix[i]); j++ { // 列ループ (len=3)\n\t\t\tfmt.Printf(\" matrix[%d][%d]=%d\\n\", i, j, matrix[i][j])\n\t\t}\n\t}\n\t// 範囲外アクセスは panic (例: matrix[2][0])\n}"
     },
     {
-      "title": "データ構造: 配列は値型 (コピーされる)",
+      "title": "配列は値型 (コピーされる)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\n// 配列を受け取る関数 (値渡し)\nfunc modifyArray(arr [3]int) {\n\tfmt.Printf(\"  modifyArray 内 (変更前): %v\\n\", arr)\n\tarr[0] = 999 // 関数内のコピーを変更\n\tfmt.Printf(\"  modifyArray 内 (変更後): %v\\n\", arr)\n}\n\nfunc main() {\n\t// 配列の代入 (コピーが発生)\n\toriginal := [3]int{1, 2, 3}\n\tcopied := original // 全要素がコピーされる\n\tcopied[0] = 100    // コピー先を変更\n\n\tfmt.Printf(\"original: %v\\n\", original) // 元は不変 [1 2 3]\n\tfmt.Printf(\"copied:   %v\\n\", copied)   // コピーが変更 [100 2 3]\n\n\t// 関数への配列の引き渡し (コピーが発生)\n\tarrForFunc := [3]int{10, 20, 30}\n\tfmt.Printf(\"\\n関数呼び出し前: %v\\n\", arrForFunc)\n\tmodifyArray(arrForFunc) // 値のコピーが渡される\n\tfmt.Printf(\"関数呼び出し後: %v\\n\", arrForFunc) // 元は不変 [10 20 30]\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) の宣言",
+      "title": "スライス (Slice) の宣言",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// スライスの宣言 (初期値なし)\n\tvar numbers []int\n\tvar names []string\n\n\t// ゼロ値は nil\n\tfmt.Printf(\"numbers: %v (%T)\\n\", numbers, numbers)\n\tfmt.Printf(\"names:   %q (%T)\\n\", names, names)\n\n\tif numbers == nil {\n\t\tfmt.Println(\"numbers は nil スライスです。\")\n\t}\n\n\t// nil スライスの長さと容量は 0\n\tfmt.Printf(\"len=%d, cap=%d\\n\", len(numbers), cap(numbers))\n\n\t// nil スライスへの append は可能\n\tnumbers = append(numbers, 10)\n\tfmt.Printf(\"append 後: %v (len=%d, cap=%d)\\n\", numbers, len(numbers), cap(numbers))\n}"
     },
     {
-      "title": "データ構造: `make` 関数によるスライス (Slice) の作成",
+      "title": "`make` 関数によるスライス (Slice) の作成",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 長さのみ指定: make([]要素型, 長さ)\n\t// 長さ 5、容量 5 の int スライス (要素は 0)\n\ts1 := make([]int, 5)\n\tfmt.Printf(\"s1: %v (len=%d, cap=%d)\\n\", s1, len(s1), cap(s1))\n\ts1[0] = 10 // アクセス・代入可能\n\tfmt.Printf(\"s1変更後: %v\\n\", s1)\n\n\t// 長さと容量を指定: make([]要素型, 長さ, 容量)\n\t// 長さ 3、容量 10 の string スライス (要素は \"\")\n\ts2 := make([]string, 3, 10)\n\tfmt.Printf(\"s2: %q (len=%d, cap=%d)\\n\", s2, len(s2), cap(s2))\n\ts2[0] = \"A\"\n\t// s2[3] = \"B\" // エラー: 長さ(3)を超えるインデックスはアクセス不可\n\n\t// 長さ 0、容量 5 のスライス\n\ts3 := make([]int, 0, 5)\n\tfmt.Printf(\"s3: %v (len=%d, cap=%d)\\n\", s3, len(s3), cap(s3))\n}"
     },
     {
-      "title": "データ構造: スライスリテラルによる作成と初期化",
+      "title": "スライスリテラルによる作成と初期化",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// int スライスリテラル\n\tnumbers := []int{10, 20, 30, 40, 50}\n\tfmt.Printf(\"numbers: %v (len=%d, cap=%d)\\n\", numbers, len(numbers), cap(numbers))\n\n\t// string スライスリテラル\n\tnames := []string{\"Alice\", \"Bob\", \"Charlie\"}\n\tfmt.Printf(\"names: %q (len=%d, cap=%d)\\n\", names, len(names), cap(names))\n\n\t// bool スライスリテラル\n\tflags := []bool{true, false, true}\n\tfmt.Printf(\"flags: %v (len=%d, cap=%d)\\n\", flags, len(flags), cap(flags))\n\n\t// 空のスライスリテラル (nil ではない)\n\temptySlice := []float64{}\n\tfmt.Printf(\"emptySlice: %v (len=%d, cap=%d)\\n\", emptySlice, len(emptySlice), cap(emptySlice))\n\tif emptySlice != nil {\n\t\tfmt.Println(\"emptySlice は nil ではありません\")\n\t}\n}"
     },
     {
-      "title": "データ構造: スライス操作 (Slicing) - 配列やスライスから作る",
+      "title": "スライス操作 (Slicing) - 配列やスライスから作る",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tprimes := [6]int{2, 3, 5, 7, 11, 13}\n\tfmt.Printf(\"元の配列: %v\\n\", primes)\n\n\t// 配列からスライスを作成: primes[1:4]\n\t// インデックス 1 から 4-1=3 まで (要素 3, 5, 7)\n\ts1 := primes[1:4]\n\tfmt.Printf(\"s1 = primes[1:4]: %v (len=%d, cap=%d)\\n\", s1, len(s1), cap(s1))\n\n\t// s1 からさらにスライスを作成: s1[:2]\n\t// s1 のインデックス 0 から 2-1=1 まで (要素 3, 5)\n\ts4 := s1[:2]\n\tfmt.Printf(\"s4 = s1[:2]: %v (len=%d, cap=%d)\\n\", s4, len(s4), cap(s4))\n\n\t// 内部配列の共有と変更の影響\n\tfmt.Printf(\"変更前: s4=%v, primes=%v\\n\", s4, primes)\n\ts4[1] = 99 // s4[1] は primes[2] と同じ場所を指す\n\tfmt.Printf(\"変更後: s4=%v, primes=%v\\n\", s4, primes) // primes も変更される!\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) の要素へのアクセス",
+      "title": "スライス (Slice) の要素へのアクセス",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfruits := []string{\"Apple\", \"Banana\", \"Cherry\"}\n\tfmt.Printf(\"初期状態: %q (len=%d)\\n\", fruits, len(fruits))\n\n\t// 要素の読み取り\n\tfirst := fruits[0]\n\tsecond := fruits[1]\n\tfmt.Printf(\"最初:%s, 2番目:%s, Index2:%s\\n\", first, second, fruits[2])\n\n\t// 要素への書き込み (代入)\n\tfruits[1] = \"Blueberry\" // スライスは変更可能\n\tfmt.Printf(\"変更後: %q\\n\", fruits)\n\n\t// ループを使ったアクセス (for i)\n\tfmt.Println(\"--- for i ---\")\n\tfor i := 0; i < len(fruits); i++ {\n\t\tfmt.Printf(\" %d: %s\\n\", i, fruits[i])\n\t}\n\n\t// ループを使ったアクセス (for range)\n\tfmt.Println(\"--- for range ---\")\n\tfor index, value := range fruits {\n\t\tfmt.Printf(\" %d: %s\\n\", index, value)\n\t}\n\n\t// 範囲外アクセスは panic\n\t// fmt.Println(fruits[3]) // panic: runtime error: index out of range\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) への要素の追加 `append`",
+      "title": "スライス (Slice) への要素の追加 `append`",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s []int // nil スライス\n\tfmt.Printf(\"初期: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// 要素を1つ追加\n\ts = append(s, 0)\n\tfmt.Printf(\"append 0: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// さらに要素を1つ追加\n\ts = append(s, 1)\n\tfmt.Printf(\"append 1: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// 複数の要素を一度に追加\n\ts = append(s, 2, 3, 4)\n\tfmt.Printf(\"append 2,3,4: %v (len=%d, cap=%d)\\n\", s, len(s), cap(s))\n\n\t// 別のスライスの全要素を追加 (sB...)\n\tsA := []int{100, 200}\n\tsB := []int{300, 400}\n\tsA = append(sA, sB...)\n\tfmt.Printf(\"sA + sB...: %v (len=%d, cap=%d)\\n\", sA, len(sA), cap(sA))\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) の長さ (Length) と容量 (Capacity)",
+      "title": "スライス (Slice) の長さ (Length) と容量 (Capacity)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts0 := []int{0, 1, 2, 3, 4} // len=5, cap=5\n\tfmt.Printf(\"s0: %v (len=%d, cap=%d)\\n\", s0, len(s0), cap(s0))\n\n\t// スライス操作 s0[1:3]\n\ts1 := s0[1:3] // 要素 {1, 2} を参照\n\t// len = 3 - 1 = 2\n\t// cap = 5 - 1 = 4 (元の配列の index 1 から最後まで)\n\tfmt.Printf(\"s1 = s0[1:3]: %v (len=%d, cap=%d)\\n\", s1, len(s1), cap(s1))\n\n\t// s1 からさらにスライス s3 = s1[:1]\n\ts3 := s1[:1] // 要素 {1} を参照\n\t// len = 1 - 0 = 1\n\t// cap = 4 (s1 と同じ内部配列、同じ開始位置)\n\tfmt.Printf(\"s3 = s1[:1]: %v (len=%d, cap=%d)\\n\", s3, len(s3), cap(s3))\n\n\t// append による変化 (容量内)\n\ts3 = append(s3, 99) // s3 は [1, 99] になる (len=2, cap=4)\n\tfmt.Printf(\"s3 append後: %v (len=%d, cap=%d)\\n\", s3, len(s3), cap(s3))\n\n\t// 内部配列共有の影響: s0 も変更される！\n\tfmt.Printf(\"s0 影響確認: %v\\n\", s0) // [0 1 99 3 4]\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) のコピー `copy`",
+      "title": "スライス (Slice) のコピー `copy`",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tsrc := []int{1, 2, 3, 4, 5}\n\tfmt.Printf(\"src: %v (len=%d)\\n\", src, len(src))\n\n\t// コピー先を適切なサイズで確保\n\tdst1 := make([]int, len(src))\n\n\t// src から dst1 へコピー\n\tnumCopied := copy(dst1, src)\n\tfmt.Printf(\"dst1: %v (len=%d)\\n\", dst1, len(dst1))\n\tfmt.Printf(\"コピー要素数: %d\\n\", numCopied)\n\n\t// dst1 を変更しても src には影響しない (独立したコピー)\n\tdst1[0] = 99\n\tfmt.Printf(\"dst1変更後: %v\\n\", dst1)\n\tfmt.Printf(\"src影響なし: %v\\n\", src)\n\n\t// append を使ったコピー (簡潔な方法)\n\tdst2 := append([]int(nil), src...)\n\tfmt.Printf(\"dst2 (append): %v (len=%d)\\n\", dst2, len(dst2))\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) からの要素の削除",
+      "title": "スライス (Slice) からの要素の削除",
       "description": "スライスから特定の要素を**削除**するための\n専用の組み込み関数はありませんが、`append` 関数と\nスライス操作を組み合わせて実現できます。\n\n**特定インデックス `i` の要素削除イディオム:**\n`s = append(s[:i], s[i+1:]...)`\n\n1. `s[:i]`: 削除要素の**直前**までのスライス。\n2. `s[i+1:]`: 削除要素の**次**から最後までのスライス。\n3. `append` で 1. に 2. の要素を**展開 (`...`)** して追加する。\n   これにより、`i` 番目の要素が除かれた状態になる。\n\n**注意:**\n*   この操作は元の内部配列の内容を変更する可能性があります。\n*   `append` の結果を元のスライス変数 `s` に再代入します。\n\n**簡単なケース:**\n*   **先頭要素の削除:** `s = s[1:]`\n*   **末尾要素の削除:** `s = s[:len(s)-1]`\n\n**メモリリークの可能性:**\n`append` を使った削除では、削除された要素が内部配列に残り、\nガベージコレクションされない可能性があります。\n特にポインタや大きな構造体のスライスの場合、\nメモリリークに繋がることがあります。\n対策として、`copy` で要素をずらしてから末尾要素に `nil` を代入し、\n最後にスライスの長さを縮める方法があります。",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfruits := []string{\"Apple\", \"Banana\", \"Cherry\", \"Date\", \"Elderberry\"}\n\tfmt.Printf(\"元: %q (len=%d)\\n\", fruits, len(fruits))\n\n\t// インデックス 2 (\"Cherry\") を削除\n\ti := 2\n\tfruits = append(fruits[:i], fruits[i+1:]...)\n\tfmt.Printf(\"削除後(idx %d): %q (len=%d)\\n\", i, fruits, len(fruits))\n\n\t// 先頭要素 (\"Apple\" 相当) を削除\n\tif len(fruits) > 0 {\n\t\tfruits = fruits[1:] // 簡単な方法\n\t\t// または fruits = append(fruits[:0], fruits[1:]...)\n\t}\n\tfmt.Printf(\"先頭削除後: %q (len=%d)\\n\", fruits, len(fruits))\n\n\t// 末尾要素 (\"Elderberry\" 相当) を削除\n\tif len(fruits) > 0 {\n\t\tfruits = fruits[:len(fruits)-1] // 簡単な方法\n\t}\n\tfmt.Printf(\"末尾削除後: %q (len=%d)\\n\", fruits, len(fruits))\n}"
     },
     {
-      "title": "データ構造: スライス (Slice) への要素の挿入",
+      "title": "スライス (Slice) への要素の挿入",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ts := []int{10, 20, 40, 50}\n\tfmt.Printf(\"元: %v (len=%d)\\n\", s, len(s))\n\n\ti := 2 // 挿入位置インデックス\n\tx := 30 // 挿入する要素\n\n\t// 方法1: append を2回使うイディオム\n\t// s[:i] に、 {x} と s[i:] を連結したものを append する\n\ts = append(s[:i], append([]int{x}, s[i:]...)...)\n\n\tfmt.Printf(\"挿入後: %v (len=%d)\\n\", s, len(s))\n}"
     },
     {
-      "title": "データ構造: マップ (Map) の宣言",
+      "title": "マップ (Map) の宣言",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// マップの宣言 (初期値なし)\n\tvar scores map[string]int\n\tvar isPrime map[int]bool\n\n\t// ゼロ値は nil\n\tfmt.Printf(\"scores: %v (%T)\\n\", scores, scores)\n\tfmt.Printf(\"isPrime: %v (%T)\\n\", isPrime, isPrime)\n\n\tif scores == nil {\n\t\tfmt.Println(\"scores は nil マップです。\")\n\t}\n\n\t// nil マップの len は 0\n\tfmt.Printf(\"len(scores): %d\\n\", len(scores))\n\n\t// nil マップからの読み取りはゼロ値が返る (panic しない)\n\tfmt.Printf(\"scores[\\\"Alice\\\"]: %d\\n\", scores[\"Alice\"])\n\n\t// nil マップへの書き込みは panic する！\n\t// scores[\"Bob\"] = 90 // panic: assignment to entry in nil map\n}"
     },
     {
-      "title": "データ構造: `make` 関数によるマップ (Map) の作成",
+      "title": "`make` 関数によるマップ (Map) の作成",
       "description": "`var m map[K]V` で宣言したマップは `nil` であり、\n要素を追加しようとすると `panic` します。\nマップを使うには**初期化**が必要です。\nその主な方法が組み込み関数 **`make`** です。\n(`make` はスライス、マップ、チャネルの初期化に使う)\n\n**`make` によるマップ作成:**\n`make` で作成されたマップは `nil` ではなく、\n要素を追加できる状態になります (長さは 0)。\n\n**構文:**",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// make で空のマップを作成\n\tscores := make(map[string]int)\n\tfmt.Printf(\"scores (make): %v (len=%d)\\n\", scores, len(scores))\n\n\t// make で作成したマップは nil ではない\n\tif scores != nil {\n\t\tfmt.Println(\"scores は nil ではありません\")\n\t}\n\n\t// 要素を追加できる\n\tscores[\"Alice\"] = 95\n\tscores[\"Bob\"] = 88\n\tfmt.Printf(\"追加後 scores: %v (len=%d)\\n\", scores, len(scores))\n\n\t// 初期容量を指定して作成 (パフォーマンス最適化のヒント)\n\tages := make(map[string]int, 10)\n\tfmt.Printf(\"\\nages (cap hint): %v (len=%d)\\n\", ages, len(ages))\n\tages[\"Charlie\"] = 30\n\tfmt.Printf(\"追加後 ages: %v (len=%d)\\n\", ages, len(ages))\n}"
     },
     {
-      "title": "データ構造: マップリテラルによる作成と初期化",
+      "title": "マップリテラルによる作成と初期化",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// マップリテラルで初期化\n\tages := map[string]int{\n\t\t\"Alice\":   30,\n\t\t\"Bob\":     25,\n\t\t\"Charlie\": 35, // 最後のカンマ推奨\n\t}\n\tfmt.Printf(\"ages: %v (len=%d)\\n\", ages, len(ages))\n\n\t// 空のマップリテラル (nil ではない)\n\temptyMap := map[string]bool{}\n\tfmt.Printf(\"emptyMap: %v (len=%d)\\n\", emptyMap, len(emptyMap))\n\tif emptyMap != nil {\n\t\tfmt.Println(\"emptyMap は nil ではありません\")\n\t}\n\temptyMap[\"active\"] = true // 要素を追加できる\n\tfmt.Printf(\"追加後 emptyMap: %v\\n\", emptyMap)\n\n\t// var nilMap map[string]int // これは nil\n\t// nilMap[\"key\"] = 1 // panic\n}"
     },
     {
-      "title": "データ構造: マップ (Map) の基本操作",
+      "title": "マップ (Map) の基本操作",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tscores := make(map[string]int)\n\n\t// 1. 要素の追加/更新: map[key] = value\n\tscores[\"Alice\"] = 95 // 追加\n\tscores[\"Bob\"] = 88   // 追加\n\tscores[\"Alice\"] = 98 // 更新\n\tfmt.Println(\"追加/更新後:\", scores)\n\n\t// 2. 要素の取得: value := map[key]\n\taliceScore := scores[\"Alice\"]\n\tfmt.Printf(\"Aliceの点数: %d\\n\", aliceScore)\n\t// charlieScore := scores[\"Charlie\"] // 存在しないキー -> 0 (intのゼロ値)\n\n\t// 3. キーの存在確認 (カンマOKイディオム)\n\tvalue, ok := scores[\"Bob\"] // ok に存在有無 (bool) が入る\n\tif ok {\n\t\tfmt.Printf(\"Bobは存在: %d\\n\", value)\n\t}\n\tvalue, ok = scores[\"David\"]\n\tif !ok {\n\t\tfmt.Printf(\"Davidは不在 (ok=%t, value=%d)\\n\", ok, value)\n\t}\n\n\t// 4. 要素の削除: delete(map, key)\n\tdelete(scores, \"Bob\")\n\tfmt.Println(\"Bob削除後:\", scores)\n\tdelete(scores, \"David\") // 存在しなくてもエラーにならない\n\tfmt.Println(\"David削除試行後:\", scores)\n\n\tfmt.Printf(\"現在の要素数: %d\\n\", len(scores))\n}"
     },
     {
-      "title": "データ構造: マップ (Map) のキー存在確認 (カンマOKイディオム)",
+      "title": "マップ (Map) のキー存在確認 (カンマOKイディオム)",
       "description": "マップから値を取得する際 (`v := m[key]`)、\nキーが存在しないと値の型の**ゼロ値**が返ります。\nこれだけでは「キーがない」のか「値がゼロ値」なのか\n区別できません。\n\n**カンマOKイディオム:**\nマップアクセス時にキーの存在有無も確認できます。\n`value, ok := マップ名[キー]`\n\n*   `value`: キーに対応する値 (なければゼロ値)。\n*   `ok`: キーが存在したか (`bool`)。存在すれば `true`。\n\nこの `ok` 変数をチェックすれば、キーの存在を確実に判定できます。\n\nコード例では、`scores[\"Bob\"]` はキーが存在し値が `0` なので\n`okBob` は `true`、`scoreBob` は `0` になります。\n一方、`scores[\"Charlie\"]` はキーが存在しないので\n`okCharlie` は `false`、`scoreCharlie` はゼロ値の `0` になります。\n\n**`if` 文との組み合わせ:**\n`if` 文の初期化ステートメントで同時に行うのが一般的です。",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tscores := map[string]int{\n\t\t\"Alice\": 95,\n\t\t\"Bob\":   0, // 値が 0\n\t}\n\n\t// カンマOKイディオムで存在確認\n\tscoreBob, okBob := scores[\"Bob\"] // Bob は存在する\n\tif okBob {\n\t\tfmt.Printf(\"Bob は存在: %d\\n\", scoreBob) // 存在する (値 0)\n\t}\n\n\tscoreCharlie, okCharlie := scores[\"Charlie\"] // Charlie は存在しない\n\tif !okCharlie {\n\t\tfmt.Printf(\"Charlie は不在 (ok=%t, value=%d)\\n\", okCharlie, scoreCharlie) // ok=false, value=0\n\t}\n\n\t// if の初期化ステートメントと組み合わせるのが一般的\n\tif score, ok := scores[\"Alice\"]; ok {\n\t\tfmt.Printf(\"Alice の点数: %d\\n\", score)\n\t} else {\n\t\tfmt.Println(\"Alice は不在\")\n\t}\n\n\tif _, ok := scores[\"David\"]; !ok { // 値は不要な場合 _ で無視\n\t\tfmt.Println(\"David は不在\")\n\t}\n}"
     },
     {
-      "title": "データ構造: マップ (Map) の反復処理 `for range`",
+      "title": "マップ (Map) の反復処理 `for range`",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tstock := map[string]int{\n\t\t\"apple\":  10,\n\t\t\"banana\": 25,\n\t\t\"orange\": 0,\n\t\t\"grape\":  15,\n\t}\n\n\tfmt.Println(\"--- 在庫一覧 (キーと値) ---\")\n\t// キー(fruit)と値(count)を取得\n\tfor fruit, count := range stock {\n\t\tfmt.Printf(\"%s: %d個\\n\", fruit, count)\n\t}\n\t// ★ 順序は保証されない！実行ごとに変わる可能性あり\n\n\tfmt.Println(\"\\n--- 在庫のあるフルーツ名 (キーのみ) ---\")\n\t// キー(fruit)のみを取得 (値の変数を省略)\n\tfor fruit := range stock {\n\t\tif stock[fruit] > 0 { // 値が必要なら別途アクセス\n\t\t\tfmt.Println(\"-\", fruit)\n\t\t}\n\t}\n\n\t// 値のみを取得する場合\n\t// for _, count := range stock { ... }\n}"
     },
     {
-      "title": "データ構造: マップ (Map) をキーでソートして反復処理",
+      "title": "マップ (Map) をキーでソートして反復処理",
       "description": "マップの `for range` は反復順序が保証されません。\nキーの順序（アルファベット順、数値順など）で\n処理したい場合は、以下の手順で行います。\n\n**手順:**\n1.  **キーの抽出:** マップの全キーをスライスに抽出します。",
       "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\" // ソート用パッケージ\n)\n\nfunc main() {\n\tstock := map[string]int{\n\t\t\"orange\": 0, \"grape\": 15, \"apple\": 10, \"banana\": 25,\n\t}\n\n\t// 1. キーの抽出\n\tkeys := make([]string, 0, len(stock))\n\tfor k := range stock {\n\t\tkeys = append(keys, k)\n\t}\n\tfmt.Printf(\"キー (ソート前): %q\\n\", keys)\n\n\t// 2. キーのソート (文字列)\n\tsort.Strings(keys)\n\tfmt.Printf(\"キー (ソート後): %q\\n\", keys)\n\n\t// 3. ソート済みキーで反復処理\n\tfmt.Println(\"\\n--- キー順で表示 ---\")\n\tfor _, fruit := range keys {\n\t\tfmt.Printf(\"%s: %d\\n\", fruit, stock[fruit]) // キーを使ってマップの値を取得\n\t}\n}"
     },
     {
-      "title": "データ構造: マップ (Map) は参照型",
+      "title": "マップ (Map) は参照型",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\n// マップを受け取り変更する関数 (参照渡し)\nfunc modifyMap(m map[string]int) {\n\tfmt.Printf(\"  modifyMap 内 (変更前): %v\\n\", m)\n\tm[\"Carol\"] = 75 // 関数内でマップを変更\n\tdelete(m, \"Bob\")\n\tfmt.Printf(\"  modifyMap 内 (変更後): %v\\n\", m)\n}\n\nfunc main() {\n\t// マップの代入 (参照がコピーされる)\n\toriginalMap := map[string]int{\"Alice\": 85, \"Bob\": 92}\n\tcopiedMap := originalMap // 同じマップデータを指す\n\tcopiedMap[\"Bob\"] = 90    // copiedMap 経由で変更\n\n\tfmt.Printf(\"originalMap: %v\\n\", originalMap) // 元のマップも変更されている\n\tfmt.Printf(\"copiedMap:   %v\\n\", copiedMap)\n\n\t// 関数へのマップの引き渡し (参照が渡される)\n\tmapForFunc := map[string]int{\"Alice\": 100, \"Bob\": 200}\n\tfmt.Printf(\"\\n関数呼び出し前: %v\\n\", mapForFunc)\n\tmodifyMap(mapForFunc) // 関数内で mapForFunc が変更される\n\tfmt.Printf(\"関数呼び出し後: %v\\n\", mapForFunc)\n}"
     },
     {
-      "title": "データ構造: 構造体 (Struct) の定義",
+      "title": "構造体 (Struct) の定義",
       "description": "異なる型のデータをひとまとめにして新しい型を定義するには\n**構造体 (Struct)** を使います。関連データをグループ化します。\n\n**構造体とは？**\n*   **フィールド (Field)** と呼ばれる名前付き要素の集まり。\n*   各フィールドは異なる型を持てる。\n*   `type` キーワードで新しい構造体型を定義。\n\n**定義構文:**",
       "code": "package main\n\nimport \"fmt\"\n\n// Address 構造体\ntype Address struct {\n\tStreet string // 公開フィールド\n\tCity   string // 公開フィールド\n\tzip    string // 非公開フィールド\n}\n\n// Person 構造体\ntype Person struct {\n\tName    string\n\tAge     int\n\tEmail   string\n\taddress *Address // ポインタ型フィールド (非公開)\n\thobbies []string // スライス型フィールド (非公開)\n}\n\nfunc main() {\n\t// Person 型変数をゼロ値で宣言\n\tvar p1 Person\n\tfmt.Printf(\"p1 (ゼロ値): %+v\\n\", p1)\n\t// 出力例: {Name: Age:0 Email: address:<nil> hobbies:[]}\n\n\t// Address 型変数をゼロ値で宣言\n\tvar addr Address\n\tfmt.Printf(\"addr (ゼロ値): %+v\\n\", addr)\n\t// 出力例: {Street: City: zip:}\n}"
     },
     {
-      "title": "データ構造: 構造体 (Struct) の値（インスタンス）の作成",
+      "title": "構造体 (Struct) の値（インスタンス）の作成",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Point struct{ X, Y int }\n\ntype Circle struct {\n\tCenter Point\n\tRadius int\n\tLabel  string\n}\n\nfunc main() {\n\t// フィールド名を指定して初期化 (推奨)\n\tp1 := Point{X: 10, Y: 20}\n\tfmt.Printf(\"p1: %+v\\n\", p1)\n\n\t// 順序は任意\n\tp2 := Point{Y: 50, X: 30}\n\tfmt.Printf(\"p2: %+v\\n\", p2)\n\n\t// 一部フィールドのみ初期化 (Y はゼロ値 0)\n\tp3 := Point{X: 100}\n\tfmt.Printf(\"p3: %+v\\n\", p3)\n\n\t// ネストした構造体の初期化\n\tc1 := Circle{\n\t\tCenter: Point{X: 5, Y: 5},\n\t\tRadius: 10,\n\t\tLabel:  \"My Circle\", // 最後のカンマ推奨\n\t}\n\tfmt.Printf(\"c1: %+v\\n\", c1)\n}"
     },
     {
-      "title": "データ構造: 構造体 (Struct) のフィールドへのアクセス",
+      "title": "構造体 (Struct) のフィールドへのアクセス",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype User struct {\n\tID       int\n\tUsername string\n\tIsActive bool\n\tprofile  string // 非公開フィールド\n}\n\nfunc main() {\n\tu1 := User{ID: 1, Username: \"gopher\", IsActive: true, profile: \"Go dev\"}\n\tfmt.Printf(\"初期状態 u1: %+v\\n\", u1)\n\n\t// フィールド値の読み取り\n\tuserID := u1.ID\n\tusername := u1.Username\n\tfmt.Printf(\"ID: %d, Username: %s\\n\", userID, username)\n\t// fmt.Println(u1.profile) // 同パッケージ内ならアクセス可\n\n\t// フィールド値の書き込み (代入)\n\tu1.Username = \"gopher_new\"\n\tu1.IsActive = false\n\tfmt.Printf(\"変更後 u1: %+v\\n\", u1)\n\n\t// ゼロ値の構造体へのアクセス\n\tvar u2 User\n\tfmt.Printf(\"\\nゼロ値 u2.ID: %d\\n\", u2.ID) // 0\n\tu2.ID = 2\n\tfmt.Printf(\"変更後 u2: %+v\\n\", u2)\n}"
     },
     {
-      "title": "データ構造: ネストした構造体 (Nested Structs)",
+      "title": "ネストした構造体 (Nested Structs)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\ntype Department struct {\n\tID   int\n\tName string\n}\n\ntype Employee struct {\n\tEmployeeID int\n\tFullName   string\n\tDept       Department // Department 構造体をフィールドとして持つ\n\tManager    *Employee  // Employee へのポインタ\n}\n\nfunc main() {\n\tmanager := Employee{\n\t\tEmployeeID: 101, FullName: \"Alice Smith\",\n\t\tDept: Department{ID: 10, Name: \"開発部\"},\n\t}\n\n\temp1 := Employee{\n\t\tEmployeeID: 205, FullName: \"Bob Johnson\",\n\t\tDept: Department{ID: 10, Name: \"開発部\"},\n\t\tManager: &manager, // manager のポインタを設定\n\t}\n\n\tfmt.Printf(\"従業員1: %+v\\n\", emp1)\n\n\t// ネストしたフィールドへのアクセス\n\tdepartmentName := emp1.Dept.Name\n\tfmt.Printf(\"部署名: %s\\n\", departmentName)\n\n\tif emp1.Manager != nil {\n\t\tmanagerName := emp1.Manager.FullName // ポインタでも . でアクセス\n\t\tfmt.Printf(\"マネージャー名: %s\\n\", managerName)\n\t}\n}"
     },
     {
-      "title": "データ構造: 匿名構造体 (Anonymous Struct)",
+      "title": "匿名構造体 (Anonymous Struct)",
       "description": "通常、構造体は `type` で名前を付けて定義しますが、\nGoでは**名前を付けずに**その場で構造体を定義して使う\n**匿名構造体 (Anonymous Struct)** も可能です。\n\n**構文:**",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 匿名構造体の作成と初期化\n\tpoint := struct {\n\t\tX int\n\t\tY int\n\t}{\n\t\tX: 10,\n\t\tY: 20,\n\t}\n\tfmt.Printf(\"point: %+v (%T)\\n\", point, point)\n\tfmt.Printf(\"point.X = %d\\n\", point.X)\n\n\t// 匿名構造体のスライス\n\tusers := []struct {\n\t\tID   int\n\t\tRole string\n\t}{\n\t\t{1, \"Admin\"},\n\t\t{2, \"Editor\"},\n\t}\n\tfmt.Println(\"\\n--- 匿名構造体スライス ---\")\n\tfor _, user := range users {\n\t\tfmt.Printf(\" ID:%d, Role:%s\\n\", user.ID, user.Role)\n\t}\n}"
     },
     {
-      "title": "データ構造: 構造体の埋め込み (Embedding / Anonymous Fields)",
+      "title": "構造体の埋め込み (Embedding / Anonymous Fields)",
       "description": "Goには伝統的な「継承」はありませんが、\n**構造体の埋め込み (Embedding)** で似た効果を実現できます。\nフィールド定義で**フィールド名を省略し、型名だけを記述**します\n(**匿名フィールド**とも呼ばれます)。\n\n**構文:**",
       "code": "package main\n\nimport \"fmt\"\n\ntype Point struct {\n\tX, Y int\n}\n\nfunc (p Point) Display() {\n\tfmt.Printf(\"[%d, %d]\", p.X, p.Y)\n}\n\ntype Circle struct {\n\tPoint  // Point 型を匿名フィールドとして埋め込む\n\tRadius int\n}\n\nfunc (c Circle) Area() float64 {\n\treturn 3.14 * float64(c.Radius*c.Radius) // 簡略化\n}\n\nfunc main() {\n\tc1 := Circle{\n\t\tPoint:  Point{X: 10, Y: 20}, // 型名をフィールド名のように使う\n\t\tRadius: 5,\n\t}\n\tfmt.Printf(\"c1: %+v\\n\", c1)\n\n\t// 昇格したフィールドへのアクセス\n\tfmt.Printf(\"X座標 (c1.X): %d\\n\", c1.X) // c1.Point.X と書かずに済む\n\tfmt.Printf(\"半径 (c1.Radius): %d\\n\", c1.Radius)\n\n\t// 昇格したメソッドの呼び出し\n\tfmt.Print(\"座標表示 (c1.Display): \")\n\tc1.Display() // c1.Point.Display() と書かずに済む\n\tfmt.Println()\n\n\t// Circle 自身のメソッド\n\tfmt.Printf(\"面積 (c1.Area): %f\\n\", c1.Area())\n}"
     },
     {
-      "title": "データ構造: マップを使ったセット (Set) の実装 (map[T]bool)",
+      "title": "マップを使ったセット (Set) の実装 (map[T]bool)",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// セットを作成 (map[string]bool を使用)\n\tfruitSet := make(map[string]bool)\n\n\t// 要素の追加 (キーに要素、値に true)\n\tfruitSet[\"apple\"] = true\n\tfruitSet[\"banana\"] = true\n\tfruitSet[\"orange\"] = true\n\tfruitSet[\"apple\"] = true // 重複は無視される (上書き)\n\tfmt.Printf(\"追加後: %v (len=%d)\\n\", fruitSet, len(fruitSet))\n\n\t// 要素の存在確認 (カンマOKイディオム)\n\tkey := \"banana\"\n\t_, exists := fruitSet[key]\n\tif exists { fmt.Printf(\"'%s' は存在する\\n\", key) }\n\n\tkey = \"grape\"\n\t_, exists = fruitSet[key]\n\tif !exists { fmt.Printf(\"'%s' は存在しない\\n\", key) }\n\n\t// 要素の削除\n\tdelete(fruitSet, \"orange\")\n\tfmt.Printf(\"削除後: %v (len=%d)\\n\", fruitSet, len(fruitSet))\n\n\t// セットの反復処理 (for range でキーを取得)\n\t// for element := range fruitSet { fmt.Println(element) }\n}"
     },
     {
-      "title": "データ構造: マップを使ったセットの実装 (map[T]struct{})",
+      "title": "マップを使ったセットの実装 (map[T]struct{})",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// セットを作成 (map[int]struct{} を使用)\n\tnumberSet := make(map[int]struct{})\n\n\t// 要素の追加 (値は空の構造体リテラル)\n\tnumberSet[1] = struct{}{}\n\tnumberSet[3] = struct{}{}\n\tnumberSet[5] = struct{}{}\n\tfmt.Printf(\"追加後: %v (len=%d)\\n\", numberSet, len(numberSet))\n\n\t// 要素の存在確認 (カンマOKイディオム)\n\tkey := 3\n\t_, exists := numberSet[key]\n\tif exists { fmt.Printf(\"'%d' は存在する\\n\", key) }\n\n\tkey = 4\n\t_, exists = numberSet[key]\n\tif !exists { fmt.Printf(\"'%d' は存在しない\\n\", key) }\n\n\t// 要素の削除\n\tdelete(numberSet, 5)\n\tfmt.Printf(\"削除後: %v (len=%d)\\n\", numberSet, len(numberSet))\n\n\t// 反復処理 (キーのみ取得)\n\t// for element := range numberSet { fmt.Println(element) }\n}"
     },
     {
-      "title": "データ構造: マップを使ったセットの集合演算",
+      "title": "マップを使ったセットの集合演算",
       "description": "",
       "code": "package main\n\nimport \"fmt\"\n\n// セットの型定義 (map[string]struct{})\ntype StringSet map[string]struct{}\n\n// 和集合 (A ∪ B)\nfunc union(set1, set2 StringSet) StringSet {\n\tresult := make(StringSet)\n\tfor element := range set1 { // set1 の要素を追加\n\t\tresult[element] = struct{}{}\n\t}\n\tfor element := range set2 { // set2 の要素を追加 (重複は無視される)\n\t\tresult[element] = struct{}{}\n\t}\n\treturn result\n}\n\n// (積集合、差集合の実装は解説参照)\n\nfunc main() {\n\tsetA := StringSet{\"apple\": {}, \"banana\": {}, \"cherry\": {}}\n\tsetB := StringSet{\"banana\": {}, \"cherry\": {}, \"date\": {}}\n\n\tfmt.Printf(\"Set A: %v\\n\", setA)\n\tfmt.Printf(\"Set B: %v\\n\", setB)\n\n\t// 和集合の実行例\n\tunionSet := union(setA, setB)\n\tfmt.Printf(\"A ∪ B: %v\\n\", unionSet)\n}"
     },
     {
-      "title": "データ構造: 連結リスト (Linked List) - `container/list`",
+      "title": "連結リスト (Linked List) - `container/list`",
       "description": "",
       "code": "package main\n\nimport (\n\t\"container/list\" // list パッケージ\n\t\"fmt\"\n)\n\nfunc main() {\n\t// 新しい空のリストを作成\n\tl := list.New()\n\n\t// 要素の追加\n\tl.PushBack(\"Banana\") // 末尾に追加\n\tl.PushBack(123)\n\tl.PushFront(\"Apple\") // 先頭に追加\n\n\t// リストの走査 (先頭から)\n\tfmt.Println(\"--- リスト要素 ---\")\n\tfor e := l.Front(); e != nil; e = e.Next() {\n\t\t// e.Value で値を取得 (any 型)\n\t\tfmt.Printf(\"値: %v (型: %T)\\n\", e.Value, e.Value)\n\t}\n\n\t// リストの長さ\n\tfmt.Printf(\"\\n長さ: %d\\n\", l.Len())\n}"
     },
     {
-      "title": "データ構造: 連結リスト (Linked List) の自作",
+      "title": "連結リスト (Linked List) の自作",
       "description": "標準ライブラリ `container/list` 以外に、連結リストを\n自分で実装することも可能です。ここでは基本的な\n**単方向連結リスト**の例を示します。\n\n**構造:**\n各要素（**ノード Node**）が以下を持ちます。\n1.  **値 (Value):** ノードが持つデータ。\n2.  **次へのポインタ (Next):** 次のノードを指すポインタ。\n    最後のノードの `Next` は `nil`。\n\nリスト全体は先頭ノード（**ヘッド Head**）へのポインタで参照します。\n\n**実装例 (`Node` 構造体):**",
       "code": "package main\n\nimport \"fmt\"\n\n// 連結リストのノード\ntype Node struct {\n\tValue int\n\tNext  *Node // 次のノードへのポインタ\n}\n\nfunc main() {\n\t// リストの構築: 10 -> 20 -> 30\n\tnode1 := &Node{Value: 10}\n\tnode2 := &Node{Value: 20}\n\tnode3 := &Node{Value: 30}\n\tnode1.Next = node2\n\tnode2.Next = node3\n\thead := node1 // 先頭ノード\n\n\t// リストの走査と表示\n\tfmt.Print(\"List: [ \")\n\tsum := 0\n\tfor current := head; current != nil; current = current.Next {\n\t\tfmt.Printf(\"%d \", current.Value)\n\t\tsum += current.Value\n\t}\n\tfmt.Println(\"]\")\n\tfmt.Printf(\"合計: %d\\n\", sum)\n}"
     }

@@ -1,5 +1,5 @@
 ## タイトル
-title: インターフェース: ジェネリックデータ構造
+title: ジェネリックデータ構造
 
 ## タグ
 tags: ["interfaces", "interface", "ジェネリクス", "generics", "型パラメータ", "型制約", "constraint", "構造体", "データ構造"]

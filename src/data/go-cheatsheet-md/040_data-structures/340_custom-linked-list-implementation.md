@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 連結リスト (Linked List) の自作
+title: 連結リスト (Linked List) の自作
 
 ## タグ
 tags: ["data-structures", "連結リスト", "linked list", "構造体", "struct", "ポインタ"]

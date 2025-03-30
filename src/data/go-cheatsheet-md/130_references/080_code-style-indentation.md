@@ -1,5 +1,5 @@
 ## タイトル
-title: "コードスタイル: インデント (Indentation)"
+title: インデント (Indentation)
 
 ## タグ
 tags: ["references", "code style", "indentation", "tabs", "gofmt", "go fmt"]

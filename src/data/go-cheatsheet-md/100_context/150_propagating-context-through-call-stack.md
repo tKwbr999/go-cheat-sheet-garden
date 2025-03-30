@@ -1,5 +1,5 @@
 ## タイトル
-title: "Context パッケージ: 呼び出しスタックを通じた Context の伝播"
+title: "呼び出しスタックを通じた Context の伝播"
 
 ## タグ
 tags: ["context", "concurrency", "関数呼び出し", "伝播", "http"]

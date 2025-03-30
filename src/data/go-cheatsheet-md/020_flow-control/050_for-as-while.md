@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `for` を `while` ループとして使う
+title: `for` を `while` ループとして使う
 
 ## タグ
 tags: ["flow-control", "for", "while", "ループ", "繰り返し"]

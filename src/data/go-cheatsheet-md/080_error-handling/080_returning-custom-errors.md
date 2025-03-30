@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: カスタムエラーを返す
+title: カスタムエラーを返す
 
 ## タグ
 tags: ["error-handling", "error", "struct", "interface", "カスタムエラー", "return"]

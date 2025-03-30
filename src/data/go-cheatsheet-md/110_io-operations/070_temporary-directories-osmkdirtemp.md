@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: 一時ディレクトリの作成 (`os.MkdirTemp`)
+title: 一時ディレクトリの作成 (`os.MkdirTemp`)
 
 ## タグ
 tags: ["io-operations", "os", "MkdirTemp", "一時ディレクトリ", "temp", "defer", "RemoveAll"]

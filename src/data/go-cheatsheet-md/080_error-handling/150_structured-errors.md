@@ -1,5 +1,5 @@
 ## タイトル
-title: エラー処理: 構造化エラー (Structured Errors)
+title: 構造化エラー (Structured Errors)
 
 ## タグ
 tags: ["error-handling", "error", "struct", "カスタムエラー", "errors.As"]

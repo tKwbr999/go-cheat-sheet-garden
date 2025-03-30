@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: 複数の Reader の連結 (`io.MultiReader`)
+title: 複数の Reader の連結 (`io.MultiReader`)
 
 ## タグ
 tags: ["io-operations", "io", "MultiReader", "Reader", "連結", "ストリーム"]

@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: ディレクトリエントリの読み込み (`os.ReadDir`, Go 1.16+)
+title: ディレクトリエントリの読み込み (`os.ReadDir`, Go 1.16+)
 
 ## タグ
 tags: ["io-operations", "os", "ReadDir", "DirEntry", "ディレクトリ一覧", "ファイル一覧", "Go1.16"]

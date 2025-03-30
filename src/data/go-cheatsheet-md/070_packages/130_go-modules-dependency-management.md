@@ -1,5 +1,5 @@
 ## タイトル
-title: パッケージ: 依存関係の管理 (Go Modules コマンド)
+title: 依存関係の管理 (Go Modules コマンド)
 
 ## タグ
 tags: ["packages", "package", "go modules", "依存関係管理", "go get", "go mod tidy", "go mod vendor", "go mod why", "go list"]

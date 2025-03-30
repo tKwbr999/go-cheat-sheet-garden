@@ -1,5 +1,5 @@
 ## タイトル
-title: I/O 操作: 読み込みサイズの制限 (`io.LimitReader`)
+title: 読み込みサイズの制限 (`io.LimitReader`)
 
 ## タグ
 tags: ["io-operations", "io", "LimitReader", "Reader", "制限", "セキュリティ"]

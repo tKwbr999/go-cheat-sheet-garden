@@ -1,5 +1,5 @@
 ## タイトル
-title: "リファレンス: ベンチマーク関数 (Benchmark Functions)"
+title: ベンチマーク関数 (Benchmark Functions)
 
 ## タグ
 tags: ["references", "testing", "benchmark", "go test -bench", "performance", "b.N"]

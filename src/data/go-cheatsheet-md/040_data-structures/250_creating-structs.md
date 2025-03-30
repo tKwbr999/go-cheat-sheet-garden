@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: 構造体 (Struct) の値（インスタンス）の作成
+title: 構造体 (Struct) の値（インスタンス）の作成
 
 ## タグ
 tags: ["data-structures", "構造体", "struct", "初期化", "リテラル", "new", "ポインタ"]

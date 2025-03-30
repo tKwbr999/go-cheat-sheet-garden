@@ -1,5 +1,5 @@
 ## タイトル
-title: "リファレンス: Go 環境変数"
+title: Go 環境変数
 
 ## タグ
 tags: ["references", "environment variables", "go env", "GOPATH", "GOROOT", "GOOS", "GOARCH", "GO111MODULE"]

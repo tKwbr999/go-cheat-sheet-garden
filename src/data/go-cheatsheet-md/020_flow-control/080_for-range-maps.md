@@ -1,5 +1,5 @@
 ## タイトル
-title: 制御構文: `for range` ループ (マップ)
+title: `for range` ループ (マップ)
 
 ## タグ
 tags: ["flow-control", "for", "for range", "ループ", "繰り返し", "マップ", "map"]

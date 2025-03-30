@@ -1,5 +1,5 @@
 ## タイトル
-title: データ構造: マップ (Map) の基本操作
+title: マップ (Map) の基本操作
 
 ## タグ
 tags: ["data-structures", "マップ", "map", "追加", "更新", "取得", "削除", "delete", "カンマOK"]

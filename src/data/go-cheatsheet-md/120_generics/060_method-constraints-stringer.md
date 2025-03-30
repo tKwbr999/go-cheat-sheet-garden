@@ -1,5 +1,5 @@
 ## タイトル
-title: ジェネリクス: メソッドによる型制約 (`fmt.Stringer` など)
+title: メソッドによる型制約 (`fmt.Stringer` など)
 
 ## タグ
 tags: ["generics", "ジェネリクス", "型制約", "type constraint", "interface", "メソッドセット", "Stringer"]

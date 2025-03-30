@@ -1,5 +1,5 @@
 ## タイトル
-title: 並行処理: `select` によるタイムアウト処理
+title: `select` によるタイムアウト処理
 
 ## タグ
 tags: ["concurrency", "channel", "goroutine", "select", "timeout", "time.After", "同期"]
