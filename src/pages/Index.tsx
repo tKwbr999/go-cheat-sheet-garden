@@ -81,56 +81,53 @@ const Index = () => {
       <Header />
 
       {/* Main content section with Table of Contents */}
-      {/* スクロールコンテナ (HEAD) */}
-      <div ref={parentRef} className="flex-1 overflow-auto">
-        {/* pt-8 を採用 (HEAD) */}
-        <section className="pt-8 pb-16">
-          <div className="container mx-auto max-w-10xl flex gap-4">
-            {/* Table of Contents Sidebar */}
-            {/* sections を渡す (HEAD), クラス名は feat/64 のものを TableOfContents 側で採用済み */}
-            <TableOfContents sections={sectionsManifest} className="hidden lg:block sticky top-20 h-[calc(100vh-5rem)]" />
-            {/* Main Content Area */}
-            <main className="flex-1">
-              {/* 仮想化リストのコンテナ (HEAD) */}
-              <div
-                style={{
-                  height: `${rowVirtualizer.getTotalSize()}px`,
-                  width: '100%',
-                  position: 'relative',
-                }}
-              >
-                {loadingManifest && <div>目次を読み込み中...</div>}
-                {errorManifest && <div className="text-red-500">{errorManifest}</div>}
-                {/* 仮想化されたアイテムのレンダリング (HEAD) */}
-                {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-                  const sectionInfo = sectionsManifest[virtualItem.index];
-                  if (!sectionInfo) return null;
+      {/* pt-8 を採用 (HEAD) */}
+      <section className="flex-1 flex pt-8 pb-16 overflow-hidden"> {/* flex-1 と overflow-hidden を追加 */}
+        <div className="container mx-auto max-w-10xl flex gap-4 flex-1"> {/* flex-1 を追加 */}
+          {/* Table of Contents Sidebar */}
+          {/* スクロールコンテナの外に移動 */}
+          <TableOfContents sections={sectionsManifest} className="hidden lg:block sticky top-20 h-[calc(100vh-5rem-2rem)] overflow-y-auto" /> {/* h-[calc(100vh-5rem-2rem)] と overflow-y-auto を追加 */}
+          {/* Main Content Area - スクロールコンテナ */}
+          <main ref={parentRef} className="flex-1 overflow-auto"> {/* ref と overflow-auto を main に移動 */}
+            {/* 仮想化リストのコンテナ (HEAD) */}
+            <div
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {loadingManifest && <div>目次を読み込み中...</div>}
+              {errorManifest && <div className="text-red-500">{errorManifest}</div>}
+              {/* 仮想化されたアイテムのレンダリング (HEAD) */}
+              {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+                const sectionInfo = sectionsManifest[virtualItem.index];
+                if (!sectionInfo) return null;
 
-                  return (
-                    <div
-                      key={sectionInfo.id}
-                      ref={rowVirtualizer.measureElement} // レビューコメント対応
-                      data-index={virtualItem.index}      // レビューコメント対応
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: `${virtualItem.size}px`,
-                        transform: `translateY(${virtualItem.start}px)`,
-                      }}
-                      id={sectionInfo.id}
-                    >
-                      {/* SectionLoader を使用 (HEAD), props 渡し修正済み */}
-                      <SectionLoader sectionId={sectionInfo.id} measureRef={rowVirtualizer.measureElement} index={virtualItem.index} />
-                    </div>
-                  );
-                })}
-              </div>
-            </main>
-          </div>
-        </section>
-      </div>
+                return (
+                  <div
+                    key={sectionInfo.id}
+                    ref={rowVirtualizer.measureElement} // レビューコメント対応
+                    data-index={virtualItem.index}      // レビューコメント対応
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualItem.size}px`,
+                      transform: `translateY(${virtualItem.start}px)`,
+                    }}
+                    id={sectionInfo.id}
+                  >
+                    {/* SectionLoader を使用 (HEAD), props 渡し修正済み */}
+                    <SectionLoader sectionId={sectionInfo.id} measureRef={rowVirtualizer.measureElement} index={virtualItem.index} />
+                  </div>
+                );
+              })}
+            </div>
+          </main>
+        </div>
+      </section>
 
       {/* Footer */}
       {/* mt-auto を追加 (HEAD) */}

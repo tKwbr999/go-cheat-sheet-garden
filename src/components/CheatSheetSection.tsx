@@ -1,3 +1,4 @@
+import React from "react";
 import CodeBlock from "./CodeBlock";
 import type { CheatSheetSection as SectionData } from "@/data/types";
 
@@ -23,11 +24,15 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
       <div className="flex items-center justify-between mb-4">
         <h2 className="section-title">{title}</h2>
       </div>
-      <div className="code-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"> {/* Changed lg:grid-cols-3 to lg:grid-cols-2 */}
+      <div className="code-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        {" "}
+        {/* Changed lg:grid-cols-3 to lg:grid-cols-2 */}
         {/* データは常に存在するので、ローディングやエラー表示は不要 */}
         {codeExamples.length > 0 ? (
           codeExamples.map((example, index) => (
-            <div key={example.title + index} className="min-w-[300px]"> {/* Add min-width */}
+            <div key={example.title + index} className="min-w-[300px]">
+              {" "}
+              {/* Add min-width */}
               <CodeBlock
                 title={example.title}
                 code={example.code}
