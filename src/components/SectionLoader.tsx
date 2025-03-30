@@ -38,7 +38,7 @@ const SectionLoaderComponent: React.FC<SectionLoaderProps> = ({ sectionId, measu
       // setSectionData(null);
 
       try {
-        const response = await fetch(`/data/sections/${sectionId}.json`);
+        const response = await fetch(`${import.meta.env.BASE_URL}data/sections/${sectionId}.json`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

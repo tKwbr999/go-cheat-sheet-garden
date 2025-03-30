@@ -59,7 +59,7 @@ const Header = () => {
             className="hidden sm:flex items-center text-sm text-muted-foreground hover:text-primary transition-colors duration-200" // Hide on small screens
           >
             <img
-              src="/github-mark.svg"
+              src={`${import.meta.env.BASE_URL}github-mark.svg`}
               alt="GitHub"
               width={18}
               height={18}

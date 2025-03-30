@@ -34,7 +34,7 @@ const Index = () => {
       try {
         setLoadingManifest(true);
         setErrorManifest(null);
-        const response = await fetch("/data/sections-manifest.json");
+        const response = await fetch(`${import.meta.env.BASE_URL}data/sections-manifest.json`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
