@@ -48,4 +48,6 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
   );
 };
 
-export default CheatSheetSection;
+// React.memo でラップしてエクスポート
+const MemoizedCheatSheetSection = React.memo(CheatSheetSection);
+export default MemoizedCheatSheetSection;
