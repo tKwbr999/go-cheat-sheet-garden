@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Copy, Check } from "lucide-react"; // Removed ChevronDown, ChevronUp
-import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, Separator
-// import { Separator } from "@/components/ui/separator"; // Separator might not be needed
+import { Copy, Check } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-// Collapsible imports removed
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   oneLight,

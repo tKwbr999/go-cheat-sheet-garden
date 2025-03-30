@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
 import CodeBlock from "./CodeBlock";
-import type { CheatSheetSection as SectionData, CodeExample } from "@/data/types";
-import { Skeleton } from "@/components/ui/skeleton";
+import type { CheatSheetSection as SectionData } from "@/data/types";
 
 interface CheatSheetSectionProps {
   sectionData: SectionData & { id: string }; // 完全なデータを受け取る
@@ -14,8 +12,7 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
 }) => {
   const { id: sectionId, title, codeExamples } = sectionData; // データからIDとタイトルを取得
 
-  
-    // isLoading や error、キャッシュ関連の state は不要
+  // isLoading や error、キャッシュ関連の state は不要
 
   return (
     <section
@@ -39,9 +36,9 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({
             </div>
           ))
         ) : (
-           <div className="col-span-full text-muted-foreground">
-             <p>No code examples available for this section.</p>
-           </div>
+          <div className="col-span-full text-muted-foreground">
+            <p>No code examples available for this section.</p>
+          </div>
         )}
       </div>
     </section>
