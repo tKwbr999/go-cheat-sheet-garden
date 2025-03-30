@@ -77,20 +77,18 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
 
     const currentObserver = observerRef.current; // Capture observer instance
 
-    // Observe elements after a short delay to ensure they are in the DOM
-    const timeoutId = setTimeout(() => {
-      // props から渡された sections を使用
-      sections.forEach((section) => {
-        const element = document.getElementById(section.id);
-        if (element) {
-          sectionRefs.current.set(section.id, element); // Update ref map just in case
-          currentObserver.observe(element);
-        }
-      });
-    }, 100); // Delay to ensure DOM elements are ready
+    // Observe elements directly after observer is created
+    // props から渡された sections を使用
+    sections.forEach((section) => {
+      const element = document.getElementById(section.id);
+      if (element) {
+        sectionRefs.current.set(section.id, element); // Update ref map just in case
+        currentObserver.observe(element);
+      }
+    });
 
     return () => {
-      clearTimeout(timeoutId);
+      // clearTimeout(timeoutId); // setTimeout removed
       if (currentObserver) {
         currentObserver.disconnect();
       }
