@@ -31,13 +31,13 @@ const Index = () => {
       <Header />
 
       {/* Main content section with Table of Contents */}
-      <section className="pt-32 pb-16">
+      <section className="pt-24 pb-16">
         <div className="container mx-auto max-w-10xl flex gap-4">
           {/* Table of Contents Sidebar */}
           <TableOfContents className="hidden lg:block" />
           {/* Main Content Area */}
           <main className="flex-1">
-            <div className="mt-16">
+            <div className="">
               {/* 全データを使ってセクションをレンダリング */}
               {cheatSheetData.map((sectionInfo) => (
                 <CheatSheetSection

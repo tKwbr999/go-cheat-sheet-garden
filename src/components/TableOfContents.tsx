@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 // bundled-cheatsheet-data から直接インポート
-import bundledCheatSheetData from '@/data/bundled-cheatsheet-data';
-import { cn } from '@/lib/utils'; // Assuming you have a utility for class names
+import bundledCheatSheetData from "@/data/bundled-cheatsheet-data";
+import { cn } from "@/lib/utils"; // Assuming you have a utility for class names
 
 interface TableOfContentsProps {
   className?: string;
@@ -10,14 +10,17 @@ interface TableOfContentsProps {
 const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   // メタデータのみを抽出
-  const sections = bundledCheatSheetData.map(({ id, title }) => ({ id, title }));
+  const sections = bundledCheatSheetData.map(({ id, title }) => ({
+    id,
+    title,
+  }));
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sectionRefs = useRef<Map<string, HTMLElement | null>>(new Map());
 
   useEffect(() => {
     // Clear previous refs when sections change (though unlikely in this case)
     sectionRefs.current.clear();
-    sections.forEach(section => {
+    sections.forEach((section) => {
       // Ensure elements are mounted before trying to get them
       const element = document.getElementById(section.id);
       if (element) {
@@ -61,7 +64,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
       // Adjust rootMargin: top margin defines the "activation line"
       // Negative top margin means the line is inside the viewport from the top.
       // Large negative bottom margin means elements are considered "out" when far below.
-      rootMargin: '-10% 0px -80% 0px', // Example: Activate when section top is 10% from viewport top
+      rootMargin: "-10% 0px -80% 0px", // Example: Activate when section top is 10% from viewport top
       threshold: 0, // Trigger as soon as the boundary is crossed
     });
 
@@ -69,15 +72,14 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
 
     // Observe elements after a short delay to ensure they are in the DOM
     const timeoutId = setTimeout(() => {
-        sections.forEach(section => {
-            const element = document.getElementById(section.id);
-            if (element) {
-                sectionRefs.current.set(section.id, element); // Update ref map just in case
-                currentObserver.observe(element);
-            }
-        });
+      sections.forEach((section) => {
+        const element = document.getElementById(section.id);
+        if (element) {
+          sectionRefs.current.set(section.id, element); // Update ref map just in case
+          currentObserver.observe(element);
+        }
+      });
     }, 100); // Delay to ensure DOM elements are ready
-
 
     return () => {
       clearTimeout(timeoutId);
@@ -92,12 +94,13 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
     if (element) {
       // Calculate scroll position to account for sticky header height (adjust '5rem' as needed)
       const headerOffset = 80; // Example offset value in pixels, adjust based on your header's actual height
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const elementPosition =
+        element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - headerOffset;
 
       window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+        top: offsetPosition,
+        behavior: "smooth",
       });
       // Manually set active section after click for immediate feedback
       setActiveSectionId(sectionId);
@@ -105,8 +108,18 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
   };
 
   return (
-    <nav className={cn('sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto p-4 border-r hidden lg:block w-64', className)}> {/* Changed border-l to border-r */}
-      <h3 className="text-lg font-semibold mb-4 text-foreground">Table of Contents</h3> {/* Ensure text color contrast */}
+    <nav
+      className={cn(
+        "sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto pt-0 pr-4 pb-4 pl-4 border-r hidden lg:block w-64",
+        className
+      )}
+    >
+      {" "}
+      {/* Changed border-l to border-r */}
+      <h3 className="text-lg font-semibold mb-4 text-foreground">
+        Table of Contents
+      </h3>{" "}
+      {/* Ensure text color contrast */}
       <ul className="space-y-2">
         {sections.map((section) => (
           <li key={section.id}>
@@ -117,8 +130,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ className }) => {
                 handleScrollToSection(section.id);
               }}
               className={cn(
-                'block text-sm hover:text-primary transition-colors duration-200 py-1 px-2 rounded-md', // Add padding and rounding
-                activeSectionId === section.id ? 'text-primary bg-primary/10 font-medium' : 'text-muted-foreground hover:text-foreground' // Adjust active/hover styles
+                "block text-sm hover:text-primary transition-colors duration-200 py-1 px-2 rounded-md", // Add padding and rounding
+                activeSectionId === section.id
+                  ? "text-primary bg-primary/10 font-medium"
+                  : "text-muted-foreground hover:text-foreground" // Adjust active/hover styles
               )}
             >
               {section.title}
